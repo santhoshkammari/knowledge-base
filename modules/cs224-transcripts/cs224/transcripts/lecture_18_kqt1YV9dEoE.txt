@@ -1,0 +1,781 @@
+Okay, I guess I'll just get started.
+So yesterday I gave you the outline of Interior Point and then I started
+Discussing uh some optimization tools such as gradient descent, which is a first order method, meaning that it has access to some function f as well as its gradient on any query point. Um and we'd like to minimize the function f. Uh today I'm gonna tell you about a second order method. Uh this is called Newton.
+method and uh Newton's method in the second order method you're not only allowed uh query access to the function and its gradient, you're also allowed query access to the Hessian of the function.
+Okay. Um and I will show you uh an analysis of uh of Newton's method that will be relevant for for interior point. Okay, so just a recap.
+Some things I wanted to remember. So our goal with Interior Point was to minimize C transpose X such that AX is at least B.
+Okay, and ELP can be written this way.
+And we repeatedly
+Approximately minimized.
+F of whamb du
+Okay, where F lambda x is defined to be lambda C transpose X.
+minus the sum I going from one to m of line of slack of x at i.
+where the slack vector
+is defined as AX minus B.
+Okay. So we're gonna use Newton's method
+to get better and better solutions to F Lambda. Okay, so I want to tell you a little bit about Newton's method.
+So second order
+Optimization of second order methods.
+We want to minimize
+Some function F which maps R into R
+Okay. Um and we are given
+Oracle access
+To F, the gradient of F, and the Hessian of F.
+And what I mean by that is given a point X
+There is some way for us to get our hands on F of X, the gradient of FX and the hash of FX.
+Okay.
+So as usual
+We start
+With some initial
+Uh X in it, let's say N R N
+And repeatedly
+Apply
+Some update rule.
+Right, and what we want to understand is how much does our error decrease as we do some number of updates?
+Yeah.
+Okay.
+Okay. Set up clear for people.
+Okay.
+So this is Newton's method.
+We're we we're at some current iterate. So we have some current
+X zero in R N
+Okay, and what's the update rule? And so we set X1
+Okay.
+Applied to the gradient of FX zero.
+Okay, so that's going to be the update rule that we're going to analyze. Okay.
+And where does that come from? Well, remember what what remember what gradient descent did? Gradient descent wrote basically the first order Taylor approximation of the function, plus some error bound that comes from Taylor's theorem.
+Okay. And then gradient descent just tried to minimize that expression.
+So what Newton's method is doing is it's taking the second order um expansion, tailor expansion of F, and it's minimizing that second order expansion, right? So
+So Taylor's theorem
+Says that
+You know, if you look at F of X one, well let's say F of Y
+Just some F of Y. Approximately up to some error that comes out.
+of Taylor's theorem is equal to f of x zero plus the gradient of f at x zero dotted with y minus x zero
+Uh uh
+Um
+Plus one half
+Y minus x0 dotted with the Hessian.
+Of y minus x zero.
+Okay. So this is what Taylor's theorem says if for the uh
+um in terms of approximating F and by its second order expansion. And Newton's method is basically just assuming that this is an equality and then just tries to minimize the right hand side.
+And the minimum of this right hand side is exactly this.
+If you do calculus.
+All right, so we just need to understand
+How well Newton's method does. So are there are there any questions?
+So far?
+Okay.
+So let me write down a theorem.
+So again for tea
+In zero one define
+Uh X T
+to be x0 plus t times x1 minus x zero.
+Where by X1 I mean that X1 and by X0 I mean our initial the point that we're currently at.
+Uh uh
+Suppose
+There exists an epsilon
+A positive epsilon such that
+For all t in the interval from zero to one, we have that the following is true.
+One minus epsilon times the Hessian of F.
+And X zero
+Is at most in the loner ordering the Hessian at XT is at most in the loner ordering one plus epsilon.
+uh the Hessian NetX0.
+I suppose that that's true. So remember when we were analyzing gradient descent, it was it was a first order method. We only had access to the gradient. We couldn't actually compute the Hessian. But we had a promise about the Hessian, right? We were told that the Hessian is well conditioned. Okay.
+There's there's some small gap between its largest and smallest singular values. So again, for Newton's method, we need to have some kind of promise to say that Newton's method does well.
+Okay. And the promise that we're going to make use of is that the Hessian doesn't change too much on the line that connects X0 to the next iterate.
+Okay.
+Just to recap, when I say that a matrix A is at most matrix B, remember that means B minus A is positive semi-definite.
+Okay.
+So suppose that's true, then
+I want to measure progress, and the way that I'm going to measure progress is that okay, so
+Is to is to say this
+So the norm of of the gradient of F at X1
+Under this uh
+Oh I'll say what this means in a second.
+Okay. So this is our progress theorem.
+Okay.
+Um
+So
+Uh so just a definition to make sense of the progress theorem.
+For a positive semindefinite matrix A, when I say the norm X sub A, that means by definition, what I mean is
+X transpose AX square root.
+Okay.
+So we'll get into, you know, where this is gonna how why this is gonna be useful for us in
+uh interior point in a second, but ignore this thing over here. It's telling us that the norm and the norm is changing.
+Okay, but um the norm isn't changing too much because uh these matrices are very similar.
+uh all across the line. In particular, the ma the Hessian at X one is very similar to the Hessian at X zero. So pretend for a second that these are the same matrix.
+Okay. So in other words, these are the same norm. It's telling us that our new norm uh of the gradient is at most the old norm of the gradient times roughly epsilon.
+Okay, and the minimum the minimizer is when the gradient is zero, right?
+So we're getting closer to having zero gradient.
+So that's that's how you should interpret this.
+Okay. Are there questions before I actually approve this?
+Okay. So let me give you a proof. I should confess I'm not an optimization expert, so I don't know uh the proper citation for this proof, but this is a proof that anyway Aaron Sidford uh
+was kind enough to share with me, so I'm just going to show you this proof.
+So first thing I want to make an observation
+Okay.
+What does it mean?
+to say that uh
+One minus epsilon A is at most B
+Is at most one plus epsilon A
+Okay, how can I rewrite this?
+So that's the same thing as saying
+Uh minus epsilon A
+Okay. Is at most B minus A is at most uh epsilon A
+All right. And what does this mean? Remember what the definition of remember what the definition of uh an operator norm is, right?
+So okay, this means well okay, so what does this mean? This means that for all x for all x and r n
+Minus epsilon x transpose a x is at most x transpose bx is at most epsilon x trans uh this is B minus A.
+And that's at most epsilon x transpose AX.
+Okay.
+So in our case, we're gonna be working with real symmetric matrices like Hessians.
+Okay. And the spectral theorem says when you have a real symmetric matrix, you can write you can write you know real symmetric matrix as u times lambda u transp uh u transpose, where lambda has the eigenvalues, right?
+And these are going to be PSD matrices. So these have um so lambda has some non-negative eigenvalues, and U is an orthogonal matrix.
+Okay. So when I talk about F of Lambda, when I talk about or I'm reasonably using F when
+When I talk about some function G applied to A, what I really mean is take this decomposition and take G and apply it to Lambda.
+And what I mean by that is apply apply that transformation to every single one of the eigenvalues.
+So then if you s if you do that, then what is X transpose AX? That's just
+the L2 norm squared of a to the one half x.
+Right.
+Same thing here.
+So now we can write we can write y as a to the one half x.
+And
+That implies that for all Y
+Minus epsilon y transpose y
+is at most
+Y transpose y or what's x now? What's x? This implies that x is equal to a to the minus one half y.
+Right. So this X is
+Um we can write this as y transpose a to the minus one half.
+B minus A to the minus one half y is at most epsilon y transpose y.
+And that's the same thing.
+as saying that minus epsilon times the identity matrix
+Is that most in the loner ordering?
+Um eight of the minus one half.
+B minus A A to the minus one half, which is at most in the loaner ordering epsilon times the identity.
+Okay. So you know
+When we go through the Newtons, you're gonna see this come up in the the proof of Newton's method. Alright, the question?
+Uh yeah I mean we're just worrying like what happens when the Sh is not in which
+So for for R F it always is.
+I mean w we're gonna apply this with F lambda. You can compute what the Hessian is.
+Um
+But yeah, so let's pretend it's in verbal.
+Okay.
+Right. Another thing I think you can say is for this inequality to even be true.
+It has to be the case that A and B have the same column space.
+Okay.
+kind of restricting instead of A really work with A times UX, where U is U has orth orthnormal columns that form a basis for that subspace.
+Right. And then this composition of first you multiply by U and then you compose with F, that will then have a
+Landy inverted um
+Well, okay. So sorry. But okay, for us it's invertible, so don't worry.
+Okay, so I'm gonna kind of use these use these things interchangeably. Okay.
+Okay, so
+So now proof of
+Uh theorem
+the analysis of Newton's method. So we can write
+Delta of F at X1 , or not delta, the gradient of F at X1 as the gradient of F at X0 plus an integral from zero to one of the Hessian.
+Uh
+Right. So for example, if you just I guess this is the fundamental theorem of calculus or you can just uh view this as a zero-order tailor approximation with explicit error.
+And this thing, so now we're gonna use the fa we're gonna use what X one actually is. This thing is equal to
+The integral from zero to one
+Of the Hessian at X zero minus
+uh the Hessian at X T
+X one minus X zero dt.
+Oh
+Oh, wait, sorry, this is not right.
+Ah, too many symbols.
+Okay.
+Okay.
+Okay, so I mean I brought in the Heshenet X0, but then I killed it here. Okay, so this is just an identity. Okay.
+Mm-mm.
+And then
+What do I want to erase? I'll erase this.
+So right, what do I what's the thing that I want to bound? I want to bound this thing. And I'm gonna plug in what I wrote for the grain of the gradients of F X1 as that.
+So that implies that this thing
+Okay.
+The integral of that
+Okay.
+Um
+Um you can write the same norm.
+Okay. But now because we know that the hessians are spectrally similar along the entire line, we can replace this norm with the x0 norm, right?
+and pay at most a one over one minus epsilon.
+Right, so the Hessians themselves have this one my sub the gap. So if you take the inverses, the inverses um
+You ha you have a similar uh sandwiching inequality for the inverses, where on the right hand side you would have one over one minus epsilon, and on the other side you'd have one over one plus epsilon. Yeah.
+Question.
+Multiply it on left.
+and signed by of X F of zero and on the right of
+Like the first?
+So yeah, multi bank is in general
+Um did I write this wrong? Wait, hold on.
+So you're saying so you mean if I expand this out, what do I get?
+Should I be more careful in expanding this out? So this is um
+The integral
+This is the integral from zero to one of so there's that that so there's that inverse so of the gradient.
+So that just gives you back that.
+And then there's minus the integral from zero to one of
+Well there's a certain usual residence and mic center. Oh I see, okay.
+Okay. Yeah, so oh sorry, this is minus. Is that what you were saying? Yeah, so this is minus this.
+Right. And this, by definition, this is exactly X1 minus X zero.
+Yeah.
+There you go.
+So this thing here is at most
+One over one minus epsilon.
+Or now I can switch the norm to the X0 norm.
+And also I can bring the uh ma the norm inside the integral, and that will only increase things as well. So this is at most one over one minus epsilon times the integral from zero to one.
+of the same thing. So uh
+Hessian squared, I mean uh Hessian of at X zero minus Hessian at X T. This is a minus sign, sorry. Uh Hessian inverse at X zero.
+The gradient at X0 DT
+And then I brought the norm on the inside.
+With respect to with respect to X zero now.
+Okay.
+Sorry, I guess this is conceptually there's not really a whole lot going on here, but it's just a lot of symbols. So
+Okay. Um Matty you should yeah definitely interrupt me if something looks fishy.
+Okay, and then
+Now the claim is that this is just equal.
+to one over one minus epsilon.
+The integral from zero to one.
+of the norm of Hessian
+add X0 to the minus a half
+The gradient of FX zero
+Okay, now a really long string of things.
+Okay.
+Mm-hmm.
+Okay.
+It's kind of a nightmare.
+But basically remember the definition of the A norm. It's just the square root of x transpose AX.
+Okay, so I promise you, if you expand this thing out as this transpose, this matrix times this, and you expand out this transpose times this big matrix times this, it's exactly the same thing. Okay.
+Okay. So I don't want to waste time and I mean you can it's gonna be in the notes, you can you can verify it for yourself. Oh do we have a scribe for today? Okay. Yeah, sorry.
+So
+Yeah, feel free to you know just like take a picture with your phone or something.
+It's too m annoying to type. Um
+Yeah, so this this is just writing things down explicitly and observing that they're actually equal. Okay.
+I'm not gonna spend time on that. It's uh not something deep. Now, what do we know?
+We know that that's true.
+Right? Which I said is the same thing as this being true.
+Right? So what does that mean for us?
+We know
+That basically this whole matrix
+Call this whole matrix M. Okay?
+By this
+And uh basically this, if you just combine those two things, we know by star and double star
+That
+M
+Minus epsilon i is at most m is at most epsilon i in the loner ordering.
+But here we have m squared.
+So that implies
+Uh basically that m squared, well certainly m squared is at least zero.
+M squared is a PSD matrix.
+And it's at most epsilon squared i.
+Okay.
+Gotcha.
+So this thing is therefore at most.
+One over one minus epsilon.
+Uh
+um the integral from zero to one of
+integral of this thing, uh F of x zero to the minus one half.
+F of X zero.
+Okay.
+Times
+Epsilon squared identity.
+Yeah. Sorry, could you just explain?
+on the second when you go from the first line to the second line, why do you get one over one?
+Ah, okay, so
+So we could do the spectral theorem to this real symmetric matrix, right? And what do we get? We get U lambda we get uh forget about the inverse. Without the inverse we get U Lambda U transpose.
+So what does it mean to apply a function to a matrix? It means you apply you take that decomposition and apply it to each of the uh eigenvalues. So what is the inverse of that matrix? It's u lambda inverse u transpose.
+Right. And we knew that all the original eigenvalues between so forget about the inverses. All the eigenvalues between these two matrices
+are the same up to one plus or minus epsilon.
+But if you have more it's a room. Oh.
+I think they would stick the wrong square. Yeah, I see maybe I see what you mean. Uh one over one minus.
+Epsilon
+Yeah, maybe I'm thinking about what you said. Maybe I'm but okay, so worst case I'm off by a square root, but in that case the square root of one over one minus epsilon is basically the same thing.
+as one over one minus epsilon. Right? Epsilon changed by a constant factor. I don't so I'd have yeah, let me let me not try and uh think through this on the fly. But
+Um at most what you're saying would change epsilon by a constant.
+Okay.
+And now this is just right, so we have the identity matrix here, a scaled identity matrix. So this is just the scaled L2 norm.
+Namely it's the L2 norm scaled by um epsilon.
+Because of the square root. So this is at most
+is that most epsilon times the norm, just the normal L2 norm of this thing.
+These are different lines.
+Okay. But what's the what's the L2 norm of a vector Z? It's Z transpose Z.
+When you do Z transpose Z on this, what you get is this you get uh this is equal to epsilon times the square root.
+Of
+Um the gradient of F at X zero transpose
+Uh and then you get two minus a halves. So you get the Hessian F of x0 to the minus one, and then you get the gradient again.
+Which is exactly that.
+Oh there's a there's an up it's actually epsilon over one minus epsilon, right?
+Because of this one assumes. Okay, so enough calculus. That's uh that's Newton's method.
+Okay. So now
+Now we have to go back to interior point.
+Okay. So
+Let's remember that
+Back to interior point.
+So we have our function
+F lambda of x defined to be this lambda C transpose X. Um
+Minus uh the sum I from one to m of lon of the slack.
+So if you do some calculation, this tells you that the gradient of F lambda x is equal to lambda C minus.
+A transpose the slack matrix at X inverse times the all ones vector.
+Okay. Remember this is forget about the inverse, the slack matrix is the one where you just take the slack vector and you write it on the diagonal. This is a diagonal matrix. This is the all-ones vector.
+And if you go and calculate the Hessian
+This thing doesn't depend on C at all. This is just A transpose.
+S X minus two A.
+Okay.
+Okay.
+Okay.
+So
+Perfect.
+Uh
+Okay. So remember that progress in Newton's theorem is all related to this norm.
+Right.
+So that's how we're gonna measure our progress in IPM.
+So um
+Good, so let me give some definitions.
+So remember that we start off with some initial lambda.
+back to this toward the end of lecture, we started with with off with some initial lambda lambda naught, right? And we assumed that we had an approximate optimum for lambda not. And then we moved on from lambda naught to lambda one, which was very slightly bigger. And then we used our approximate solution for lambda naught as a starting point for Newton's method.
+for Lambda1 , for F sub Lambda1, right? We want to minimize F sub Lambda1 . We run a few Newton steps, and then now we hope that we get to something that's not so bad for F Lambda1 .
+And then we increment to limit two, etc. Right. So what is not so bad an approximate minimize approximately minimizing mean? Well, I mean Newton's method tells us one way how we can measure progress. So that's gonna be our our way of saying that it's a good solution, right? So we're gonna say
+We're gonna define
+The centrality
+Of X
+for F sublambda K.
+As
+Delta sub K of X is
+The gradient of F sub lambda k at X
+Under the norm specified by the Hessian inverse at X.
+Okay.
+So suppose that x were actually the minimizer of F lambda.
+What could you tell me about the centrality?
+It's zero. Because if you're actually the minimizer, the gradient is zero, right?
+So this is some measure that tells you how close you are to in a funny norm how close you are to to the
+Okay?
+Okay.
+Let me make two more definitions.
+Definition
+Um X is coarsely or finely central.
+For F lambda K, if
+Delta K of X is at most one over a hundred.
+And also
+X is
+Corsely Central
+If delta k of x is at most, say a third.
+Okay, so what we're really gonna say is look
+For Lambda K
+We have for Lambda K we have in our hand a finely central point.
+And then what we want to say is if lambda k plus one is not too much bigger than lambda k
+that finely central point for lambda k will still be coarsely central for lambda k plus one.
+Right.
+Which means that our our measure of progress in Newton's theorem
+Uh our initial error under that funny norm is a third.
+And we want to make it finely central again. We want to get back from coarsely central to finely central. We want to get from a third down to a hundredth. But that's just the constant number of Newton steps, right?
+As long as our Hessians are behaving well, we're gonna roughly have our error in every step or in every constant number of steps to go down from a third to a hundred is just a constant number of steps.
+Okay, so so IPM is gonna is gonna always keep a finely central point in hand, increment lambda, run a few Newton steps to turn that coarsely central point into being finely central again.
+Okay, so that's where we're going. Other questions about where we're going before we actually uh do some calculations?
+And we have to understand how much are we gonna so I I think I mentioned at some point that we're gonna be able to increment lambda by a one plus one over root m factor in every step as we go from k to k plus one.
+That one plus one of a root M is gonna come from the fact that we wanna maintain course centrality.
+We need to understand how big can we make how big can we give an increase to our lambda to make sure that a finally central point is still coarsely central.
+Yeah. Uh so I just forgot the
+Yeah, one doesn't depend on land now.
+Doesn't it? Epsilon had the
+Uh it will so the the epsilon that we're gonna get at the end of the day will be um
+Just some small constant? Okay.
+Right, but I mean so when we apply Newton's method, R F is actually F lambda k for sum k.
+Right. So um it's okay if the epsilon does depend on I mean the function because the f I didn't we're only we're doing Newton's method over and over and over again in the sense that we have one F, we apply Newton's method. Now we change F. Now we run Newton's method again. As long as the epsilon for each instantiation of Newton's method is some fixed thing, that's fine.
+Okay.
+Okay.
+Okay.
+Wow.
+Yeah, yeah.
+Okay, so
+First off, here's one thing I want to understand, which is
+How does the Hessian change as you change X?
+Right.
+Yeah.
+Right? Because if you look at Newton's method, it says that the Hessian shouldn't be changing too much on the line that you're optimizing over.
+Right. So if I'm gonna have any hope of controlling that, I need to understand when I change when I vary X how is the hash changing.
+Now remember the Hessian we said is just this thing, F lambda of X.
+is A transpose SX minus2 A. Right it doesn't depend actually on Lambda at all.
+So really the only thing it really depends on are the slacks.
+Right, because if you take a spectral decomposition of this matrix, the eigenvalues that you're getting
+uh correspond to the oh what do I want to say
+Yeah, so okay, so right, so okay, so the only the only matrix that's changing as you as you um
+As you vary X is the is the SLACs. So I want to I want to understand how do the Slacks eigenvalues change as you change X.
+Good.
+So
+I want to understand
+Yeah.
+For which X prime
+Do we have
+The slacks don't change by much. One minus epsilon S of X.
+Is at most uh S of X prime is at most one plus epsilon.
+S of X
+Okay.
+First, let's understand this before we continue.
+So what do I want here? I want
+One minus epsilon
+Yeah.
+Uh
+Right. I want one minus epsilon times the identity.
+Actually let me let me just do what I said before. So let me subtract slack of x from both sides. I want minus epsilon slack of x to be at most slack of x prime minus slack of x.
+The at most. Epsilon slack of X.
+So minus epsilon times the identity is at most slack x inverse, slack x prime, minus slack x.
+No epsilon times the identity.
+And
+Okay. And so now all of these things here are diagonal matrices, right?
+So the largest eigenvalue, so what do we want? We want that all the eigenvalues in magnitude are at most epsilon of this matrix.
+It's a diagonal matrix. That means we want all the entries in the diagonal to be at most epsilon and magnitude.
+So this is the same thing.
+As saying that the infinity norm
+Of the slack matrix
+SX prime minus SX. This is now the slack vector.
+The most epsilon.
+Okay. So to understand when this holds, it's enough to understand when this holds.
+Okay.
+Well what do we know?
+Well, we're gonna do something very loose right now.
+Which is that we're just going to bound the infinity norm by the L2 norm.
+So this thing
+This thing is at most
+Slack inverse.
+S X prime minus SX.
+L2 Norm
+Okay. And
+Again, this is equal to I think we've seen this trick before
+What's the slack x prime minus slack x? What is that?
+What is this what is the slack at X? What's the definition of Slack?
+So remember in our original LP, we're trying to minimize the transpose X subject to AX is at least B. Right?
+So the slack is how far away is each constraint from B, from BI. Right?
+So the slack vector is just AX minus b. That's the definition of the slack vector.
+So the B is cancel here. So this is equal to SX inverse A X prime minus X.
+And
+Really actually, you know.
+Remember that X prime I really I shouldn't have uh I should have really just said X T, I'm sorry about that. So imagine in your mind X prime is actually X T, which is uh if you remember uh
+It's T times X it's X zero plus T times this uh
+X one minus X zero business.
+Right. So we're imagining that we're looking at how the Slack changes along uh the line of optimization in Newton's method. That's the thing we need to control understand hash.
+To be able to apply the theorem from Newton's method.
+So if you just remember what this thing is
+This is minus minus Hessian inverse times the gradient.
+This is equal to kind of T times.
+Uh Slack X inverse A
+Passion
+X inverse gradient F.
+Okay.
+No
+And this is just equal to
+And they're not
+Tea times
+Now the
+But
+The gradient
+Of athletic zero.
+So what is
+Um okay so good. So this is the Hessian. I mean th basically this is going to be exactly the centrality at X0.
+This is
+Sorry, I started switching between X and X zero in the middle, but
+So the point is if you're doing a Newton step starting at a point X and X prime is anything along the line toward the new iterate in Newton's method, then the
+The um
+Uh good.
+This error is at most
+is at most um the centrality. Okay. Which we want to be less than epsilon.
+Okay. So the point is
+If X is actually so right, we updated Lambda and our finally s our finally central point became coarsely central.
+I haven't proven that yet. But the point is it is coarsely central, which means that the centrality at that point is at most a third.
+Okay.
+So this at most, let's say, T over three.
+Okay. So in particular, we are satisfying
+Um we are satisfying the original we're satisfying the conditions of Newton's method where epsilon is a third.
+I guess that's what I should have said.
+I see a lot of worried faces.
+Can you say that again and explain why we start when we have the Amanda, we start necessarily course of second point? Um
+Oh yeah, I didn't I didn't okay, so yeah, I didn't prove that yet. So suppose that we have a coursely central point now for
+for F lambda k plus one. And we want to make it finally central. What are we gonna do? We're gonna run Newton's method and hope that the error
+you know, gets uh gets killed down back to a one over a hundred to make it finally central.
+And in order to apply Newton's method to say that we're knocking down the error by a constant factor in every iteration
+We need to make sure that that epsilon from the conditions of Newton's theorem is something that's, you know, at most a constant, like at most a half or something.
+Because we're killing the error by epsilon over one minus epsilon fraction and
+every single step. Right? So to make sure that epsilon over one minus epsilon is non-trivial, epsilon had better be strictly less than a half.
+Right. So what I'm showing you is that the rate of change of the Hessian does satisfy that property.
+Where epsilon where epsilon is the centrality of the point.
+And the centrality is at most a third because we started off being coarsi central.
+Yeah.
+Any other questions?
+Trillion, don't be shy, you know, you can feel free to uh ask me anything.
+Think about if you want to ask me anything as I start erasing the other board.
+So yeah, you're right. Kind of the last thing the thing that we need to do now is to we need to verify that it's actually the case that if you take a finely central point for lambda k, it will be coarsely central for lambda k plus one.
+Right. Then you could plug in this argument and say Newton's method will make it finally central in a constant number of iteration.
+That's not
+Yeah.
+Wow.
+Uh
+So
+Oh yeah.
+But the patient has paid as both the six to the pay.
+That's right. Um
+Right, so very good.
+Wouldn't I
+Good, so okay, so you're saying um the Hessian, so what is the Hessian? So the Hessian
+Yeah.
+Is this uh A transpose S X minus two A?
+And the hash
+At x prime is now a transpose s x minus to prime a. And we want to say that these things are spectrally similar.
+We want
+That for all X
+Uh basically
+A X
+Transpose well X transpose A transpose S X to the minus two AX. We want this to be up to one plus epsilon the same thing as um oh I shouldn't use I shouldn't use uh X here because I already have X's. For all Z
+This thing should always be close to uh Z transpose A transpose SX prime minus two uh AZ. That's what we want, right?
+So what is this thing?
+This thing is
+The um
+It's S X inverse.
+A Z
+L2 norm squared.
+And this thing is
+S X prime inverse A Z L two norm squared, right?
+Yeah, so now maybe now it's clearer. So the point is you if if these things have eigenvalues that are all close to each other, then um
+On any vector, in particular the vector AZ, the norms will be roughly the same.
+Sorry, sorry for I I I guess I was hand waving a little bit, but thanks for keeping me honest. Yeah. So so really to say that the Hessians are spectrally similar you can just
+Focus on the Slack, the Slack matrix.
+Okay. Yeah, any other questions?
+Okay. So
+Let me not erase this yet.
+Yeah.
+So actually if you don't mind I I wanna erase this as late as possible. So are people I'm gonna erase this now. Are people uh okay.
+Okay.
+So
+So that board over there
+The last word
+Says
+That if we start
+With a coarsely
+Central point
+For lambda k plus one
+We can make it.
+Finally central.
+In a constant number of Newton steps.
+Okay. So
+Assume
+Assume that
+The K centrality of some of our approximate minimizer X tilde of Lambda K is at most one over100 .
+So assume we have a finely central point for Lambda K.
+So now the question is
+How much bigger? Remember that as lambda goes to infinity, solving F Lambda is getting closer and closer to solving the actual LP we care about. So we want to we want to make progress. We want lambda k plus one to be a
+As big as possible. But if we make it too big, then this point won't even be coarsially central anymore.
+will fall off the central path. So the question is how much are we allowed
+Yeah.
+To increase
+Lambda K by
+To get lambda k plus one.
+Such that X tilde lambda K
+Will still be
+Finally central.
+For uh F lambda k plus one.
+So
+Yeah, coarsely. Thanks.
+Yeah.
+So let's say that we're gonna do a multiplicative increase.
+So let's say that lambda k plus one is equal to one plus some factor alpha times lambda k.
+Right. And we want to understand
+How much does that change Delta K by?
+Okay.
+So delta K plus one
+So um let me
+I'll just write it over. I'll just write the relevant stuff here. So the gradient of f lamb dot x
+is lambda C minus A transpose S inverse times the L one's vector and the Hessian
+is A transpose SX minus2 A. Okay, so that's all we're gonna need to remember.
+So let's compute this thing.
+Let's look at xx plus one of x lambda.
+So this is our finely central point. X tilde lambda K is our finely central point for Lambda K.
+And we want to understand now its centrality measure for k plus one. What is that? That's equal to, well, by let's just do the definition. That's equal to the gradient of F at lambda k plus one.
+One at the point uh of the Hessian.
+Well the Hessian the Hashen doesn't depend on Lambda at all, right?
+is just A transpose XX minus two A. So
+Um
+Okay.
+Okay.
+Okay. That's the definition of centrality.
+And then now let me write down
+What the gradient is
+The gradient is now
+Lambda C uh well Lambda K C well
+Lambda k plus one is just one plus alpha times lambda k, right?
+So lambda k times one plus alpha times C minus A transpose SX inverse all ones vector times that same thing.
+Oh
+Okay.
+Mm.
+Hm
+Okay, and then I now I want to
+Basically add and subtract alpha times this matrix.
+So this is equal to
+One plus alpha.
+Lambda K C minus A transpose SX inverse all ones vector.
+But then we just subtracted alpha times this, so you better add alpha time times it back plus alpha times the same thing.
+And then, you know, the usual Hessian inverse over there.
+And then now we do triangle inequality.
+Right? So what is this? What's
+Hopefully this is now it's clear what I'm doing here.
+Okay, what's that?
+Yeah, uh right. Yeah, delta clay if you include if you include the norm uh with the Hessian inverse. But yeah, the point is this is just the gradient at lambda k. So we can do triangle inequality and say, look, this is at most one plus alpha.
+times the centrality measure at lambda k, or the centrality measure at k is how I defined it.
+Of X tilda Lambda K
+And that thing is at most a hundred one over a hundred.
+So that's fine. Plus
+Now we have an alpha out here. A transpose SX inverse one vector. And now let me write again this is A transpose S X tilde lambda k.
+But
+Minus two A inverse.
+Okay, so this part is fine, right? We're we're we're trying to make sure that this thing is at most a third.
+As long as alpha is tiny enough, the one over100 is gonna become one over fifty or something. We don't really care about that.
+But then we need to understand this thing here.
+All right, so maybe you understand this thing.
+So
+This thing
+So what is it equal to?
+Well let's expand what it means to take, you know, a matrix norm like this.
+This is equal to
+One transpose
+Um SX inverse. This is this is all X uh X here remember is X tilde Lambda K
+All these X's are X tiles alambda K.
+X told the land okay. Uh and then A
+And then
+A transpose s x tilde lambda k minus two a inverse.
+And then the same thing.
+A transpose.
+SX tilde lambda K
+Okay.
+This matrix.
+Okay.
+There's a minus one here.
+Okay, so whether or not you see this I guess will depend on how uh how much you remember your linear algebra.
+Okay, it's n it's not necessarily the identity because
+Um
+Right, okay, yeah. So if everything were full rank would be the identity.
+Yeah. In general what this is is it's a projection matrix.
+Okay, this is the proje so this this red thingy
+Is equal to the projection orthogonal projection.
+Projection.
+Onto the column space.
+Of S minus one X tilde Lambda K at A.
+Okay.
+So in general if you want to project so you know the projection onto call the column space
+of A is um A transpose A inverse uh and then put an A here.
+Uh A transpose A.
+So I mean the best way to see that is well you can see it by for example taking the S V D of A and when you expand this thing out you get you get you know U U transpose where U is the
+the matrix with left singular vectors.
+But but what does that what does that tell us about this thing?
+This implies that this yellow box thing
+Right.
+One transpose one square root.
+Which is Rudan.
+Okay.
+This thing, so what really what we've what we've we shown
+Okay.
+At the end of the day, what we've shown is that lambda delta k plus one at x tilde lambda k is at most one plus alpha delta k x tilde lambda k.
+plus alpha root m
+Okay? We want this thing to be less than a third. And we said that this thing was coarsi central, so this was at most one plus alpha over a hundred plus alpha root m
+We want this thing to be less than a third, so choose
+alpha to be something like one over root m
+You know, one over ten Rudam or something. And then it's coarsely central.
+Okay. So that's basically it. We um
+We can increase lambda by a multiplicate of1 plus one over root m at every step.
+If you remember, I told you that somehow we get an initial point that's really good for lambda lambda initial being roughly exponential and minus the precision.
+And we're done when Lambda gets to be as big as um
+Uh something like M times exponential in the precision.
+Right. So I think I mentioned this last class, you can look at the notes, but the point is this tells us we can take roughly uh root m, there are root m uh iterations of step five from last time, where we have to keep increasing lambda. We have to increase lambda roughly root m, root m times L times, where L is the precision.
+So that's the that's it for I guess the main part of interior point.
+It all just now boils down to how do you get the initial finally central point.
+Right.
+Or even the initial coursely central point. You can make it finally central with Newton's method. Yeah. Oh question?
+So what was what's the best result that we have with the same thing?
+Aaron Sidford, yeah. So that's that was a recent paper by Sidford and Lee. And I I'll say they bring it to to rank
+Huh? Yeah.
+And I mean the basic idea behind so okay, is there's a lot going on there, but the the the highest level most basic idea is
+If you look at the barrier function that we're using, it's minus the sum over i of log of slack i.
+Which is kind of weird because this means that if you repeat the same constraint over and over and over again, it's getting weighted more and more in the barrier. Right?
+But the the optimization problem you're solving actually hasn't changed at all. So what their algorithm does is at every point it it maintains kind of a weight vector so that you use the same barrier but a weighted version of that barrier where every constraint is weighted by a certain amount.
+And um the amount that you have to weight each constraint by in that barrier function depends on some geometric considerations. Okay, so um that's kind of at that's the the heart of their change.
+And then there's a lot then how do you come up with this weight vector and how do you maintain it and analyze things?
+etc. But uh the new thing that changed to get down to root rank was that they used this they used some kind of weighting of the constraints and the barrier.
+Function.
+Does that make sense?
+Oh yeah, right. So the point is the barrier we're using is right, minus some I from one to m.
+Of law and of slack of XI, right?
+So what what what are the slacks? You have what is the constraint? The constraint matrix is AX is at least B. That's the constraint.
+Constraint, right? So what is a slack? A slack is the I throw of A dotted with X minus B I.
+So suppose you just have the same constraint. Suppose someone just gave you the LP with the same constraint written a thousand times. You're gonna sum it a thousand times here. But that's I mean that isn't that's sort of weird, right? Because uh the constraint only matters once.
+So they have some way of weighting the constraints in this barrier function. So they actually have a minus sum over i
+Wait I
+And they have some way of figuring out these weights that guarantees faster convergence.
+Uh I think they even changed they change the weights over time as well. And when they so you know we had to look at how does the centrality change as you change the lambdas. They also have to look at how does it change as you change the W's as well.
+So they have and they also need to be able to compute these W efficiently because you want a fast algorithm.
+Yeah. So yeah, I'm not so I don't know all the details of their paper. My understanding is that there was the there was an existential theorem due to Nestorov, or maybe Nestorov and Nemorovsky, I'm not sure, that showed that there exists a weight vector.
+But it was not algorithmic at all. Um and they show how that that they can actually um algorithmically efficiently maintain some weight vector that does uh close to as well as that existential result.
+Okay. So
+I wanna say something. I just wanna close this lecture with you know, how you actually start off. So again this is gonna be down to precision issues, so I don't wanna
+I don't want to give all the calculations, but the basic idea is
+So
+How to start the IPM.
+Right? We need to have some X tilde Lambda zero.
+To start it off. Which is cour which is coarsely central or finely central initially.
+So the point is, so first what we're gonna do is we're gonna alter the LP to be min C transpose X plus capital N times Z, I'll say again in a second what this is, such that
+A X plus the all ones vector
+Z is greater than equal to B.
+Okay.
+Has an obvious oh and Z has to be at least zero. Oh let me uh let me put there some more
+Also zero is at most, z is at most, two to the l plus one, and negative two the l plus one.
+Uh all ones vector is at most. X is at most.
+to the L plus one, all ones vector.
+So I'll put a link I'll put a reference in the notes, but you can show
+That if n is big, if n is like exponential in the precision, let's say
+Ten to the L or something or a hundred to the L.
+Then
+Original
+LP bounded and feasible
+Implies that LP prime optimum
+Must have
+Z equals zero.
+So
+So you can prove this kind of theorem by by looking at various precision calculations. And the point is, so now if you could actually just solve this one, well the optimal solution has z equals zero, so you've actually you've actually solved the original LP.
+Okay. And in the original LP you can show that any solution has to have bounded precision anyway.
+Okay. So now we just need to solve this thing. I'm just giving you a sketch of what's going on.
+So this is LP Prime.
+So LP prime has an obvious interior point.
+X prime
+Which let's write that as x comma z
+You can set X to be zero and you can set Z to be the L infinity norm of B.
+Right? So that's an interior point. Are we done?
+Yeah, finally central. What's Lambda? Who knows? So we're not done.
+But then there's one last trick.
+We don't just need
+Interior point
+We need
+A fine we need a coursely central.
+Into your point.
+For for some
+Yeah.
+Lambda. Right? So what are we gonna do? Here's here's now a funny thing we're gonna do.
+Set lambda to be one.
+Okay. Now let's look at the gradient. The gradient of F of Lambda at this x prime.
+Remember the gradient is equal to lambda times C.
+Minus
+Um I think Slack Slack inverse
+Right. A transpos like inverse all ones vector.
+Right, when are we optimal? We're optimal when the gradient is zero. So here's the funny thing we're gonna do. Okay, sure we you know this
+Here's here's the funny thing we're gonna do. So X prime is perfectly central.
+For a different cost function.
+So this is lambda's equal to one, right?
+So it's perfectly central for the cost function a transpose xx prime inverse all one.
+Right?
+Okay. So now right the gradient is zero now for this cost function. That's not our actual cost function, but it's the gradient is zero for this cost function. So what do we do? So now we've we have a point which is perfectly central for some cost function. You can basically run all the update steps I told you in reverse. Instead of incrementing lambda by a little, you decrement it by a little.
+And you run Newton's method and then you keep refining going down in Lambda.
+Until you get to a very, very, very tiny lambda, exponentially small in the precision.
+And now what do you have? You have a point that's finally central near the analytic center.
+And then what you show is that when you have a point that's finally central near the analytic center, you can basically just switch the cost function to whatever you want and you'll still be finely central.
+Because once once lambda's that tiny, uh
+The cost function basically doesn't matter anymore.
+Right? So once Lambda's that tiny, you then switch over the cost function. You'll still be finely central, and then you write everything I told you in the forward direction.
+Okay.
+Now run everything
+In reverse
+To get
+An approximate
+Analytic center
+Which is
+basically, you know, finely central
+For any cost function abounded precision.
+And now that you have that, well, now you run things forward, okay? So that's that's everything. Does that make sense?
+Okay. So that's it I guess. So I'll see you Tuesday.

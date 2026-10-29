@@ -1,0 +1,754 @@
+I I don't know what
+Maybe that was true. I think it was just that we all do that. I'll just get started because it's already time. Okay, so today or the next couple of topics.
+We're gonna see today link countries. There's a data structure that can be used to speed up blocking flow. And we're also gonna see uh like min-cost max flow.
+I don't know if we're gonna get to that today, but maybe Tuesday, but we're gonna see when countries today.
+So before I tell you what link cut trees are about, uh or like you know how what operations they support, etc. Let's just revisit uh the blocking flow algorithm that uh we looked at Tuesday.
+Okay? So we saw on Tuesday
+blocking flow.
+The algorithm you know was
+Repeat, you know, find a blocking flow.
+You know, augment
+Flow by F
+Iterate.
+Yeah.
+SD path in the residual graph. Okay, and we said at the time
+was
+Uh number of iterations.
+Times
+The time
+to find
+A blocking flow.
+You know, plus let's say M to actually perform the augmentation, but this is gonna dominate M anyway. And last time we said, look, they're at most
+n minus one iterations because we proved this lemma that said every time you augment by a blocking flow the new residual graph, the S T distance increased by at least one. Right? So we said that S N minus one. And we showed that basically by modifying depth for search, this is O of Mn.
+Right, that's what we said last time. So um
+Linkcutries
+This is due to Slater and Tarjan, yet again.
+Uh JCSS eighty three
+can be used
+To find a blocking flow
+In time.
+Oh of M log N
+Okay, it's a data structure. And it's a data structure that you can use to to find blocking flows faster. And there are other applications of link cut trees as well.
+which you might see in the final P set.
+So um before I describe to you the operations that a link cut tree supports, let's just you know look at what happens when you try to find a blocking flow in the level graph. Right? So remember um
+Locking flow
+Example
+So let's pretend that we have we have some level graph.
+This is S T. Remember all the edges go to subsequent layers, right? 'Cause we only keep
+edges that w that go from one level to the very next level. So
+Okay. So um pretend that there is some there is some level graph that's hidden here where edges go to a jacent
+levels and we start trying to find a blocking flow. How did we find a blocking flow? We basically started at S. We tried to advance to T using DFS.
+And then when we finally were able to get to T, we augmented along that path, uh subtracted off the c uh the minimum capacity from everything in that
+in that path and then try to DFS again. So let's say we do our DFS.
+We find a path, okay? So we find a path that looks like this.
+And now we're in the general capacity case.
+Okay, so
+Good. So we're in the general capacity case. We we already s we already saw that uh in unic in the unicapacity case we could do this step in linear time in O of M. So what I'm gonna talk about is speeding up the general capacity case.
+So now we subtract capacities. We subtract we take the minimum capacity along this path and subtract it from everyone.
+Okay. Some of the edges, at least one edge, but maybe more than one edge, is gonna become saturated now. Right? It has no capacity left. And then we kill that edge, right? So maybe now uh maybe now this edge
+is out of capacity
+And uh this edge
+is out of capacity. Right? So the edges that are still in play are these ones that are not X depth.
+So it's basically uh two different paths. This is a length one path, here's a length two path.
+Okay, so now we're gonna do another uh dot first search from s. This is the algorithm from Tuesday to try and find T.
+So
+Maybe we'll go this way.
+Um
+And let's also let me also say let me kill this one too. Let's say this one is also out of capacity. So all that's left are these two edges here. So now we try and DFS out of out of S. We'll go this way. We say, oh, there's an edge there, uh there's an edge here.
+And there's also an edge uh
+Let's say here
+Uh how do I want to do this?
+Let's say there's also let's say there's also an edge now here.
+Okay. So normally normally now so we're DFSing, we got here. Normally we try to advance one more step. Right? And that's what we would do in the in what I described Tuesday. We would just advance one more step and try to continue on pretty T.
+But if we somehow remembered in a data structure that hey, there are these two p two edges that are still alive here, we should be able to just kind of skip right to here.
+to the end of that path, right? And then from here we would say, oh, there's no way to get to T and we'd backtrack and kill that.
+And then we'd find some other path. Uh we'd we'd we'd say, okay, there's actually a way to get to T this way.
+And then now some edges got saturated. So now when we augment along this path, some edges get saturated.
+Maybe these two?
+And then the next time we do a DFS from S, maybe we'll go here and then we'll go, you know, they'll there's an edge that goes up here and then we'll say, oh, we remember in our data structure that these three edges already exist. There's already we can basically skip ahead and bypass DFSing all the way through these edges and just skip straight to
+T and then now augment along this. Okay, so the point of link countries, I mean you'll see exactly what they support, you know, and uh
+This might sound a little sketchy right now, but what they do is they remember these fragments that still have capacity left. Fragments that you had already explored and are still alive. You should be able to, you know, reuse that knowledge that they're still alive and jump ahead.
+So that's what link link cut trees support. Okay, so let me um and by the way these these aren't necessarily always uh going to be paths, right? So
+For example, you could have imagined that actually
+Um
+I went this way and then I jumped here and then I skipped ahead to T.
+And then now maybe some edges get saturated. So for example
+So now the fragment that's left is not really a path. The fragment that that's left is this tree, right?
+Imagine, right, I have this tree.
+That's left. Okay, so in general what's gonna be left are are trees.
+The fragments that are left over are trees.
+So link cut trees
+Uh they it stores
+uh collection
+Of
+No, vertex disjoint.
+Rooted trees.
+Subject
+to the following operations.
+Okay, so basically the operations that you need to be able to implement are blocking flow algorithm. So what are those operations? So one
+Make tree.
+All this does is it makes
+A new vertex?
+And puts
+in a singleton tree.
+So the very first step of the block of the algorithm defined blocking flow would be to run make vertex end times to create basically the empty graph.
+Okay, operation two.
+Is uh find root.
+That takes us input of vertex.
+That vertex is in some tree. It might be in the singleton tree, but it might be part of some bigger fragment.
+Okay. It returns the root
+Of tree containing V.
+And in this picture I'm imagining that uh roots are things that are further to the right. So imagine taking this picture and rotating it. So T is the root of this tree. Okay, and it has one child, which has another child. This thing has two children.
+I mean so find root is sort of exactly the kind of thing you would want to skip ahead, right?
+Right, if you get if you start if you get to a vertex, you want to know, can I jump ahead to the right?
+Which is exactly fine root.
+Yeah. Um why
+Why is it always a tree and not a dag? Why is it always a tree and not a dag?
+Um
+Hold on, let me see. So what would it mean for it to be a dag? Uh
+So the reason that it's not going to be a dag is um good. So kind of if a path so you're gonna see that you're gonna see how we're actually going to call these uh subroutines in our blocking flow algorithm. But the basic idea is if there's already a path somewhere, we're going to just take it using find root. We're never going to ignore a path that already exists and then try to discover things a different way.
+Does that make sense? Like um so for example you could imagine
+Let me let me make this a little space. You can imagine we're s we're in a situation where
+We found a path.
+This is an ST path. And then we did an augment. Right? And then maybe now this edge got saturated.
+So now we wanna start from um now we wanna go from S and find another route to T.
+Yeah, so it it is what you're saying is correct in that you know if we had gone this way maybe we would end up forming a dag. But the way that we're going to run uh our algorithm is going to be such that if there's already a path out of S, we're going to use it. So the very first thing we're going to do is find a root on S, which is gonna jump us right back to here.
+And then we're gonna say, okay, now can we get from here to tea? Oh we can't. So we're gonna do a retreat as in Tuesday and that's gonna die here.
+And then, you know, maybe we'll find some other path.
+And then now maybe both of these
+Both of these are now saturated. And then now we're gonna find another path from the C, but again we're gonna reuse this edge. We're not gonna we're not gonna, as long as there is some path out of S, we're not gonna try and explore a new path. We're going to first take that path to its end.
+Does that make sense? Yeah, okay.
+So yeah, so uh yeah.
+And then we DFS and end up somewhere in the
+different part of the same fragment every
+That we just came from? So wait, so first of all, in the level graph edges only go forward in level. The level graph it's the level graph is itself a dag.
+So we're never uh I don't know if I understand your question exactly. We're never gonna cycle back
+So what I'm imagining
+Imagining is in the graph of their um
+Like
+Okay, I I I guess we always the r the node we end up at is always the right most one in the level that
+So we can never find in the in the level of graph. Is that why we can find it?
+Right. Always at the highest level.
+Right, we are, that's right. Right. Okay.
+Right.
+Oh I get it.
+Okay, so okay, good. Um right, so we we are gonna maintain the invariant that the underlying graph is always a forest, a collection of uh
+Okay, so three.
+Another thing we're gonna want is uh cut.
+What does cut do? Uh it destroys the edge.
+V parent V.
+Which is what we're gonna want to do when we retreat.
+Right.
+Um so I'm imagining
+We get somewhere I don't know, we get somewhere we realize oh there's no path
+Sorry.
+Okay, so let's say we got here. We realize there's no way to get to T, so we retreat. Now I'm gonna cut on this vertex, and that's gonna remove this.
+Okay. Another thing we're gonna want to do is
+Uh min cost
+Or not min cost, min capacity I guess. Let me call it fine min
+What does fine Min V do?
+Returns
+The lowest
+Capacity
+Edge
+On
+The path
+From V to its root.
+Right, V is in some tree. Look at the Vita root path in that tree.
+And then return the lowest capacity edge. If there's a tie
+Uh return edge closest to the root.
+Okay. Another operation we're going to want is let's say subtract
+Uh V X
+And what does that do? It um subtracts
+Racks.
+X from every edge.
+On the uh
+on the V to root path.
+So from capacity
+Maposity of every edge on the V root path.
+Um and one more
+Or maybe two more depending on uh okay, so another one is add flow.
+Um V X
+Which is add
+X to uh
+uh the uh flow
+Variable
+For every edge.
+On Vita Root Path.
+Okay.
+Uh
+And uh every edge that's gonna be alive in our tree is gonna remember both its capacity and its flow. So if you give
+me an edge, I you can just read off uh
+Okay, so
+Now let me just write down some pseudocode of how you would actually implement blocking flow using these procedures. So
+Before I do that, are there questions about what any of the operations mean?
+Okay. Well I'll write down the pseudocode for blocking flow and hopefully yeah.
+between like flow and capacity. Are they kind of dual? Like the remaining capacity is like
+Capacity minus to flow or Yeah, I guess uh maybe the Operation Six ma Operation Six might have been uh redundant.
+Um yeah. Might have been
+Because w another thing you could do is just, right, you know all the initial capacities of all the edges.
+And then at the end of at the end of uh running everything, you know what the new capacities are so you can infer what all the flows had to have been.
+So you actually you don't need to operation six separately.
+Okay, so uh blocking flow. So how are we gonna implement this? So initially
+Make tree
+And times. And then I'll say uh you know while true
+So V
+Is
+Find root.
+On S
+Okay.
+Now if V happens to be T, I'm
+I'm happy. Okay, and then I just augment and V is equal to T.
+Uh I'll use this notation. V is equal to T.
+Um
+Then
+Let's say uh
+I'm gonna use comments. I'll comment my code. It's good practice.
+So
+Just to tell you, you know, w how uh
+Halfindmin returns the edge to you. So let's say uh ZX
+is fine men
+Okay. Yeah.
+Trees that have more than one vertex? Did I not write link? Oh. Well there's uh I I meant to write that around link, around cut. So there's also an operational link.
+Uh VW. Okay.
+It assumes
+That V is the root of its tree.
+Okay. And it makes
+It also assumes that W and V are not in the same tree already.
+Oh
+There are different trees.
+It makes V a child.
+Okay. Uh and I guess you'll also give it you'll also give it some number which is the capacity of that edge.
+With capacity X. Yeah.
+Right. So I mean W will be something on the next level in the level graph. But initially so there are two graphs, right? There's the level graph, which all of this is being built on top of. But then there's the graph of there's the graph which is the collection of trees we're maintaining.
+Which you can think of as being a subgraph of the level graph. So initially that the graph we're maintaining is is empty. There are no edges at all. And then we're slowly adding edges in the in the l in the level graph uh as we go along, building our blocking flow.
+Does that make sense?
+You listen are you are you uh still thinking?
+Uh so the the vertically or
+So so the vertice the vertices these n vertices that I'm making in my in the in this graph. So okay, let's say that the level graph is L. And the graph the the graph I'm building, which is this collection of trees, let's call it uh
+uh H. Okay. So initially so okay, so L and H have the same vertex set.
+Okay. Um and H is going to be a subgraph of L.
+Yeah, they have the same name. Okay. Yeah.
+They just think of them as being the same vertices. It's a different it's a different
+Just think so just think of H as being an actual uh think of H as being an actual subgraph.
+So you know their neighbors delivered to catch. Yeah. And you you know like you know who their neighbors are in L.
+Yeah.
+Does that does that answer your question? Okay. Any more questions?
+Okay, good. So this is gonna be the minimum edge so the the minimum edge minimum capacity edge from S to T is the the edge Z parent Z, and it has some capacity X
+And what we're going to do is we're going to well, as you said, we don't really need to add flow because it's all implicit. We can know what the flow was at the end anyway.
+Uh what we can do is we can subtract
+S X
+And then uh cut Z.
+And then uh delete
+Z parent Z
+From the level graph.
+Which we can do because we know the correspondence between vertices.
+And then uh
+Continue.
+I mean go back to the top of the loop. Okay, so that's one case. That's the case where V is equal to T.
+Otherwise
+So what do we do? We try we want to try to advance, right?
+So we'll try to do that. Um
+Else, you know, I'm using my comments.
+If
+Let's say from the level graph L.
+If uh V has outgoing
+Edge
+Just some W in L
+Then what do we do?
+What should we do?
+Huh? Yeah, okay, but I mean what there's no uh so what operation do we do in Orling Country?
+We link, right? So
+So remember V is the root. We did find V is the result of find root. It is the root of its tree. And now there's some other W which we know we can connect to. So we want to link V to W.
+Uh link
+V to d V to W with the capacity with with weight capacity of of that edge VW and L
+Okay, so we tried to advance. Otherwise
+Otherwise we can't advance, so we retreat.
+So what do we do? Um
+Well first of all, if V is equal to S
+Right? That means uh there's nothing left to do.
+We break.
+We're done. We're break out of the loop.
+Otherwise
+Otherwise what we're gonna do is retreat and delete the sage. So
+For each child
+Uh let's call it uh why
+And we can be aggressive about it, right? I mean we can basically I mean if we know that if we know that there's no nowhere to go from V, we don't only have to delete the edge that that led us to V, we can basically delete anything that's coming into V.
+Right? Because we know that V is basically a useless vertex from now on.
+So for for uh for every child
+Y a V uh will cut Y
+And then we'll delete
+Uh Y V
+From L
+Oh yeah. That's blocking fuck.
+Okay.
+said you can remove anything as a
+Oh you mean like cut the cut operation?
+You when you retreat from V, uh you remove all of the directional regions. But could you remove anything that's descended? Remove anything so so what does retreat do? Retreat deletes the edge that just led you to V.
+Right, so Rich um when you say remove a descendant, what do you mean remove the descendant? So we're not removing vertices here. I mean we are removing the vertex V.
+But there might be, right, so for example
+Um right? This is now a worthless vertex.
+But you know, before we let's say be f let's say there was a situation where this thing was not quite saturated yet.
+But still it's a worthless vertex, right? If we ever uh now okay now now this uh situation would never actually happen, but because of
+this but um right so at some point we're gonna reach here and realize this is worthless and want to retreat. We shouldn't we sh I mean we should delete this edge, right? We should get rid of this. But we shouldn't do things to its descendants because you know maybe this this this vertex here might have some other way to get uh
+Right, to get there. And also this vertex itself, like this edge might still be useful because evidently it was because then we rerouted this way, for example.
+Right. So we're only deleting the th the edges that come into that vertex.
+Yeah.
+There when people see
+subtract the S X card Z then there are also some meaning that consyl capacity
+Oh yeah, but that but but oh yeah, that's a very good point. So that's but that's exactly that's exactly why I wanted to return the edge closest to the
+root. Because what's gonna happen, right? So that you that's a very good point. So
+Here's S, here's T.
+Right? We found we found a path from S to T.
+Right? Maybe it's ha maybe it happens that these two edges
+are now saturated.
+When we do find min, it's gonna return us the one that's closest to the root.
+And then we're gonna delete it.
+I'm sorry?
+So actually let me let me not cross it out yet, because we haven't actually deleted it yet. Let me just
+Let me just draw it in yellow to say that it's saturated, okay?
+So so good. So this edge is so the graph that we're maintaining in our link country has all four edges right now. But then we do a fine min, we realize that this thing is zero, we delete it.
+But s is still in this tree. So the next time we we go to the top of the loop, we're gonna do find root on s again.
+Right? Oh
+And um
+Oh I see. So do I need to
+Right. So I I might need to do this I might have a little bug here where I need to repeatedly cut.
+Yeah, I need to repeatedly find min on S over and over again and remove everything that has zero capacity. Yeah. Programming is without bugs is hard. Oh yeah.
+And it turns out of the edges that have no risk capacity.
+Oh sorry?
+Oh you mean redefine fine min? Yeah, and it returns all of
+Uh yeah, you could do that. I mean uh but then the so later I'm gonna write the code for Feynman and uh then I would have to make that longer. So I could just say I I could just say as you said, so uh
+V equals T. So do this. And then now in here somewhere, I guess.
+So find men
+in a loop
+to remove
+Zero capacity edges.
+I mean does that make sense?
+Right? You you keep finding loop uh you keep finding mining until there are no zero uh
+Zero capacity I just left. And then each one you find you delete it.
+So I think now I'm
+Oh sorry? Yeah.
+Yeah, because if you move a net uh Yeah but you're talking about the implementation of cut. Right? That what you're talking about will be handled in the implementation of cut.
+You're saying that when I del when I remove edges I have to I have to change who's the root, right?
+But I mean cut will I'm assuming that these operations have been implemented for me, right? And and I just want to use these up operations uh these are my
+Abstract operations. Yeah.
+Yeah.
+Remove the saturated edges to each other.
+Oh no, that that edge is still alive as a fragment. So at the end of this, these two things will be deleted.
+And then what will be left are are uh these two edges. So two separate trees.
+Two separate trees, each is a single edge.
+Well technically uh one, two, three, four, five trees.
+Uh uh no. Three trees. Three trees. Uh two of them will have singleton edges.
+Two of them will have a single edge and one will be an isolated vertex.
+Yeah.
+link you go back to the source node and then you find it again. So I say it again? So every time you link
+Two nodes. Yeah.
+Yeah.
+So you just go back to the source every time you think. Yeah. I mean yeah, you don't you don't really you don't have to, but but uh it it'd probably be smarter to just stay where you are because you know that you're gonna just jump right back there at find root. I was just trying to write the shortest correct code I could and I still yeah, and I still had a bug, so but anyway.
+Yeah, the spider man return the load.
+The lowest capacity edge. Yeah. But then so you basically you keep running this, you keep running Feynman over and over again.
+And then once once it returns an edge that's not capacity zero anymore, then you're like, okay, I'm done cleaning up all the dead edges.
+I'm sorry?
+Yeah, five minutes. Five minutes.
+Five minutes over and over again.
+Yeah you can I think that's correct, you can think about it, but if you
+But why do you care?
+Well why do you care about that? I mean you're always removing the one that's closest to the r to the root of S
+S'tree. So all the ones that you need to del all the ones you need to clean up after that are still a part of S's tree.
+Okay. So again.
+Um so what I want to say, so
+The the basic idea
+Of uh of Link Countries
+Is uh to store
+Uh these potentially
+Unbalanced.
+Potentially unbalanced uh
+Trees using balanced binary search trees.
+No you'll see what I mean. Right, so these these trees in our collection they're not binary trees, right? They could be really badly imbalanced. We have no idea what they look like.
+Other than their trees.
+And uh actually we're gonna use splate trees to uh
+uh inside of this implementation and you'll see how in a second. But just to tell you where what we're shooting for, you know what's the what's the running time now of blocking flow, right?
+Um
+So
+Uh every time we go through this loop, we're going to delete um
+We're going to delete an edge, right? So every time we how should I say this?
+Um
+So okay, good. So whenever we go in this loop
+There are three cases of where we could end up. If we link, that means we explored an edge for the first time. That can happen at most M times.
+This case can happen also at most M times, right? Because we can you know the edge gets deleted, so we can't delete more edges than exist. So this happens at most M times.
+Also when we augment, um notice that
+To realize that we had to augment was a single operation. We just figured it out from a find root. Right?
+So we're doing one operation here. And then all the additional operations that happen from fine mins, in in aggregate, that can't happen more than M times, because every one of these fine mins, except for possibly the last one, results in an edge deletion.
+Okay. So the number of times we perform link cut operations overall is M.
+Okay. So if we can show that we can perform every single one of our link cut operations in log n time, that will give m times log n blocking flow. So really the name of the game is get everything in log n time.
+Um
+Okay, so today we're gonna see how to do amortized. I might we might not see the whole thing for log n, maybe we'll see log squared n, but it is possible to get log n. Um but it's also possible to get a worst case log n bound. We're just not gonna do that.
+So you can you can look at the paper if you want to see how to get a worst case bound. The the data structure itself has to get a little bit more complicated.
+Okay, so uh
+We're gonna use something called so we have this tree. Uh let me let me draw a tree.
+There's gonna be a collection of trees, but let me just draw one of them.
+So
+We're gonna um maintain something called a preferred
+Maintain
+for each tree
+A
+Preferred path decomposition.
+What do I mean by that?
+Every vertex
+Except for the leaves, we'll have
+a preferred
+Child. And how is that defined?
+Prefer child
+A V is equal to none.
+So Verstices can also not have a preferred child at all.
+It's none.
+If V was the last
+Node accessed
+In its subtree, you'll see we're gonna you'll see what I mean by access very soon.
+Otherwise
+It's uh the child containing
+The subtree
+Uh the child uh containing subtree containing
+The last access node.
+And V is subtry.
+Otherwise. Okay, so
+So for example, well I mean I haven't shown you what access means but access means but uh let's say that the last
+Node that was accessed period in this tree is is that one?
+Okay. Let me let me give it another child. Let's say the the last node accessed was that one. Then the preferred child of this node is which of its children is an ancestor of this? Well it's the left one. So that's the preferred child. So this edge I'm gonna call a preferred edge.
+And similarly for this one, um, what's its preferred child? It's that one.
+And then, you know, maybe this guy even himself had some children.
+But what's his preferred child? He doesn't have one because he was the last node accessed in his subtree.
+Right. So if he's if he himself is the last node access in the subtree, he doesn't have a preferred child.
+So then now
+Uh now we can look at preferred children of each one of these guys. Maybe this guy's preferred child is this is the left child. Maybe this one, the preferred child is this one, and then this one.
+one and then that one
+Okay. So
+So if the children
+Wait. So the children of the one that was the
+Sorry, say it again? Like on
+The far left branch. Yeah. Okay. But say
+that child has more should
+Yeah. So then he might he himself might have a preferred child.
+Which might be I mean he himself might have been the last node uh accessed in his own subtree, in which case he wouldn't have one, but he he could have one. This could be his preferred child.
+So there could be multiple nodes that don't have versional nodes. There could be yeah. Um what do you mean there could be multiple nodes that don't have performance?
+Yeah, so look at this node, compare him to everyone in his subtree. Look at who was the last access node in this subtree.
+If it was him himself, he wouldn't have a preferred child.
+Okay. But it he might have it might not be him himself, in which case he would have
+preferred child.
+Okay.
+So
+An edge leading
+to a preferred child
+Is called
+A preferred edge
+Okay.
+So what I've done here now is I've drawn a bunch of preferred paths, right? So just take like the maximal so a preferred path is a maximal uh chain of preferred edges.
+A maximal
+Chain of preferred edges.
+So
+Now the what is the what is this preferred preferred path decomposition? Basically now you can imagine collapsing um
+Collapsing the preferred paths into like single vertices.
+Right.
+So here's one.
+Here's another one.
+Here's another one. And here's another one.
+Okay.
+So we have sort of a tree of paths, right? And then there are these white edges that connect these paths to each other.
+So the preferred pathy composition
+Is a tree
+on the preferred paths.
+Okay.
+Okay.
+So our data structure, the link country, is going to explicitly maintain
+uh this preferred path decomposition.
+So
+Yeah.
+Okay.
+So how are we gonna do that?
+So each one of these paths
+We're gonna store in a balanced binary search tree.
+So we're not actually gonna store it in a balanced binary search tree, we're gonna store it in a splay tree.
+Uh but you could store it in a balanced binary search tree and get say log squared unbound.
+But let's let's uh I'm just gonna skip straight to splay trees so that we can get the log in bound. Um we'll store
+So so you should ask me a question right now, right? Uh it's a binary search tree, right?
+So uh what's so what what do I mean stored in a balanced binary search tree? What's this you know uh
+I don't know. Does a question come to mind as I'm writing this?
+Yeah, exactly. What what are the keys? What's the ordering? So we'll store each preferred path.
+in a splay tree, which you guys have seen uh a while ago.
+Keyed by depth.
+So someone higher in the tree is smaller than me.
+Higher node.
+And the tree is smaller.
+So do we still store the tree itself?
+Somehow or is it like is this the entire data structure of the splate tree or is there Oh so what's so let me draw a picture now going back to that uh going back here
+So let's let's let's see what would happen here.
+Basically these three nodes would let me call the let me call this uh A, B, C, uh this is C here.
+And D
+Okay. We'd have some splay tree.
+Storing the nodes of A.
+Then we'd also have a splay tree.
+Storing B
+But
+There would be a parent pointer, a path parent pointer, which which will store at the root, let's say, of B. That'll just tell us where does this hang off of. It hang it'll it'll tell us specifically which node does it hang off of.
+There'll be a pointer, say like this.
+Telling us basically this like remembering this edge.
+There will also be a tree for sea.
+And there'll be a point in remembering that edge.
+There will also be kind of a singleton tree corresponding to that vertex here.
+And then we'll remember that edge.
+Okay. So there'll be like this tree of trees.
+Does that make sense? Yeah.
+Um let's c we'll call
+The splay tree
+To store a path
+And auxiliary trade
+And the actual
+Um the actual tree that we're actually maintaining in the Link Cut tree, let's call this tree T
+Yeah.
+The actual uh tree tea is
+is what we call the represented tree.
+Oh
+Okay. So
+So
+And uh the root
+Of
+uh each auxiliary tree
+Has a half parent
+Pointer telling us
+The root
+Uh telling us the parent
+Of the top note of the path.
+In the representative.
+So those are these white squiggly lines, basically telling us how does this path connect up to the r to the rest of the tree.
+Yeah.
+So how are the relationships or the parenting of the auxiliary tree to a particular node within another auxiliary tree? Sorry, can you say it one more time? How are they?
+Right. So like their um B has uh child which is just a similar child.
+So B B has a child but just a single thing, that's right.
+Parent is a number.
+Wait, this is actually this this should have been part of B, right? I said that was preferred.
+But yeah, you're still right you're still right in that uh
+This is all part of B.
+But yeah, this is a child of B.
+Remember that that is a child of your
+So this node will remember so this is gonna be a singleton tree, a singleton auxiliary tree. It's gonna remember who its parent was in the actual tree, but B won't remember the auxiliary the auxiliary tree and B won't remember who's hanging off of it.
+Yeah. It won't need to remember that.
+More questions?
+Okay.
+So good. So now I want to talk about how to actually implement operations.
+Yeah.
+Okay, so
+We'll have a helper operation.
+Which all the other operations will use.
+Which I'll call access.
+V. So I remember I said that you know the definition of the pref the preferred child is in terms of the last access, right?
+So for that to make sense, I need to tell you what access means. So ac there's actually going to be a subroutine that we're gonna call a bunch of times called access.
+Okay.
+So first of all, what happens when you call access V just by what I've said already?
+Access V is supposed to change this decomposition because now the route to V path is now a preferred path.
+Right? So the root to be path is now going to be preferred.
+And that means that some of the paths which were preferred before are no longer preferred. Some of the children some of the preferred children change.
+So for example, if the
+Let's say that I now access this this vertex right here. So now this path is the is a preferred path, which means this is no longer this edge is no longer preferred. This edge is still preferred, right? But this is no longer preferred. This basically switches over to there.
+So we need to ax we once we touch V, we need to walk up back the tree and make sure we change the preferred children of the roots. And this might change who needs to be in which ox tree as we go up as we go upward, but we're gonna fix that.
+So
+Makes the root
+In the represented tree, let's say in that tree T
+Right. In reality, remember the link country maintains a collection of trees. So each tree in our collection will have this kind of decomposition.
+And we'll maintain tree of ox trees for each one of them.
+Okay, good. So uh how are we gonna do the implementation?
+So we're gonna make sure
+So first of all, right, first of all, once V is on once the roots of V path becomes preferred, and remember now none of V's children, V V might itself have some children, and one of them might have been preferred. Now none of them is preferred, right? Because by the definition of preferred child, if V itself was the last node, it has no preferred child.
+So you might have to cut off some of its uh cut off its preferred child.
+Okay. So what we're gonna implement this is so so now after V has been accessed, it's part of the root auxiliary tree. Right? It's part of it's part of A, basically.
+And we're gonna make sure that not only is it an A, but it's actually the root of A. Which is splay, basically. Right?
+So make sure that make sure V is the root
+of the root
+Is the root of the root of the root of the tree of ox trees? Is that so there's a tree of ox trees?
+And its root is a tree.
+And I want V to be the root of that. So make sure that V is the root of the root of the tree of ox trees.
+Okay, so that's how we're gonna implement it, and how exactly do we do that?
+Uh
+So
+Let's say V is in some
+Ox tree
+Which is a split tree, one of the splay tree, so it has some
+Uh you know there is there's V. This is an ox tree.
+Okay. So now we're gonna splay
+V. So now this is V, and now it has some children. It has a left subtree and it has a right subtree.
+This is still the ox tree that it's in. Right? This ox this ox tree itself
+Uh
+Okay. This ox tree itself has
+Yeah.
+has a path parent pointer.
+Right. Okay, so now via the root. So what can you tell me about one change that definitely needs to happen now?
+V has no preferred child, right?
+So what does that mean?
+Both sub trees?
+What's in the left subtree and what's in the right subtree? How is this plate tree keyed?
+By depth. So what so who are these guys and who are these guys?
+Yeah, people above me in the path. So I need to cut out the right basically, right?
+Because now V has no preferred child, so uh this is now
+Removed. Okay. So let's let me call this let me call this vertex, you know, uh R
+Right. So now what I need to do is I need to say
+Uh V dot right
+Oh, I didn't even need to name it. V.path parent.
+Is equal to V, and V dot right now is equal to none.
+Okay.
+But then now okay, so that that's now fixed.
+But now we need to go up the tree and start changing preferred children up the tree.
+Okay. So
+So now we're in the situation where V is here. It has no right subtree, but has a left one. And then this is the ox tree.
+And then it has some other tree up here. Let me actually let me right draw this a little bit lower.
+So V is here and it's Ox Tree.
+It has no right child. There's a there's a path parent pointer.
+That points to some W
+in some other ox tree.
+Now W doesn't have to be the the root of its ox tree, right? It's just somewhere in that ox tree.
+Right.
+Who's W? W is the parent of the lowest of the minimum keyed element in this tree.
+Right, because the minimum key element in this tree is the root of the path, and then his parent is double U. That's what this means.
+So now what we're gonna do is we're going to basically make room to merge the trees.
+How are we gonna do that?
+Well
+We are going to splay
+W
+Okay. Now what happens when we splay W? Now this
+Now this turns into
+This is V
+And now W is the root of its tree.
+And it has some left and some right tree.
+So now what's what does it mean that so what's the new preferred uh child of W of W? The new preferred child of W is the smallest element in in this tree.
+It's no longer who it was here.
+But who was the preferred who were who what what was the preferred kind of descendant path out of W here?
+The right subtree. Right? So that needs to change.
+Okay. So we're gonna do
+W dot right
+Dot path parent
+Equals W and then
+Uh
+W.
+Dot parent
+is equal to none.
+V dot right.parent is none as well. In the ox tree.
+So basically we changed we changed a parent pointer into a path parent pointer.
+And then now who's gonna be the new right child of uh W?
+Yeah.
+Okay. Uh I'm now running out of space. I should have saw this coming. And now V dot parent. V dot path parent
+Is is none. It doesn't have a path parent anymore. It's an actual parent now. V dot parent is W now.
+And then we splay the
+Okay. Right. So remember what I said? The the plan was make sure V is the root of the root of tree of ox trees.
+Right, so we've now spliced V into its parent ox tree. But that's I'm not satisfied with that. I want it to actually be the root of everything. So then finally when we do that, we splay it again.
+Okay? And we basically do this in a while loop until we're actually at the root ox tree.
+Right.
+So when you spliced the with
+It's left sub tree as the right
+sub tree of W. Now is does that leave W's
+What do you mean? Why do why do you say that? Because now
+So just like so it w so W's splay tree, this ox tree no longer has a right child hanging off W, right? This got kind of branched off. This is now its own ox tree.
+And now we just take this ox tree and make it fit inside this ox tree. We basically make this take the place of that.
+I also need to make sure that I change V's path parents to be W's old path parent.
+V is now the root, so it's path parent, right? So now v dot path parent.
+is W dot path parent.
+And W no longer has a path parent.
+Sorry, this is terrible.
+You need to make sure you maintain the path parents. Okay. But uh hopefully the idea makes sense.
+Does the idea make sense? Does the idea not yeah.
+Right, in its path. So V is somewhere along so V is in this path, right? Not the descendants, the the people above it in the path. Everyone here is higher than V in the path. V is the bottom of the path. Right?
+Right.
+And then we know that this path links up to W. So we basically s kind of splice those two paths together.
+And cut off everything that was below W before.
+Basically W's preferred child just changed.
+Right? Because everything here is hanging off of W. W had some old preferred child, but now that V is being now that V has been accessed
+This path is now the preferred path leading out of W, not the old one. So this lets us cut off the old one and insert the new one.
+So do we need to splay the um highest up
+No, because everything right everything here everything here is at a lower depth than W is. Everything here is at a lower depth than here.
+Right, because everything here hangs off W in the represented tree.
+Right, so it's it's valid to put everything here to the right of W.
+Does that make sense?
+Okay, I thought that'd be
+Uh uh
+Who wow?
+Oh, that was uh painful.
+Actually wasn't that people? Okay, so that's access.
+That's really all there is to access. Notice that
+Um kind of the runtime
+of access
+Is uh
+Just you know, it depends on
+The number of preferred
+Child changes.
+After accessing me.
+Yeah.
+Basically every time ever you know when do we do basically every time there there's a uh every one of these kind of tree splicing operations that we have to deal with in this loop corresponds to some W having its preferred child change on us.
+So the number of times we have to deal with this splicing is the number of preferred child changes.
+as you walk up the tree.
+Okay. So okay, anyway, we you know this is going to be important when we actually really analyze it, but now let me write down operations.
+So now other ops.
+We're always going to do five like we're always gonna start every operation with access.
+So the node of interest is always going to be the root.
+So find root.
+First access V
+Now who's who's the root of V's tree now? Who's the root of V in the
+Who's the root of V in the represented collection of trees?
+Right, V is in some ox tree now. It's in the it's in the it's the root of all the ox trees.
+Huh?
+T? Wait, what's when you say T, what do you mean by T?
+Right. So I mean it's root as a vertex. Right?
+So who's its root? Well
+The point is after you do an access
+Uh V is now the root the root to V path is now the preferred path. That entire path is the root ox tree.
+Right? So who's the root of V of V's tree in the represented tree? It's the lowest depth element.
+Right? It's the lowest depth element in Viz Ox Tree.
+So first access V and now return
+Lowest depth.
+element R in Vstry
+And uh for good measure we'll also just now access R.
+Okay.
+Okay.
+All right.
+Okay, how do you do fine men?
+You access V?
+Okay. Return mean value.
+So I don't want to get too much into this, but if you know if if you haven't seen this, maybe you should you know read more about it.
+you know, compute the sum of all elements in an interval, in a key interval, or find the minimum value in an interval of keys.
+These kinds of things you can do by augmenting a search tree, a binary search tree. So, you know, you can you can
+You can very easily do this. V is now the route. Just by looking at some uh augmented values stored at V, you can figure out what the minimum value is, minimum capacity in V's auxy is.
+So I'm not I'm not gonna get into the detail.
+Uh cut V
+We're going to access
+Uh access V
+Okay, so now what? Now how do we finish the implementation of cut?
+We're cutting V from its parent in the represented tree. Who's its parent after we've done an access on V?
+The left sub tree is the tree that
+Contains the parent. So now V dot
+Left is equal to
+Lift up parent
+Is none and v dot left is none as well.
+You can also do link
+VW.
+minor thing. So access V
+Remember now V and W live in two different represented trees.
+Okay.
+And then access W.
+And now V dot left
+So W is the parent of V now.
+So v dot left is W.
+And uh W
+Uh
+Bodi.parent
+Is V. Right? So W is on the left, which means it's higher than us in the tree.
+Okay.
+Does that make sense?
+So
+can't have had a a left sub tree here because it was already the root of its representative tree. That's right. There was nothing at a low at a lower depth than V in its representative tree.
+So these are all the operations. Oh I mean there's the other one subtract, etcetera. You can do all you can do those as well by uh
+doing this trick of augmenting your bal your binary search tree. Okay, so I um
+You can do this as an exercise. But now the question is just
+Okay.
+So all the code is laid out for you.
+More or less. So now it's just a matter of of proving the runtime bound.
+And I think what I'm gonna end up doing is Tuesday I'll show you log squared n and then your final P set uh I will make you prove log N.
+With a hint, maybe.
+Okay.
+Okay. So that's all reason.
+Oh

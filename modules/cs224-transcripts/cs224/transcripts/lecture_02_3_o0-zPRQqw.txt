@@ -1,0 +1,807 @@
+SPEAKER: I guess
+I'll get started. So today, we're going
+to do fusion trees. But before I do
+fusion trees, I just wanted to say one thing
+about Van Emde Boas trees, which we did last time. So somewhere in there-- so
+we did Van Emde Boas trees, and then we did
+the Y-fast tries, and they got the same bound. The argument, so for
+Van Emde Boas trees, I mentioned, instead of using
+arrays, use hash tables, and then you'll get O of N
+space, instead of O of U space, OK? It turns out that
+there's something-- so it turns out that there's
+even an exercise in CLRS, Exercise 20-1, Part F,
+which says exactly that. Prove that if you use hash
+tables instead of arrays, you get linear space. And what I told you was actually
+their intended solution. But it turns out that
+there's an error, there's a very subtle error. So the argument
+that we discussed in class that gets O of N space
+is not really O of N space. It's slightly worse. And it's not just the
+argument, it actually doesn't get O of N space. So that's going to
+be a P set problem. I'll tell you exactly which
+sentence I said that was wrong, and you have to tell
+me why and fix it. OK. But you can get O of N space and
+you'll see that on the P set. And Y-fast tries, as
+I described, actually, do get O of N space
+with this indirection. Any other questions
+before I start? Yes, OK. So now, we'll do fusion trees. So fusion trees. Remember, we're solving
+the predecessor problem. This is due to Fredman and
+Willard and, I guess, '93. Right. And we're going to look at the
+static predecessor problem. OK. Later, after their paper,
+it was made dynamic. So there was a paper
+by Anderson and Thorup. So here, we have
+Anderson, Thorup. And they got an update
+time of log base w of n, plus log log u-- or log log n-- sorry-- updates. And it's deterministic. And then later, Ramon-- oh, and are you
+scribing today, OK-- got log base w of n updates. And this is expected
+running time. So it's a randomized algorithm. In all cases, the query time
+is O of log base w of n. So I'm going to show you
+just the static version, not these two, that gets
+query log base w of n. And there's going to
+be some polynomial time amount of preprocessing. It actually won't be
+that bad, but it'll be more than sorting time
+to actually create the data structure, given the static
+points in the data structure. So that's why you can't
+use it for sorting. It's something we
+talked about last time. But you could use the
+dynamic versions for sorting. So the basic idea
+of fusion trees are to have, instead
+of binary search trees, to have k-ary search trees,
+where k is bigger than 2. So we're going to have-- so a fusion tree looks
+something like this. So actually, just
+a show of hands. Who here has seen or heard of
+either 2-3-4 trees or B-trees? OK, so a large number of
+people, but not everyone. OK, so the basic idea is
+going to be as follows. Let me actually write
+it a different way. Every node is not
+going to have one key, but it's going to have,
+say, roughly K keys. And so we know we might
+have 5, 15, 27, 32, and 48. These are sorted. OK. And hanging off this is going to
+be a subtree of everything that has a key less than 5. Hanging here is going to be
+another tree of everything between 5 and 15, everything
+between 15 and 27, et cetera. And then there's a node here,
+there's another big fat node here, et cetera. And then each one of these
+branches in many directions, as well. So that's the basic idea
+behind having larger ary trees than just binary search trees. AUDIENCE: [INAUDIBLE] SPEAKER: So these are sorted. So everything hanging
+off here is less than 5. Everything hanging off down
+here is between 5 and 15. So in a binary tree, there's
+just a single key in the node. And to the left is bigger,
+to the right-- to the left is smaller, to the
+right is bigger, OK? So we're going to have
+this basic structure with K being theta of w to the
+one-fifth keys per node. So what is the
+height of this tree? If you have, in
+general in terms of K, what's the height of this tree? AUDIENCE: Log n base K. SPEAKER: Yeah, log
+base K of n, right? And that's-- so we're having-- so that implies the height is-- well, it's O of log base
+w to the fifth of n. But if you just remember what
+your base, your log arithmetic, this is the same thing as
+log n over one-fifth log w, right, which is just
+the log base w of n. So this is why we're hoping
+to get log base w of n. But there's, of
+course, a problem here, which is, our time is
+not just the depth of the tree. We have to also take into
+account how much time we spend at each node of the tree. So naively, what you might
+think to do is start at the left and then go see where
+I am, and then go down. That will take you
+K time per node. So you get K times log base
+K of n, which is always worse than log base 2 of n. You can do a binary search. Then you would get log
+K times log base K of n, and the log K is cancelled and
+you just get log n, again, OK. So really, I mean, to
+make this work really, we can only spend a constant
+amount of time per node, OK? Now, does anyone see something
+that's like blatantly-- something that just simply
+can't work about that? How are we going to spend-- so they're w to the
+one-fifth keys in here, OK? How much space
+does each key take? AUDIENCE: Log w. SPEAKER: Not log w, but w. A key fits in a word, right? So the amount of space
+to represent a node is w to the six-fifths. We can't even fit it in a single
+machine word so how can we process it in constant time? So we're going to have to
+develop some techniques to get around that. So the basic issue is, how do
+we search a single fusion tree node in constant time? So with Van Emde Boas Trees,
+using the Word-RAM model, we exploited the fact that
+keys were themselves also memory addresses. And that's how we were able to
+beat this comparison-based lower bound. Here, we're going to
+go way more overboard with using the power
+of the Word-RAM model. So you're going to see a lot
+of bit tricks in this lecture. So the basic ingredients, OK. Well, we're going to
+use multiplication. We're going to exploit the fact
+that we can multiply numbers in constant time as long
+as they fit in a word. You'll see where that's
+going to come in. In fact, there is a
+version of fusion trees, which avoids multiplication,
+which came later. But I'm not going
+to present that. We're going to see
+sketch compression. So there has to be some amount
+of compressing of the keys, because we just said that
+all K keys can't even fit in a single
+node, so we can't hope to do it in constant time. We're going to have to
+somehow compress these keys. And we're also going to
+see word-level parallelism. So at some point when a query
+comes and reaches a fusion tree node, we have to
+see where it fits, which subtree we
+have to recurse to. And we're going to,
+eventually, do that by comparing with all
+keys simultaneously using a constant number
+of word operations. And somewhere in there,
+we're going to also look at-- well, there's going to be
+a very basic subroutine we're going to need, which is
+the most significant set bit. And we're going to show
+that we can do this quickly, and that we can use it to do
+some of the other things we want to do. So, I mean, just so we're all on
+the same page, in a W bit word, how long does it
+take you to find the index of the most
+significant set bit, with any algorithm? AUDIENCE: W? SPEAKER: W, right. So what do you do? You loop from the
+W minus first bit all the way down
+to the zeroth bit. And then you do a bitwise
+AND and mask out that bit and see whether the
+result is 0 or not. So can you beat W? Give me anything to beat W. AUDIENCE: Log W. SPEAKER: How would you do log W? AUDIENCE: Do binary search. SPEAKER: Yeah. So, yeah, you do binary
+search to figure out what's the largest I, such that
+your number is bigger than 2 to the I. And 2 to the I
+is just one bit shift I positions to the left. So that's all constant
+time per iteration. So we're going to see
+this in constant time. OK. We're going to show
+that in the Word-RAM, you can actually do
+most significant bit in constant time. That's going to be-- and it's not going to be as
+easy to explain but we'll do it. Yeah, right. Let me think about it. When I say constant
+time, like in-- on your computer, you'll
+probably never deal with types that are bigger than
+64-bits, like, 64-bit ints. Log of that, I guess, is 6. We probably will
+have-- we'll have a constant number
+of operations, but I think it'll be more than 6. We'll count what it
+is when we get there. But if ever you deal with
+1024-bit ints or something, then-- or no, maybe larger, I
+don't know what we'll have to do to beat the log log W. OK. So good. So let's start--
+attacking these things. So how do we search
+a single fusion tree node in constant time? Well, before we
+get there, we need to make sure that we can
+even fit a fusion tree node into a single word, OK? So here's the basic idea. So remember that I'm
+not counting really preprocessing time. This is a static data structure. I'm allowed to do whatever
+computation I want, OK? So the first thing I'm going
+to do in the very beginning is just everything, OK? And then just build the
+tree with exactly K nodes per internal node. And then now I
+know what the nodes are-- what the elements
+are in a particular node. And I want to figure out
+how to form that node to fit in a single word. So let's focus on representing
+a single fusion tree node. And it contains K keys x0,
+less than x1, less than dot, dot, dot, less than
+x of k minus 1. So let me draw a nice
+picture to convince you that we can get
+away with using less than double W to
+the six-fifth bits to represent a single
+fusion tree node. So let me draw a path. So let me first write this,
+1, 1, 1, 1, 1, 0, 1, 0. So let's say that
+that's some element. That's one of the Xi's. So I'm going to first
+draw a vertex here. And then I'm going to go from
+the least significant bit to the most significant bit. When I see a 0, I go left. When I see a 1, I go right. So I see 0, I see 1, 1, 1, 1,
+1, that's 0, 1, 1, 1, 0, 1. And then there might
+be some-- there are some other Xi's in here. So there might be another
+one that looks like this. I guess, 0, 0-- well, let me draw it. So what's this? This is 0, 0, 0, 0, 0. That's five zeros, and
+then a 1 and then a 0. And then I might have another
+one that maybe branches off somewhere down here. So I can draw some
+collection of-- so for example here, K is 3. So I have three Xi's that
+I'm representing in this way. And the thing to
+note in this picture is that in order
+to differentiate, right-- so in order to
+differentiate the Xi's, I only need to look at vertices
+where there's actually some branching, right? So for example, this bit,
+so this is the second bit, like this is this bit here,
+and also this bit, which is the 0, 1, 2, 3, fourth bit-- 0, 1, 2, 3, fourth bit. Just maintaining those--
+remembering those two bits is enough to differentiate
+all the Xi's. So I can define-- so let me write, Let r less than
+K be the number of branch bits, and let their indices be
+0 less than b1, less than, not less than br minus 1. So these are the only bits
+I need to know in order to distinguish the excise. And if I just project
+down to those bits, then it maintains the
+ordering of the Xi's. OK. I mean, we're not-- don't worry, we're not
+anywhere near done. There's a lot to-- there's going
+to be some issues that we're going to see very soon. And I'm going to
+define a sketch. A sketch sk of x as
+keeping only the Xbi. So for example-- I mean, it's a function, also-- the sketch function
+depends on the whole set of the Xi's, because it
+depends on this picture. So for example, sketch-- in this particular scenario if
+I'm sketching 1, 0, 1, 1, 1, 0, 1, 0, I'm saying
+I only remembered that bit and that bit. That's just equal to 11. So now going back to fusion
+tree nodes even fitting into a single word, each Xi
+has sketch of Xi taking r-- using up r bits. But r is just, at
+most, k minus 1. So that's also W to the
+one-fifth bits implies can store all of the
+sketch of Xi's in K times r, which is O of W to
+the two-fifth bits. OK. So at least the information
+can fit into a single word. Now, there are going to be
+some issues, for example, there is no C operation which-- so we could easily mask
+out in preprocessing we could create a mask. Each fusion tree node could
+store the mask which tells you what the important BI's are. And you can convert Xi into just
+remembering the important bits by masking out everything
+else, just ending with the bits that matter. But that's not going
+to compress things. That's not going to remove
+the bits that don't matter. And there is no
+C operation which says, compress into these bits
+and put that into a new word. So we're going to have to
+deal with that at some point. There's probably a more
+serious issue, though, which is that the query
+element doesn't need to be one of the Xi's, right? So let me draw an example. So let's say there
+are four bits. So imagine that the bits-- so imagine that the X size
+that we're actually storing are the following--
+one is 0, 0, 0, 0. So W here is 4. One is 0, 0, 1, 0. One is 1, 1, 0, 0. And another is 1, 1, 1, 1. OK. So in the tree, the things
+that matter here are-- OK. So what are the branch
+bits that we're actually going to remember? Well, there's a
+branching right here, and there's a
+branching right here. It's the same bit, actually. And there's a
+branching at the root. So there are two
+branch bits, OK? So it's the zeroth
+bit, 0, 0-- wait-- 0, 0, 0, 0, 0, 1, 0. OK, so sorry, here I was-- forgive me. Here, I'm imagining that I'm
+reading from the left, OK? So 0, 0, 1, 0. So 0, 0, 1, 0. I'm reading from the left. Yeah. AUDIENCE: So in
+this case, did you-- for Xi-- SPEAKER: Yeah. AUDIENCE: --do you
+store the bits in-- for the branch bits in
+any of the other X's? Or do you store the branch
+bits for only that Xi? SPEAKER: For that Xi. I mean, so I just
+defined a function. So each fusion tree node
+has its own sketch function, depending on all
+the set of Xi's that live in that fusion tree node. AUDIENCE: Yeah, yeah, yeah. SPEAKER: OK? AUDIENCE: [INAUDIBLE] SPEAKER: Yeah. AUDIENCE: So for X, 0-- SPEAKER: Yeah. AUDIENCE: --will you store the
+branch bits in which X, 0 is not involved at all? Like, the branch bits? SPEAKER: Yeah, yeah, you will. AUDIENCE: You will. SPEAKER: So there's
+a set of branch bits which matter for that
+node, and all Xi's in that node will be projected
+to those branch bits, even if it's not where
+Xi itself branched. Does that answer your question? AUDIENCE: Yeah, yeah, thank you. SPEAKER: OK. OK. OK, OK, good. So the zeroth and the
+third bits from the left are the ones that
+are relevant here. Those are the branch bits. So here it's 1, 1,
+1, 0, 0, 1, and 0, 0. That's the sketch of
+every single one of these. And then now, some
+query can come in which could be totally different, OK? Well, let me show
+you what I mean. So imagine a query
+comes in like this, like this, like
+this, and like this. So this is 0, 1, 0, 1. This is our query. And what's its sketch? It's 0, 0. So in actuality, Q
+should be between-- remember, that the reason
+we're trying to find out where we fit in
+these Xi's is to know which subtree to recurse to. So really, Q should fit in the
+subtree between these two items. That should be where
+we're going down to. But-- sorry, sorry. No, no, no. It should be going down in the
+subtree between these two items, right, because the query node is
+actually between this and this. But its sketch makes it look
+like it's between these two. So that's not good for us. So that's the first
+thing we're going to fix right now before we
+move on to fixing other things. It's going to be, I think,
+the easiest thing to fix. Questions about anything so far? OK. And if the insight here is
+to look at the first bit where things went wrong. And what do I mean the first
+bit where things went wrong? I mean, things went
+wrong because we weren't storing a branch
+bit that we really should have been storing. And that's right here. Up until that point, the branch
+bits we were storing, namely, this one, were keeping
+us on the right track. But then, Q branch
+somewhere where we didn't keep information. So suppose sketch of Q
+lies between sketch of Xi, and sketch of Xi plus 1. OK, it does not imply that Q
+lies between Xi and Xi plus 1, but I claim that we can
+still use this information for our benefit. And the way we're going
+to do that is as follows. Let Y be the node where Q falls
+off the highlighted paths, namely, the first node. So this is our Y here. And there are two cases. Either Q is going to fall
+off and go to the right, or it's going to fall
+off and go to the left. So if Q falls off
+to the right, set e Is going to be a new word
+to be Y. By Y, I mean, look at the bit string, the prefix
+that's defined by this node. So here, Y is just 0
+because we went left once. This node would be
+0, 1, for example. We'll let e be Y, followed by
+0, followed by a bunch of ones. Otherwise, if Q falls to
+the left, let e be Y1, 0, 0. The claim is if we see where
+sketch of e fits amongst the Xi, that is the same among
+the sketch of Xi's. Or even e itself,
+that is the same as where Q fits amongst the Xi,
+which is what we actually want. So the way we're actually going
+to do this is, we're not just going to recurse
+into the two things that the sketch
+fits between, OK? But when we find where
+the sketch fits between, we're going to form
+this e, then we're going to, again, run a
+comparison with this e, and then we're going
+to use that result to tell us where to go down. Are there questions
+about what we're doing? Yeah. AUDIENCE: [INAUDIBLE] AUDIENCE: Go ahead. AUDIENCE: How do you find the-- where Q falls off to the right? SPEAKER: Oh, that's
+a very good question. So that's where-- so I claim
+that if we had number four, we could do that. So do people agree? How would you use
+this number four to-- we haven't done number
+4 yet but, yeah. AUDIENCE: you take
+the MSB of the mod-- of the bitmap like
+ones represent nodes in the map, nodes
+that are masking off. SPEAKER: Wait,
+sorry, say it, again. Of the naught? AUDIENCE: How I mean, it depends
+on how I representing the mask. Like the ones are. The nodes that we're keeping or
+the ones that we're discarding. But either one, you take the
+MSB will give you the node. [INAUDIBLE] SPEAKER: Oh, yeah. I mean, let's pretend-- in terms of masking, let's
+pretend that we actually somehow were able to compute
+the sketches properly. We already have the
+sketches, right? So now-- yeah, we already have-- OK, yeah. So we have the sketches, but
+we also have the Xi's, too, OK? So we have both of them. So now what would you do? AUDIENCE: I think
+[INAUDIBLE] get rid of it. SPEAKER: OK. So let me write that here. So first of all,
+this proof, I'll leave it to you as an exercise. But you're saying that
+to find Y you do what? AUDIENCE: So Xi and Q. SPEAKER: Xi, X
+or-- is that X or-- It is-- Q. AUDIENCE: Most
+significant bit of it. SPEAKER: Right. Yeah. OK. People agree-- people
+see what's going on here? So Xi, X or Q is telling you
+the bits that are different. And the most significant bit is
+telling you the first bit that's different between the two. OK. AUDIENCE: [INAUDIBLE] SPEAKER: I'm sorry? AUDIENCE: I [INAUDIBLE]. SPEAKER: You would
+do the-- yeah. No, you're right, you would
+do this to the actual Xi, as you were saying. You would do this
+to the actual Xi. And you would do this
+to both Xi and Xi plus 1 to see where you first fall off. So compute the most
+significant bit of Xi, X or Q and the most
+significant bit of Xi plus 1, X or Q. And then just
+take the more significant of the two. And that would tell
+you the first time you fall off between the two. And here, we're
+just using the fact that X-- that bitwise X
+or is just telling you which bits are different, OK? So we're going to have
+to eventually come back to dealing with how to actually
+do most significant bit. But we're going to do
+that at the very end. OK. Any other questions? Yeah. AUDIENCE: So in this example,
+it falls off to the right and it lies in between
+Xi plus 1 and Xi plus 2. That's always the case that
+if it falls off to the right, it's going to live in
+Xi plus 1 and Xi plus 2. SPEAKER: Let me think. I mean, but it could-- OK. I guess-- so let's say
+what you actually know-- so you know the sketches. It could be from the sketch. Yeah, OK. So when you're falling off to
+the right, I agree with you, I think. But you still have to
+compute this Y using this most significant bit. Like, how do you know what Y is,
+which is the original question? So know that you fall
+off to the right, you would have to
+know what Y is. AUDIENCE: So I
+guess I'm wondering, why do we need to bother
+finding all of the [INAUDIBLE]-- SPEAKER: Oh, I see. AUDIENCE: --if we can
+just find it that way? SPEAKER: I see what you mean. Yeah, I think what you're
+saying sounds plausible. This might be the case, yeah. OK. Any other questions? So anyway, so that's
+how we use sketching to help us find where
+we should recurse to. But, of course,
+there's the issue I raised in the very
+beginning, which is, we don't have a C operation
+which makes sketches for us. So here, we're going
+to start getting into the power of
+multiplication. And why did I choose
+this W to the one-fifth? Right now, we're pretty--
+we're using way less space than we need to use. I mentioned that sketches
+fit in W to the two-fifths. OK. So problem-- how do
+we form sketches? OK. And the idea here is, we
+don't need to actually do sketching exactly as I said it. So one way to do
+sketching is just to mask out the important bits--
+the B sub, the B sub I's, OK? That we can do just by a bitwise
+AND with a certain string we create in preprocessing. The problem is that
+doesn't do any compression. The original-- after you do the
+AND, you still have W bits left. So perfect compression would get
+us down to this W to the fifth. But we don't have to get
+W to the fifth, either. We're allowed to be
+somewhat looser, OK? So we don't want
+W, but we can do-- we can get away with
+worse than W to the fifth. So we'll compress down
+to R to the fourth bits. So we won't get R bits, but
+we'll get R to the fourth. R to the fifth is W.
+We don't want W, OK? And the important bits
+will be represented with some known amount of
+0 spacing in between them. AUDIENCE: What's
+the problem now? What's wrong with masking? SPEAKER: So if you mask,
+it still takes W bits. And the number of items
+is W to the fifth. You're still taking W to
+the sixth-fifths space, bits of space. I want to do some
+amount of compression. AUDIENCE: Right. So this is not
+preprocessing, right? SPEAKER: Yep. AUDIENCE: So we can compress
+by shifting and adding-- well, what are we
+concerned about right now? Is it the time? SPEAKER: OK. So it's true that
+we can preprocess the Xi's to make them look
+nice in their sketches. But Q is coming
+online as a query. So whatever sketch we do
+has to be applicable to Q in constant time, as well. AUDIENCE: OK, OK. SPEAKER: Does that
+answer your question? Yeah. That's a good point, yeah. In preprocessing, we could make
+these perfect sketches that took exactly R bits on the Xi's. But then when a Q
+comes, it's not clear how to sketch that on the fly. Yeah. AUDIENCE: And I assume we
+must be able to compute MSD of Xi and XRQ. And we are not storing
+Xi's explicitly. SPEAKER: Oh, we will. AUDIENCE: We will? SPEAKER: Yeah, we'll store them
+and we'll store their sketches. AUDIENCE: I understand. SPEAKER: Yeah. But we won't store the
+fully compressed sketches. We'll store some sketches that
+have some amount of spacing in between. But they'll still take, at
+most, R to the fourth bits each. Yeah. AUDIENCE: So if we're
+storing the full size, why are we storing
+the sketches, also? What is that? SPEAKER: I mean, the way
+that we'll define sketches, you can compute the sketch
+function in constant time. So you don't need to
+store the sketches. I mean, you could store them
+on-- you could compute them on the fly when you need them. But it still-- would
+still be linear space, even if you stored them. Like for each Xi,
+storing it and its sketch would just be an extra. AUDIENCE: Can you also do the
+computation with the stored Xi that you have without ever-- I mean-- SPEAKER: Oh, oh, OK. Right. So we're still not to
+the point yet where I've told you exactly how we're
+representing a fusion tree node. But the point is, whatever we're
+storing in that fusion tree node, when a query element
+comes into that node, it needs to decide in constant
+time where it's going to go. So there's going to be certain
+carefully crafted words, just a constant number of them,
+that we're going to-- in precomputation, we're
+going to place in that node so that we can do that
+decision in constant time. So I haven't told you what
+exactly we're going to store in that node, but it's going to
+involve the sketches of those Xi's. And we're going
+to get there soon. So this word level
+of parallelism is to do parallel comparison. So at some point, Q is going to
+come in and, in constant time, we're going to decide
+exactly how many-- which index it lands between. So we're going to have to
+compare against everybody at the same time. Question? AUDIENCE: Question is,
+how do we deal with ties? So say what you have looks like
+E would give you 0 1, right? SPEAKER: E? E would give you-- so E itself would
+be-- where's Y? So Y is 0. It'd be 0, 0, 1, 1, 1. It'd be the rightmost
+thing in this tree. AUDIENCE: Say your
+query was 1, 0, 0, 9. Then e would become
+1, 1, [INAUDIBLE]. SPEAKER: Say e were 1? AUDIENCE: Say your
+query was 1, 0, 0, 9. SPEAKER: OK. AUDIENCE: e would
+become 1, 1, 0, 0. SPEAKER: Then 1-- it
+would be 1, 0, 1-- it would be 1, 0, 0, 0, 0, 0. Wait, wait, hold on. So you're saying--
+let me just make sure I'm-- so you're saying,
+suppose the query instead were? AUDIENCE: 1, 0, 0, 0. SPEAKER: So suppose
+your query were this? OK. So you fell off-- so what's the
+first branch node you fell off? AUDIENCE: You fell off at 1, 0. So why is 1-- SPEAKER: 1 here. Well, this is a
+branch node, though. AUDIENCE: Yeah,
+you fell off the-- SPEAKER: But this is also-- oh, this is-- yeah, correct. This is not a branch bit. OK, good. So this would be your Y. AUDIENCE: And then-- so
+e would be Y, 0, 1, 1. AUDIENCE: But your
+sketch is 1 minus 0. SPEAKER: So you fell
+off to the left? Which means that
+e should be the-- AUDIENCE: For 1, 0-- SPEAKER: Yeah, it
+should be that. AUDIENCE: 1, 1, 0, 0? Yeah, Y, 1, 0, 0. SPEAKER: So it
+should be 1, 1, 0, 0. So this would be e. AUDIENCE: Yes. SPEAKER: Right? OK. But this is not a
+problem, right, or-- AUDIENCE: We can compare against
+the Xi's to figure it out. [INAUDIBLE] We can compare against Xi and
+Xi plus 1 to look for ties. SPEAKER: Yeah, I think-- yeah,
+I think this is not a problem. And are there any
+other questions, or should I keep going? Yeah. AUDIENCE: Well, when you say-- see where the sketch
+fits on the sketch. So it's like the sketch of e is
+the same as 1 of the exercise. SPEAKER: Yeah. AUDIENCE: Which way do you go? SPEAKER: Right. So at that point, you could do
+what [INAUDIBLE] said and just actually compare those. There're only now
+two possibilities. So you just can
+compare them and see. Yeah. So now, we're going
+to use multiplication. So here's the idea. So suppose we multiply
+X times sum M, OK? Where X is equal to the
+sum I from 0 to R minus 1. So let's say we've already
+now masked out to only keep the important bits. It's the sum of some
+Xb times 2 to the BI. And Y is equal-- and M is equal
+to sum over I from 0, too. We're going to have only
+one R positions in this M, 2 to the MI. OK. So the question is,
+how do we choose-- we're going to choose the MI
+to get something nice, OK? And the BI's are increasing,
+the MI's, don't think of them as increasing. The MI's are arbitrary. So lemma, we can choose the
+MI such that, A, for all IJ-- well, the set-- well, let
+me write it like this, OK. All the BI, plus
+MJ are distinct. So there are R
+squared of these sums, B, B0 plus M0 is less than
+B1 plus M1 is less than dot, dot, dot, is less than BR
+minus 1, plus MR minus 1. And C, if we look at
+the range, how many bits are spanned from the biggest
+index to the smallest index? That's going to be
+R to the fourth. So BR minus 1, plus MR-- R minus 1, minus B0, plus M0. That should be O
+of R to the fourth. OK. And before I prove
+the lemma, I just want to say why this is
+going to be relevant for us. So the point is that-- so let me write, the point is
+that X times M is equal to, if you just expand
+out that product, it's the sum from I going
+from 0 to R minus 1, the sum J going from 0
+to R minus 1, of XB 2 to the BI, plus MJ. Now, as long as the BI
+plus MJ are all distinct, none of these
+powers are the same, so we don't have to
+worry about carries. And now, once this
+holds, basically, what we're going to do is, we're
+going to only use these R bits. Our sketch is basically
+going to be projecting onto these locations-- B0 plus M0, B1
+plus M1, et cetera. And we're going to mask
+out everything else. And notice that the
+range between the biggest location and the
+smallest location is only R to the fourth. So after we're done masking,
+we can shift everything down so that now this fits into
+a sequence of contiguous bits starting from the right. That's R to the fourth log, OK? So we have to do this. So yeah, question? AUDIENCE: Yeah. So you said the MI
+may not be increasing. So the ranges, is that BR
+minus 1 plus MR minus 1? SPEAKER: Yeah, but
+there's property B, which says that the sums
+are at least increasing. AUDIENCE: Yeah. SPEAKER: Yeah. AUDIENCE: And it shouldn't say
+BI plus MI all be less than 2R because there are R bits? SPEAKER: BI plus
+MI, less than 2R. BI is not less than R.
+I mean, sorry, yeah. BI is not less than
+R. BI is, at most, W. And MI will be, at most, W2. AUDIENCE: So they
+are not R bits? [INAUDIBLE] non-zero bits? SPEAKER: Yeah, yeah,
+it's not the case that this is less
+than R. It's just that if you look at the range
+of bits that are important, they fit into a contiguous block
+of, at most, size, at most, R to the fourth. But once that's true,
+you can shift them down to be the first R
+to the fourth bits. AUDIENCE: So initially, X and
+n, are they R bit numbers? SPEAKER: They're W bits. AUDIENCE: W bits? SPEAKER: Yeah. AUDIENCE: But among them,
+only R bits are not 0. SPEAKER: So you should-- that's right. So you should think of X
+as being one of the Xi's. But we've already
+masked out the BI's. We're only keeping
+the important bits. And-- AUDIENCE: [INAUDIBLE] SPEAKER: Yeah. And then now, we're trying
+to compress those bits into fewer locations, or into
+a smaller width of locations. OK. Yeah. AUDIENCE: So property B looks
+like it only considers cases where I equals J, is that-- SPEAKER: That's
+right, that's right. AUDIENCE: Why are we
+ignoring the other terms? SPEAKER: Because-- well, so the
+sketch-- the ideal sketch of X has R bits. And what I'm saying
+is, these are going to be where we'll
+read those R bits off from. So if we want the-- so if you look at the-- you
+want X BI for I between 0 and R minus 1. If you want X BI, just look
+at the power of 2, which corresponds to BI plus MI. That's what I'm
+saying over there. AUDIENCE: So why even-- so we're really just computing
+the sum, the diagonal or-- SPEAKER: So I mean,
+we're actually computing X times
+M because that's the thing we can do in
+constant time and Word-RAM. But I'm picking M in a
+special way, such that-- so X has its R important
+bit spread out. They could take-- they could
+span the entire W bits. There could be some
+huge gaps between them. But after I do X
+times M and then mask out only these locations,
+these R locations, what I'm telling you is that
+those are important bits, are now compressed
+into a width of length, at most, R to the fourth,
+which is W to the four-fifths. So they started off
+spread in a width of W. Now, they're down to
+W to the four-fifths. AUDIENCE: So how are you going
+to get the masked mask out? SPEAKER: In
+preprocessing, I'm going to find-- we're going to
+see how to find this M in the proof of the lemma. So in preprocessing, I'm
+going to find this M. And then I can create the
+mask in preprocessing. The mask is a
+single word, right? It's a single word which just
+has 1's at these R locations. And to mask those out, I
+just do a bitwise AND, right? So I'm going to do X
+times M, and then I'm going to do a bitwise AND with
+the mask containing these R locations. And I'm going to shift it down. That's going to be
+my actual sketch. Yeah. AUDIENCE: Does this need to
+be the permutation of the BIs? SPEAKER: The MI's,
+no, they're not-- they can be anything. Yeah. Yeah. Any other questions? OK. So, yeah. So what's the point here? The point is we first mask the
+BI's, mask the important bits from Xi, then we do-- to get X. Then we do X times
+M, and then we mask out the bits, BI plus MI. And then now, we shift down so
+that B0 plus M0 maps to bit 0, to the least significant bit. So we're going to shift down
+by B0 plus M0 at the end. And then, this thing
+tells us that now it fits in R to the fourth bits. OK So let's prove the lemma. So we're going to
+do Part A first. So Part A. So we're going
+to prove by induction. Suppose we've already picked
+M1 prime, M2 prime, MT-prime, or T-minus 1 prime, such that
+all the sums, BI plus MJ prime. So these are not going to be the
+final M's, but these are the MJ primes, are distinct Mod R
+cubed, OK, where T is less than R. Now, I'd like to pick-- now, we want to pick MT-prime. So the thing that I want
+to show by induction is that we can choose M1
+prime up to MR prime minus 1, such that all the sums are
+distinct mod R cubed, OK? So now, we want
+to pick MT-prime. And in order to make sure that
+all these sums are distinct, we need to make sure
+that MT-prime plus BI is different from BJ plus MK prime. I'm already using K,
+plus MZ prime, OK? So MT-prime must avoid MI
+prime minus BJ, plus BZ for all the other different
+values I, J and Z. But how many of these
+values are there? How many of the B's are there? How many BI's are there? So this is R squared, and then
+there are T of these so far. So T squared R values. But we can work
+over R cubed values. This is less than R cubed
+because we're not done yet, which means that
+there's something we can pick which avoids all of these. So we can choose these--
+we can choose all these MI primes to make the sums
+distinct to Mod R cubed. And then now, how do I
+actually choose the MI's? We'll set-- and
+I'll draw a picture. We'll set MI to equal MI prime,
+OK, plus I times R cubed, plus W minus BI rounded down to
+the nearest multiple of R cubed. OK, so the picture
+to have in mind, this is the final picture
+that we'd like to have is that we have these blocks
+of length R cubed each. And all of these MI primes
+are values between 0 and R cubed minus 1, OK? And so we have some BI-- the thing that we want
+to have is B0 plus M0 is somewhere in here. B1 plus M1 is somewhere in here. B2 plus M2 is somewhere
+in here, et cetera. That's why we add on this I
+times R cubed to shift us over by R cubed each time so that
+things are in different blocks. So it's true that BI plus MI-- BI plus MJ prime are distinct
+to Mod R cubed because that's how we formed the MJ primes. But in order to make sure
+that with the M's, they're still distinct. That's why we did this rounding
+down to a multiple of R cubed, because it's MI prime, plus
+that's a multiple of R cubed, and that's a
+multiple of R cubed. So everything Mod R cubed
+has stayed the same. And that means that BI plus
+MJ Mod R cubed is different. So in particular, BI
+plus MJ are different. So that's why we satisfy
+property A. They're distinct even Mod R cubed. So they are distinct. And we want this property that
+B0 plus M0's are increasing. Well-- AUDIENCE: They're
+all [INAUDIBLE]. SPEAKER: Yeah. I mean, they're all-- I guess the picture I said
+is exactly what this does. Maybe you can-- I don't want to
+spend time on TDM, but this picture
+will exactly put one guy in every single block. AUDIENCE: [INAUDIBLE] SPEAKER: Kind of subtracting BI
+would just make things negative. So we put the W to prevent that. AUDIENCE: [INAUDIBLE] SPEAKER: Yeah,
+this might take up a constant-- it still will take
+a constant number of words, but that's OK for us. Right. And there might
+also be some junk here that we don't care
+about, and also some junk here that we don't care about. But at the end, we're going
+to do-- we're going to mask and shift everything to the
+right, anyway, so we don't care. OK. OK. So that's how we're actually
+going to do sketching. So I define how to do a sketch. And we can actually do the
+sketch in constant time because to do the
+sketch, it's what? It's a mask, a multiplication,
+another mask, and a bit shift. So a sketch is like four
+operations, each taking a constant number of words. OK, good. And in preprocessing-- so
+now going back to a question that I guess you
+asked me a while ago, what are we actually going to
+store at a fusion tree node? Now that we have
+sketches, suppose node fusion tree node has x0
+less than dot, less than XK minus 1. One thing we're going to
+store is the following word, which I'm going to say
+the sketch of that node is equal to 1, the bit 1,
+followed by the sketch of X0, 1 followed by the
+sketch of X1, and then 1 followed by the sketch
+of Xi minus 1, XK minus 1. And now, we want to know a
+query Q comes, where does Q fit? Which subtree should
+we recurse on? So I'm going to define the
+sketch of Q-- the sketch to the K of Q as being 0
+sketch of Q. Right, OK. 0, a sketch of Q, 0 sketch of
+Q. And what am I going to do? I'm going to subtract. So tell me what happens
+within a-- so definitely, there will be no carries
+going from block to block, because just this part
+is bigger than this part, because that's a 1 and a MS,
+the most significant bit, and that's a 0. What am I going to get? I'm going to get either a 1
+or a 0, followed by some stuff that I don't really care about. A 1 or a 0, followed by more
+stuff I don't care about. And then, I'm going to
+mask out all of these. And I'll get a 1 or a 0,
+followed by 0's, a 1 or a 0 followed by zeros. And then a 1 or a 0
+followed by zeros. By the way, so I'm forming
+this in preprocessing. Q comes on the fly. How do I form the Kth
+power sketch of Q? AUDIENCE: Multiply [INAUDIBLE]. SPEAKER: Yeah, right? You multiply by a
+number that has 1 here, followed by zeros, 1
+here followed by zeros, 1 here followed by zeros. So that's a single
+multiplication. OK. And now, if I want to know
+where I land, what do I do? I take the most significant bit. OK. And that's correct. But I'm going to do it
+a different way, OK? And the reason
+I'm going to do it a different way is because
+the way I'm going to do it is also going to play a
+role in how we actually do most significant bit later. So there will be some
+circularity if I say, do most significant bit here. And then when I say, I do most
+significant bit, I'll say, do it like how we did it here. And the key insight
+is the number of bits here that we care about. There are K of them. So if we can-- and
+it's monotone, right? It's going to be-- so let's say it's
+going to be, I guess-- these are the smallest numbers. These are going to be-- what should I say? When is this a 1 and
+when is this a 0? It's a 0 if we had
+to carry this 1. We carry this 1 if this sketch
+is less than that sketch. So this is a 0. This bit is a 0. If the sketch of Q was
+bigger than the sketch of X0. So it's going to start
+off as 0 for a while, and then it's going to be a 1. And that first 1 is going
+to be the first thing we're smaller than. That's why finding the
+most significant bit is the right thing to do. So the point is that
+this is monotone. So finding the position--
+and there are K of them. So finding the position of
+the first 1 is the same thing as counting the number of 1's. If we know how
+many 1's there are, that tells us where
+the first 1 is. And how are we going to
+count the number of 1's? We're going to multiply. So 0-- so the appearance
+of 1's is monotone. And that implies can just
+count the number of 1's to find the index of the first 1. So remember, we want the most
+significant bit of that thing. So what we're going to do is,
+we are going to multiply by-- let me make sure I don't
+tell you the wrong thing. Yeah, I guess, it's
+just this thing. 1, 0, 0, 1, 0, 0, 1,
+0, 0, and then 1, 0. OK. We're going to
+multiply by this thing. And what that's going to do
+is, it's going to take this-- so this 1 here, right,
+will appear here. If you multiply that, it'll
+appear here, here, here, and here, if it's a 1. And that will get added. So then if this is a 1,
+that 1 will appear here, here, here, et cetera. And the point is, when
+you do the multiplication, all the things that are 1
+will contribute by adding starting at this position. So all the 1's contribute
+by adding to that position. So then what you can do is--
+and they don't interfere with each other
+because this count is a number between 0 and K,
+so it's going to consume, at most, log K bits. Whereas, what's the
+width of this block? The width of this block is K
+to the fourth, or something. So there's no chance
+that these things are going to clobber each other. So what you do is, you
+look at a log K width interval of bits around here. You mask everything else
+out, and you shift this down to the beginning. And that number is
+exactly the number of 1's. Good. I think that's the word
+level parallelism, what I meant by parallel comparison. Basically, we compared
+everything at the same time in a single-- in a constant number of
+machine word operations. OK, so now, the only
+thing left is computation of the most significant bit. And the way we're going to
+compute the most significant bit is, again, using multiplication,
+sketching, and word level parallelism, as
+well as this idea. So now that you are
+masters of all these ideas, I'll just tell
+you how this goes. So the basic idea is split. So let's say we want MSB of X. We're going to split X into root
+W chunks, of root W bits each. It's not going to be
+recursive venom to us. This is just a one time thing. So for example, if I write X
+being 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1. So here, W is 16 and W is 4. This is the first chunk-- this chunk, this
+chunk, this chunk. And what we're going to do
+is first using all these-- using word level parallelism
+and multiplication, et cetera, we're going to
+figure out exactly-- we're going to form a root
+W length bitstring that's consecutive, which
+will tell us exactly which clusters are
+nonzero, which clusters have anything in them at all. And then once we
+find that, we're going to find the first
+nonzero within a cluster. And we're going
+to, at some point, exploit the fact that we can
+deal with root W size numbers. We can do crazy things
+to them really fast, OK? OK. So good. So the first thing is,
+I'm going to create F, which is 1, 0, 0, 0, 1, 0,
+0, 0, 1, 0, 0, 0, 1, 0, 0, 0. Why am I doing that? I'm going to do X
+and F bitwise AND. Is that bitwise AND? I don't know. OK. Yeah, that looks
+too much like X OR. So that is going
+to look like this. And let me-- right
+after I write it, I'll tell you why
+I'm doing this. So what I'd like is some
+summary that tells me which clusters are non-zero. I'm going to treat the
+first bit as a special case. OK, so now, I know for sure
+that this cluster has a nonzero, and this cluster
+nonzero-- has a nonzero. In particular, because they
+have it in their first bit. So I'm going to deal with
+the first bit of a cluster, and the remaining bits
+in a separate way. And the reason I want
+to do this is because, remember, when I did
+the parallel comparison? I exploited carries
+and subtraction. And in order to do that
+carry and subtraction trick, I needed to have room
+to have an extra 1 bit at the beginning
+of every cluster. So now, I'm going to-- now, that I have this
+information handy, which I can look
+back at later, I can clear it and deal
+with everything else. So now, I'm going to do X,
+X OR, X and F, which just clears all the leading 1 bits. So we'll have 0, 1,
+0, 1 just like this. We'll have 0, 0, 0, 0. We'll have 0, 0, 0, 0, because
+we clear the leading ones, and then we have 0, 1, 0, 1. So we clear the leading 1's. And now what I do
+is, I will take-- I will take 8-- I will take F minus that thing. So what does that look like? So F looks like 1, 0, 0, 0, 1,
+0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0. And X bitwise X OR X
+and F looked like-- well, it doesn't have any
+1's in the leading positions. It looks like 0, 1, 0, 1, 0, 0,
+0, 0, 0, 0, 0, 0, 0, 1, 0, 1. And I do a subtraction. Which blocks-- so
+within each block, definitely the F block is
+bigger because it has a 1 in the most significant
+bit, because we cleared those in the X thing. So the cases where
+this 1 gets borrowed are exactly the cases
+where the block is nonzero. If the block is nonzero,
+it gets borrowed. So here, it will get borrowed. And we'll have 0 times some
+junk we don't care about. Here, it doesn't get
+borrowed because it's empty. So we have 1 and some junk, 1
+and some junk, 0 and some junk. And now, we mask and
+get rid of the junk. And then we have 0, 0, 0, 0, 1,
+0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0. OK. We masked out all the junk. And then we OR back in that. Why do we OR that back in? Because this tells us
+which clusters are nonzero. But I lost all information about
+the leading bit in the cluster. Now, I want to get back that
+information about the leading bit. So I OR back in
+X and F. And then I get 0, 0, 0, 0, 1, 0, 0,
+0, 1, 0, 0, 0, 1, 0, 0, 0. Great. So now, I know
+exactly which clusters are nonempty, the
+clusters that have a 1 in the leading position and 0. So this cluster, this
+cluster, and this cluster have stuff in them. Yeah. AUDIENCE: The zeros and
+1's in the first place? SPEAKER: Yeah, that's right. I should do a-- that's right. I should do a mask and
+a NOT, as well, right? I should NOT and then mask. Yes. Yes. I could also X OR with
+F. That's a good point. So, yeah. And then I X OR with F,
+and then I-- because 1, 0, 0, 0, 0, 1, 0, 0, 0,
+0, 0, 0, 0, 1, 0, 0, 0. Oh, yeah. So now, this should actually
+have been a 1, I think. And that should have been a 0. Well, something like that. But yeah, you should have
+negated and then masked out. That's a good point. But the bottom line is, we
+have these root W sized chunks. Each one has a 1 in the
+leading position, if and only if that cluster was not empty. So now, what I want to do? Now, what I'm going to do
+is, I'm going to sketch, but I'm not going to do a
+sketch into R to the fourth, I'm going to do
+a perfect sketch. And it's going to be,
+again, via multiplication. Lemma-- so the point
+is, originally, the BI's were just arbitrary. Who knows where the
+important bits were, right? They depended on
+the branch bits. Now, we know what the BI's are. They're root W minus 1, 2 root
+W minus 1, 3 root W minus 1. So when the BI are I root
+W, plus root W minus 1, there is an M, such
+that multiplying by M makes all the important bits
+consecutive with no gaps. OK. Proof, I think that will end
+up being on your homework. So now, what do we have? We're almost done. Now, what do we have? So I'm telling you that I
+can form a word that has this 1, 0, 1, 1 consecutive. 1, 0, 1, 1, which
+is just the leading bits in each of those
+clusters in constant time. We can do that by multiplying
+by M and then doing some shift and masking. And then now, what do I do? Now, I need to know what's
+the most significant bit in this word that tells
+me the first cluster that has a nonzero, right? I want to know the first
+cluster that has a nonzero. So do parallel
+comparison between this 1, 0, 1, 1, and the set of words
+0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0. Each 1 is root U wide. There are root-- I
+mean, root W wide. There're root W of them. They fit in a
+word, even when you put those extra 1's in between. Remember, to do
+parallel comparison, you had to put these 1's
+and zeros as stop measures? It still fits in two words, OK? And you do a parallel
+comparison with this vector repeated a bunch of times. You'll find it. You'll find it out. Now, you know the index
+of the first cluster. So the first cluster
+happened to be this 1. Now, what do you do? Again, that fits in
+root W bits, right? You can just shift that down. And again, you do a
+parallel comparison with these root W things. OK. And then, I know my
+most significant bit. So that's all the
+details, except I didn't prove the lemma which, I
+guess, you'll prove yourselves. So that's-- I think, that's
+the end of fusion trees, yeah. Yeah. AUDIENCE: [INAUDIBLE] SPEAKER: I'm not sure. [SIDE CONVERSATION] SPEAKER: How do you--
+how do you form this? How do you form this? You multiply by a word which has
+1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0. AUDIENCE: [INAUDIBLE]. SPEAKER: I'm sorry? AUDIENCE: [INAUDIBLE] SPEAKER: Right. But we know how to
+do that because-- right? So we said that we can find E by
+doing a most significant-- yeah, that's right. Do this with E.

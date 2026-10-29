@@ -1,0 +1,736 @@
+Okay, so let's get started. Uh you're scribing today, right? Is that right? Okay, great.
+Um so yeah, at the end of last lecture there were some there were there just maybe maybe like uh a minute or two minutes more I wanted to say about main cost max flow, but ran out of time. So I just put that at the end of the notes. Uh at the end of the lecture notes you can go look at that. Um today I wanna well we only have three lectures left, I guess, including today. Um so I wanna show you some more topics. Today I'm gonna talk to you about um another way of dealing with
+kind of NP hard problem. So earlier in the course we saw that one way was uh approximation algorithms, right? If you can't solve the problem in poly time, then maybe probably get a two approximation or log in approximation or something in poly time. Okay, so another way of dealing with it is actually solving the problem in exponential time. Okay.
+Okay. But then you want to make that exponential as small as possible. So uh so um I'll put fast in quotes. Today we'll well it's today.
+We'll do uh fast in quotes exponential time algorithms.
+Okay. And we'll look at three ways of doing this, so exponential, divide, and conquer.
+Um so we're gonna look at, for example, the traveling salesman problem.
+We're gonna do um pruned brute force.
+And also randomization. We'll see how to apply these things to
+Like three set.
+And we'll also see
+Inclusion exclusion
+Also um kind of a similar thing, they're very I think they're equivalent to each other, is a Mobius, fast mobius transform.
+And inversion. And for this we'll look at key coloring.
+Okay, so these are a few different ways to speed up exponential time algorithms. Or in uh in in some cases we're not gonna actually speed things up, we're going to um you know m lower the space complexity.
+So there are some ways to get, say, exponential time two to the end time, but then the natural implementation will also have two to the end space. But we'll see that sometimes we can get the two to the end time while having only poly end space, things like that.
+Yeah.
+So good. So let's look at let's just go through these uh these uh techniques. Uh is there any question about uh anything?
+Well I guess I didn't say much yet, so
+Okay, so uh so the first thing, uh exponential divide and conquer
+Okay, so the example I want to give you
+Is TSP?
+Okay, so the input
+Is
+A set P of points
+And a distance function
+D
+Which maps pairs of points to
+uh non-negative numbers. And let's assume it's a proper distance function. So this is a metric, so it satisfies triangle inequality and it's a metric. Distances are zero only if the two points are the same.
+And we're also given
+uh two identified points.
+S T which are in P
+Yeah.
+And the goal
+Is to visit every vertex exactly once.
+Start at S, end at T, visit every other vertex exactly once.
+and the total length of your tour should be as small as possible.
+Have people here seen traveling salesmen?
+Yeah.
+Find ST path.
+visiting each vertex
+Once and minimize
+Total length of path.
+So
+For the rest of uh the lecture
+If I say O star of F of N
+That means
+O of poly N times of event. Okay, so I'm not really gonna care too much about poly n factors.
+So um what do we know about TSP?
+Okay, so what's the most straightforward algorithm?
+Let's look at both the time and space.
+I mean what do you don't think, I mean just uh try everything.
+Yeah, try every path. So try basically all the orderings of the intermediate vertices.
+And they're n minus two factorial of them. And each one you can sum up the length of the path. It takes about n time. So it's O star of n factorial.
+And the space
+Is Paul Yen?
+Okay. So this is uh brute force. Okay, two
+Um
+So get time which is much less than infactorial, but you're allowed to use exponential space.
+Yeah. Yeah, so dynamic programming. So yeah, so your time will be O star of two to the N.
+will also be O star of two to the n. And this is dynamic programming. And the point is you can define a function
+Um let's say uh
+So you can say let F of um X S
+be the length
+Of the uh shortest
+X T path
+Visiting
+Every vertex
+Every point, I guess. Every point. In S once. Where here S is a subset of the points.
+Right.
+Is F of S comma all the points? Well you you don't need S or T.
+Right.
+So the number of states of your dynamic program are well, um, how many current so this is really like your your uh
+Yeah. So you're currently at Vertex S, you're trying to get to T and
+And you still need to visit everything in this set.
+That's what this means. Okay, so there are so this is an arbitrary subset that like throughout all the execution of this algorithm, and you can write down an easy recurrence for this thing, right?
+where basically you try all possibilities for the next vertex to go to.
+Okay. So this over the course of running the algorithm could be any subset.
+of the of the set. So there are two to the n minus two possibilities, roughly two to the n possibilities here, about n possibilities here. So the total number of states of this dynamic program is about n times two to the n. So your space is about n times two to the n. Okay.
+And your time, well for each state, you need to loop over the next vertex to go to, which has about n possibilities. So your time will be like n squared times two to the n.
+Um so great. So um
+We can get polyspace with n factorial time, which is super exponential. It's like n to the n, which is like two to the n log n.
+for exponential time with exponential space, and actually it's an open problem.
+To get
+Um O star
+Two to the end time.
+Poly and space.
+So I don't know how to do that.
+So
+What are we gonna do instead?
+We're gonna get something like O of4 plus epsilon to the end time.
+and um poly and space.
+You know, for any
+No. So th there's no trade-off. So actu I just did this to uh to save myself writing. The actual time complexity is something like four to the n times roughly end of the log n.
+But that's that's at most four point oh one to the N, for example.
+And yeah, so I just uh shortcutted.
+Think of this as four point oh one to the end or four point oh oh one to the end or something.
+Okay. And this is going to be via Exponential Divine Conquer.
+And um it's actually uh a fairly simple recurrence, so let me write it down.
+So
+So let opt US T
+the length
+Of uh
+The cheapest ST tour
+uh touching
+Each point in U
+What's Okay. And what's divide and conquer? You try and split the problem in two or
+multiple roughly equal pieces or something, right? So what are we going to do? Well the first half of the tour is going to go through some set and the second half of the tour is going to go through some
+other set. We don't know what those sets are, so we try all possibilities.
+That's the whole algorithm. Okay, so
+So opt of US T is the min uh over S
+Being a subset of U, let's say the size of S is the size of U over2 plus one.
+Um let's also say uh
+S T union S is everything uh now U looks like U. So union T union S is everything is U. And T intersect S is uh some point M.
+Okay. So we're trying all subsets of roughly half the size.
+And then we're also going to say like where does when we finish going through that half subset, where do we end up? And then that's where we pick up that's where we pick up and continue in the second half.
+So we're gonna go through half the s half the points of uh
+of U call that S. And we're gonna when we finish going through S, we're gonna end up at some point M.
+And then now that we're um at m, we're gonna have we have to finish going through T. So T is all the remaining points in U.
+Okay. And then now what's the you know, so what is it? So what's the best way to do this? Well the best way is to go
+through S from S to M
+Yeah.
+Plus
+um opt of
+Uh now we have to go from M to to T.
+So
+Yeah.
+Okay.
+And now we just uh compute
+Of uh
+P
+That's a P S T just by re just recursively, okay? Just you don't have to
+Do anything smart, just doing a big recursion.
+So the space complexity is pretty much just uh is
+is definitely poly N, right? 'Cause at every point you just really have to remember the current set that you're at, plus all the levels in the recursive stack above you. Right? The depth of this recursion is
+no bigger than log of the number of points.
+And to remember the current set takes again at most end space.
+Okay, so
+This is poly and space.
+How about the time?
+It satisfies a recurrence. T of n is the running time in N points. Is oh and then the recursive like what when do you end this recursion? The base case is when um just it's trivial where basically s is only the point M or something.
+Like that.
+Or only the points S and M.
+So T of N
+Um
+Well, we have to pick M. So there are n minus two choices to pick M.
+And then we have to pick uh we have to pick capital S uh as well. So
+That's something like
+uh times n minus two choose something like the seal of n minus two over two
+Um
+And then we get to decide for each partition into S and T, are we gonna put um
+Little less on the capital S side or on the capital T side, right?
+So there's some two. This I mean this doesn't really matter that much, and then times t of um what's left. So whatever this uh roughly n over two.
+Okay. So if you solve this recurrence
+So I'll leave it to you as an exercise.
+This recurrence solves to something like uh T of N I think is uh f oh of four to the N times N to some constant log N or
+something.
+Okay. So um that's that's it.
+Okay. So uh that's a simple idea.
+I want to get into some of the more
+some of the other ideas we have here. Any questions about about this uh about the algorithm?
+Work
+Okay, great. So yeah. Um
+But yeah, there's this kind of tantalizing open problem if you feel like it.
+Uh good. So how about next? So let's do
+I want to show you this pruned brute force.
+So let's look at uh an example problem.
+Which is three set.
+So the input for three sat, what does that look like?
+It's a formula.
+Uh
+What's the right? So f let's call it phi fi, which is uh clause one and clause two and da da da clause M.
+Uh each clause
+Is an or
+of three literals
+So let's say X I1 or XI2 or XI3 , and some of these can be negated.
+And let's say that there are n total variables.
+Yeah.
+And the goal
+Uh decide whether
+There exists an assignment
+X equals A
+Which makes uh this
+Evaluates a true.
+Yeah.
+So people people have seen reset?
+Okay.
+So good. So algorithms.
+Okay, so what's what's the most straightforward algorithm?
+Okay. So time
+is O star two to the n, space is poly n.
+This is brute force.
+Okay, so let's look at um
+Let's look at how to how to do just a we're still gonna do brute force at first, um, but we're going to do a pruned version of brute force. Okay, so
+So um
+Just notation.
+So given
+You know, given uh so let's say
+Fe well if I say like FX or something like that, this is the new formula.
+Obtained
+from phi by setting
+Let's say X X1 or something by setting X1 to be true.
+And if I say if I say like, you know, fi x one not x2 , this is the new formula setting.
+X1 to be one and X2 to be zero.
+Okay.
+So another way of going about brute force
+Is
+Keep doing the following.
+Pick uh
+But uh
+C one be some X or you know Y or Z.
+That's the the first clause.
+So we know that and one of them might be negated.
+We know that one of these things has to make the clause satisfied. So we'll just try all three.
+If
+Um if satisfy if if the c if the formula fee given X is satisfiable
+Return true.
+Okay, but maybe it's not. So then we'll try setting y y to be zero. Else if it's possible to satisfy phi y bar return true.
+Else if
+Satisfiable phz return true. Else return false.
+So let me this is this algorithm here is my SAT algorithm.
+Okay, so it's a recursive algorithm. And there's some base case I didn't bother writing, right? So once the formula is is empty, you just say
+True.
+Mm.
+So what's the running time?
+What's the recurrence for the running time? N is the number of variables.
+Yeah, three this is at most, you know, three times t then minus one. Um plus some you know plus some polyan or something.
+Which is when you solve it O star of three to the N.
+Yeah.
+Which is worse than that other one where you just try everything.
+But what's something what's so now we're gonna get into pruned root force. So what's one thing you can do to like optimize this code?
+Yeah.
+When you try uh to set X one. Yeah.
+has X in it. Yeah. And then this one is satisfied.
+Sure. So
+saying when I set X to one before this recursive call, I can go through the formula and um
+Simplify everything that is already now satisfied because X is one. Yeah, you can do that. And also all the clauses which have not X in them, you can remove the not X and make it have only two variables, two literals in it instead of three.
+can do that. Um yeah what's something else you can do?
+I think you can actually assume that X is set to false. Yeah, you can assume it right you can assume X is set to false because here this if if we ever get to this else, it's because this returned false. Which means that there is no satisfying assignment where X is true.
+So from now on we can just assume that X is actually false.
+Right.
+Um like the number of projects instead of here. Oh here? Yeah, but M is at most N cubed or something.
+Yeah. Yeah that's uh yeah.
+Let me say so note.
+M is uh O of N cube, right? You keep
+The the number of possible clauses on n variables where each clause has only three variables in it, or three literals is at most. Eight times n choose three or something. Eight because you can choose if it's in negated or not. Something.
+Okay, and again when you get to here, you know that um it's not possible to have y being set to zero and still
+satisfy this thing. So you can also right you can also assume
+that you have Y set to true now.
+So this is this yellow version is now the pruned root force that I mentioned.
+And when you do the pruned one
+You get T of n is at most T of n minus one plus T of n minus two plus T of n minus three plus poly n.
+And when you solve this recurrence
+Um you can show that this thing is
+Something like one point eight something or other to the end.
+Okay.
+Okay. So it's the uh
+So this call this constant C. C is the largest root.
+Of the equation x cubed minus x squared minus x minus one is equal to zero.
+Okay, so you can
+You can kind of play these games uh in more and more complicated ways, okay? So you can say uh if I'm at you know, if I'm in this if I'm doing this recursive call, I can assume that there exists a clause which has only two literals and then etc, etcetera, and just kind of reason through the actual recursion tree and
+prune thing like kind of prune uh things away, okay? And you can make this constant smaller and smaller by doing that. Okay. And that's there are a lot of papers that did that for a while.
+Um let me show you other things you can do and then I'll show you
+I'll show you one algorithm that um is be a totally different approach which was the record for a brief moment, about ten year well, a little more than ten years ago. And I think even the current algorithm which holds the record is more along the lines of that approach than this kind of
+of uh pruned recursion tree approach.
+Okay.
+Okay, so let me one so let me show you uh one more
+Another
+Smarter brute force.
+Okay, so
+So without loss of generality, we know
+So okay, let's say okay, so um
+Suppose
+A star satisfies
+Phi. So phi is satisfiable. If it's not satisfiable, then the algorithm I'm gonna tell you is just going to not find a satisfaction.
+Okay, so without loss of generality we
+No
+And a d we know an assignment A
+Such that the distance, the Hamming distance, the number of variables where the assignments differ.
+Is at most n over two. Why why do we know that?
+Why do we know such an assignment?
+What do you say this or the the negation of what? So we don't know a star. I'm saying uh in our algorithm, we're gonna assume our algorithm knows something that's within N overtuitive.
+So you can like that.
+Yeah. Right. Right. So yeah. So yeah, as uh Jarek said, well you know, just take R A to be the all zero string, and if if that's not within N over two, then the all one string will be A within N over two.
+Okay, so take any assignment and its negation. So you know we might have to run what I say twice, one for the all zeros and one for the all ones.
+Okay. And now what do we do? So
+We're gonna try and we're gonna try and fix um so we know that we're only off on N over two uh
+Um
+variables but we don't know which ones they are but we're gonna try and fix those in every two variables.
+Okay. So
+While there exists um
+an unsatisfied
+Clause C
+Uh pick
+One of the variables
+and C and Flip.
+It's assignment.
+Okay.
+Loop.
+after N over two iterations.
+So if this loop goes on for more than average two iterations, we just quit.
+Okay, so I s so here's the point. If our if our assignment is not a satisfying assignment, and that means there's some clause which is not satisfied, so uh we must be wrong. Our assignment must differ from A star and at on at least one of the variables in that assignment.
+Right. So we don't know which one of the three it differs on. So what do we do?
+Yeah, no okay, so yeah, we're gonna get there. Pick one randomly, but just pick try all three. Try all three in a brute force way. Okay.
+Just recursively.
+And if none of those worked, okay, then we're out of block.
+Um right, so
+As we're doing this brute force tr in this triangle three, um, if there actually was such a satisfying assignment A star, then there will be uh a recursion path of depth at over two, where we actually made the right guess every time.
+as to which thing we differed on. And then we would actually halt with A star or some satisfying assignment. Right? So so what's the running time of this algorithm?
+Are people clear on what the algorithm is?
+You say if uh you say
+there's some reversion path.
+Oh Wayne and over two, but here we just stop after the first recurse.
+Oh so um
+I should really say try each of the try each of the variables in C recursively.
+flip its so for each of the variables in C, flip its assignment in A and then continue recursively uh back to the I guess I didn't say this uh
+Is it maybe it's unclear what the algorithm is?
+Yeah, so we we imagine a brute force recursion, which does the following. Okay, the brute force recursion does the following. It finds an unsatisfied clause, and then and then it looks at the three variables in that clause and it recursively tries to flip each one of those three.
+So it flips the first one and recursively runs the same thing.
+And then it flips the second one, recursive runs the same thing, etc. And if the recursion depth ever goes more than n over two, it just like quits this this uh it doesn't go any further into the recursion.
+Right. So the point is if we're actually at distance at most n over two from A star, there will be some path in this recursion tree that made the right guess.
+on every stage, and then we would actually find A star. The only time this would fail is if there were no satisfying assignment, or if we were more than an over to away, in which case the negation of of the
+initial satisfying assignment would have worked.
+Okay. So what's the running time of this algorithm?
+Sorry? Yeah, root three to the end, right? So the runtime
+Is O star of three to the n over two, which is uh root three to the n.
+And root three is something like what is root three?
+One point seven three two one
+Okay. So that's that's another algorithm that gets a better base in the exponent.
+So now I want to tell you an algorithm which
+Is bait is looks similar to this algorithm, but yeah, it's gonna do something random as you said. Um and it's gonna get uh
+a really good bound which you know was was uh
+is is the base of of kind of the best known ones now. So
+Um randomization
+So I'm going to show you Sherning's algorithm.
+And the journal version was in2002 .
+Yeah.
+It's gonna get time
+Which is O star of four thirds to the n and space poly n.
+The current record
+It was it was I hope I got this right. It was annoying tracking this down because uh every time every time I thought I found the new fastest algorithm, I realized that four months later or something someone shaved
+the point oh one so um
+So let's see what what what did I find?
+Oh, did I write it? I thought I wrote it. Yeah, here we go. So
+If you're randomized, so
+You can get time, which is something like uh
+O to the one point three zero seven zero four.
+This is Hurtley
+Psycomp
+Two thousand fourteen and then deterministic
+Algorithms.
+Uh uh
+You can get uh
+Of one point three three oh three to the N. Um this is
+Kind of tamaki
+So I think these some of these algorithms anyway they um
+I mean this is true this is true not just of these algorithms, but of algorithms that you know were that uh
+that were shown before, they kind of take
+different ideas like they combine this pruning approach with the randomization approach and they show that uh
+kinda the min of the two or has to do well or something of that flavor, okay, so
+I mean there's more there's more that goes on as well, but every time there's a new idea, um you can like combine it you often can combine it with the previous ideas to to make the the resulting algorithm even faster than either of them.
+Uh
+Okay, so let me write down the algorithm. So let's say algorithm before I before I tell you what Sherning's algorithm is, it uses the following subroutine and then once we have the subroutine um
+The algorithm has basically run the subroutine lots of times.
+So uh so let's call it algorithm s.
+So one, pick A
+Uniformly at random.
+And two
+Repeat at most T times.
+Oh
+Let C be the first clause.
+Not satisfied by A
+Flip a random
+Variable in C
+Yeah.
+Oh.
+And that's it.
+So that's the algorithm. Okay.
+What is T? Yeah, so T is gonna be a parameter that we're gonna set. So um
+Yeah, we'll set T.
+Okay. Questions about the algorithm?
+I mean actually we're gonna run T
+We're gonna end up setting we're gonna end up running it and in the actual logism with T being like N.
+Yeah.
+Have people seen the randomized I think well anyone who took the C C S one twenty four I guess last semester would have seen it.
+But I'm curious, how many people have seen this random walk kind of algorithm for two set instead of three set?
+So some subset. So you can do the same thing for you know KSAT, right? You can pick a random assignment and then as long as there exists an unsatisfied clause, flip a random variable in that clause.
+and keep going until it's satisfied or until too much time has elapsed and then you give up.
+Um okay.
+Actually no, what did I say? Did I say we're gonna run it with T being N? No, we're gonna run it with T being four thirds to the N. Um or you can think about it also as we're gonna run it with T being N, and then we're gonna do this algorithm multiple times.
+So with Tusat, um so there's a similar
+Algorithm for two SAT.
+As due to Papa Demetri and I think Fox ninety one, something like that.
+Oh
+Okay. So you can show that for two Sat, if you run this for about n squared steps, a hundred n squared steps or something, if there actually is a satisfying assignment, you'll find it with probability at least two thirds. So you can drive that error down by just running this algorithm, you know, log one over delta times. Uh and if none of those
+iterations ever find something, you'll just output fail. Okay, so that's an algorithm that if there actually is a satisfying assignment, you might not find it with probability delta.
+But you with high probability you'll find it.
+And how do you analyze such an algorithm as the one above?
+So we're gonna do it via Markov chains.
+Who's who here has seen Markov chains or knows what a Markov chain is?
+Okay. So most of you, but uh let's just recap. So
+Markov chain
+Is a directed graph.
+Okay. And every
+Vert every edge.
+E has a probability associated with it PE.
+And for all
+Vertices V, the sum over E leaving V
+of PE should be one. So it basically tells you, you know, you imagine that you're moving around verses in this graph. At every step, there's a distribution over which neighbor you're going to go to next. Okay, that's told to you by these edge probabilities.
+Okay.
+In our case
+The graph G has is a path.
+On N vertices
+Or n plus one. Okay, and vertex I
+Represents
+That the distance from A to A star is equal to I.
+So
+Here's our graph.
+So a vertex doesn't represent a specific. It doesn't represent a specific assignment. So there m there are many assignments which might map to the same vertex. It only looks at the distance between our current assignment A and the some fixed. There might be multiple uh satisfying assignments A star.
+We're just gonna fix one of them and we're gonna have a distance to that.
+So
+Initially we picked A at random. So initially the d the distance is some random number between zero and n over two.
+two and and n, it'll most likely be somewhere around n over two, right?
+So initially we're here.
+And then at every step, we pick a clause that's unsatisfied and we flip one of the variables in it at random.
+Okay. So either that variable we already agreed with A star, in which case by flipping it, we're making ourselves
+agree less, which means we go to the right, we increase the distance, or we actually did disagree on that variable that we flipped.
+In which case now we agree, so the distance went down. So so actually all of these all of these are there it's a directed graph, so there's like it's sort it's sort of like this.
+Right? So at every step we can go left or right. And then at n well actually at n there's no right, and at zero there's no left.
+So from zero, this probability is one. We're definitely going to if we if we're already there and we flip something, we're gonna just
+just increase the distance. And if we're at n, if we flip something, we're gonna decrease the distance.
+Um how about any of the intermediate people?
+So we know that let's say that we're currently we're currently here. We're at distance uh we're at distance two. So this is distance one.
+Hm. So
+We pick a clause that's not satisfied. How many you know, we we know then how many um we can say that we disagree with a star on at least one variable in the cur in that clause, right?
+Right.
+So there are three variables, we disagree with at least one. So our probability of going left is at least a third.
+And our probability of going right or
+going right here is at most two thirds.
+Does that make sense?
+This is true for all the intermediate vertices.
+Okay.
+Now our our algorithm might halt.
+with a satisfying assignment without actually getting to zero, because it might happen to find another satisfying assignment.
+But that's only better for us, right? So what we're gonna analyze is we're gonna say, look, if you've got some vertex, what's the expected time before you get to zero?
+But if you halt and find the assignment even faster than that, then that's all you know, we're only upper bounding your time anyway.
+So let's simplify our lives.
+But instead just looking at
+Kind of the infinite path.
+So here's n, n minus one, and here's zero.
+But there's also minus one over here, there's also minus two, etcetera. There's also n plus one.
+etc. And every single one of these
+You go right with probability uh two th exactly two thirds, and you go left with probability exactly one third.
+Let's look at this Markov chain instead.
+Right, I claim that if you can prove an upper bound on the time to get to zero in this Markov chain, starting from somewhere between zero and n, then that's gonna be an upper bound on the time to get to zero.
+in that markup chain. You can only get there faster.
+So let's look at this thing.
+And in fact, what I'm gonna do is I'm gonna look at
+The probability
+I'm gonna look at the probability that we get I'm gonna make it even harder for us, and I'm gonna say not only am I gonna so here we're okay as long as we get there within T steps.
+I'm gonna say what's the probability that we get there exactly on the t step?
+Okay. So if we got there at time T minus one or T over T
+I'm not even gonna count it. We have to get there in exactly T steps. Okay, and even with this uh pessimistic view on the world, we're still gonna get our four thirds to the N bound.
+So let's say we start off
+At distance K
+What's
+the probability
+that we get
+To zero after exactly
+Uh T equals we landed zero.
+At exactly let's say at exactly time
+T being3 K.
+So really what we're gonna do is we're gonna we're gonna run this where because we don't really know what K is, right?
+But as long as we're running it at least3 K steps, this analysis will apply. And so we can set C to be like3 N.
+Then definitely the3 K mark will have passed. And then we're gonna we're gonna show that this thing is gonna be at least something like three fourths to the N.
+Roughly. Okay.
+So then what do you do now to get an algorithm which runs in time four thirds to the n? Well you know that every trial you succeed with probability roughly three fourths to the n. So repeat it, you know, you succeed with probability P. So repeat it one over P times, and you expect to succeed at least once.
+And that's where the four thirds of the end is gonna come from. Does that make sense?
+So
+Okay.
+Um
+Good, so what do I want to say?
+In fact
+More specifically
+Probably that
+Make uh
+K steps
+To the right.
+And two K steps to the left.
+is at least one. So I want to look at I'm gonna look at this specific way of of succeeding.
+Okay, so um
+So the problem that we make exactly K steps to the right and two K steps to the left.
+in our s in our walk of length3 k is well3 k choose k
+Times one over three to the K, two K.
+times uh two thirds of the K.
+Okay.
+And now let's just do a little Stirling's formula.
+Three K choose K.
+is equal to3 k factorial over k factorial2 k factorial.
+Which if you remember, Sterling
+Says that n factorial is theta root n n over e to the n, right?
+So this is um well if you just do this thing to that, you get something like this is theta of one over root k three to the three k over two to the two k. So just
+Take my word for it, that's what you got.
+So
+call the star. That implies that star
+Is uh
+Uh theta of
+One over K
+Uh one third to the two K, two thirds to the K.
+Times
+3 to the3 k over two to the two k.
+Which if I didn't mess up in my preparation should be um
+One over root K
+times one over two to the k.
+Okay.
+Is that look right? So
+Here you have a three to the two K. Uh whoa whoa whoa whoa.
+Do I learn am I
+Uh good good. Here you have a three to the two K, here you have a three to the K. That completely kills this three to the three K. And then here you have two to the K and two to the two K, that makes it one over two to the K.
+Okay, great. So this is one over root k, one over two k. Okay, great.
+Okay, but um that's as a function of k, but we don't know k. So what do we do? We sum up overall possibilities for k.
+Uh the probability that we find
+Satisfying assignment.
+Is at least uh the sum over k. K can go from zero to n
+probability that distance a and a star is equal to k
+times some theta of one over root k times one over two k.
+Okay. So what's the prob what's the probable that the distance between A and A star is exactly equal to K?
+Well
+I guess it should be something like uh
+N choose K times one over two to the N or something like that.
+Okay.
+So this thing is at least up to a constant. Let's pull this one over root k is definitely at least one over root n.
+So
+One over root n, two to the n.
+Uh no let me not. Let me just put one over root in.
+Times a sum over k
+Um
+Oh okay, so I shouldn't I shouldn't divide by zero. I mean if K is zero then we're done in the first step anyway. Okay.
+Um
+One over two to the n plus k. So n choose k. One over two to the n plus k.
+Yeah.
+Okay. So this thing
+I claim is
+Basically uh
+equal to three fourths to the n
+Minus some constant.
+Why is that the case?
+Zoom see this? There's a just a slight trick here.
+Yeah, so basically just look at just look at one half plus one quarter to the
+And
+And expand it.
+Right? And what do you get?
+Um you get
+Is that right? Yeah, so you can choose to get the one half n minus k times, and then you'll get the four k times. So one half to the n minus k times one fourth to the k is exactly one over two to the n plus k.
+And they're N choose K ways of doing that. So really this is the expansion of this, except we're missing the K equals zero term. The K equals zero term gives you um
+And choose zero, one over two to the n or something. So um you're losing you're losing a one over two to the n. So this is exactly equal to this minus one over two to the n.
+So this is this whole thing is at least one over root n
+times three fourths to the end.
+Okay. So this this thing here I'm gonna call
+you know, P. So our success probability is P.
+So if we run it if we run this thing um
+You know, P times log one over one over P times log one over delta times, the probability that we never find a satisfying assignment is at most delta.
+So this is our four thirds to the N O star four thirds to the N algorithm. Ask me about that?
+Yeah, so I mean I I mentioned some of these bounds which get which came after Sherning's algorithm that that drive down the four thirds to one point three zero, whatever. Yeah?
+idea for to sell is a product anecdote and
+Yeah. But don't don't be
+Oh yeah, yeah, we do. So what's the point of
+Oh actually I I think h the his paper was not he I I I I didn't read that paper, but I did look at the abstract. So you're you're saying we already know an N plus M time algorithm
+for two set, so who cares about n squared? So I looked at the I didn't read this Fox91 paper, but I looked at the abstract. And he sort he sort of just mentions it as like an aside in the last sentence, like, oh, and by the way, it follows that we get this two set algorithm. His paper was actually about something else. I don't remember what his paper was actually about.
+But he just observed that, by the way, this gives a simple two set algorithm.
+Yeah.
+Okay, good. So in the last fifteen minutes from change, I want to tell you about a little bit about inclusion, exclusion, and K coloring. And we'll see also this fast mobius transform and inversion.
+Okay. Any questions about this before I move on? Oh wait, so these other papers were moved
+like all of the all of the making it harder for ourselves to like you know moving the endpoints and assuming that we do exactly this number of steps in each direction. Oh you mean the ones that beat the fourth words to the end?
+So for so this uh paper of Shorning that gets this kind of thing. So okay, good. So let me say a little bit more.
+There is something more
+Slightly fancier you can do, which I think improves the poly factor. Like I think you might not actually need this one over root n. Um maybe I'm wrong about that. But um the paper so Shorting's algorithm really gets four thirds to the N, up to this O star. Um
+Um then the papers after Word which got improvements, they were
+It was not it was not just by it was not only by twiddling around with better analysis of this. They there were other ideas as well.
+Yeah. But I I don't know those papers very well, so I shouldn't uh
+Okay.
+Okay. So let me do inclusion exclusive.
+So what is inclusion exclusion? Well here's one way of writing it, so next
+topic. So no more questions about uh reset.
+Yeah. So with these algorithms was
+Oh, so I think in real life uh people use other kind of heuristic uh
+Not heuristic, but so people use this thing called um what's it DPLL, which I think is really fast in practice for SAT instances you'll actually see. So SAT is one of these funny problems where there are systems out there that routinely solve large SAD instances.
+instances, even though it's you know supposedly NP hard. And the reason is that the the NP hard instances are not um they're sort of rare and you have to like craft them. I mean not no I shouldn't say that what am I saying NP hard instances. A problem is NP hard not an instance. Okay so
+Um a lot of the instances that people come across in real life tend to be easy or turn out to be easy to solve via some algorithms like DPLL.
+You have to like work hard to come up with instances that will break those algorithms.
+So yeah, so you people aren't actually running the four thirds of the N algorithm.
+Okay, good. So um so the next thing I want to say, tell you about the next technique will be inclusion exclusion.
+Oh
+Okay, so what is inclusion exclusion? So theorem
+Mm-hmm.
+So for any sets
+R subset equal to T.
+we have the identity that the sum over all over S sandwich in between them
+Of negative one to the size of T divide uh the the set difference.
+Okay. Is equal to R equals T. So
+Okay.
+That's
+So
+Okay, so are people have people seen this before, this statement?
+This
+So whenever I have like a logical statement, whenever I have a logical statement P, bracket P evaluates to one if P is true, and zero if P is false.
+So this summation is either going to be one if r is equal to t, meaning that there's only one set that's in the middle, namely T itself.
+And if if if R is not equal to T, then this summation is zero.
+Okay? And why is that? Well, if r is equal to t, as I said, the only thing in the middle is s equals t, in which case this difference has size zero and negative one of the zero is one.
+If R is not equal to T
+Then we're gonna set up a bijection between the odd sized sets T backslash T minus S and the
+And the even size sets T minus S. What's that bijection?
+Uh I should also say
+For any non empty
+For any sets where T is not a D.
+Yeah.
+Oh I I don't really need to say that actually, because if T is empty then R is empty too. Okay.
+Okay, so um I always get worried about empty sets and zeros and these
+Basic case these uh uh these are sources of bugs. Anyway, if R is not equal to T, so let's
+down a very simple proof.
+Proof. R equals t implies the summation of R subset s subset t is just the sum over s equals t of negative one to the zero, which is one.
+If R is not equal to T
+Pick
+some tea in the difference.
+And then we set up a bijection
+Between
+T minus S even.
+Um
+Between S such that T minus S even
+And as such that this thing is odd.
+So what's the bijection?
+A maps to a symmetric differ um like kind of what do you call this X or? I don't know if this is uh uh what do you what do you say for sets? Well I'll say what I mean.
+Take a set A. What's the bijection? If it has T in it, remove it. If it doesn't have T in it, put it in.
+This is a bijection between the odd and even size sets.
+So we know that um there's exactly an equal number of sets where this thing is even versus odd, so this whole thing is zero.
+Okay.
+So now we want to use inclusion exclusion to design good algorithms.
+So let's look at an example problem.
+K coloring.
+Okay. So the input
+Is a graph, undirected graph.
+G equals V E
+And let's say the size of V is N, the size of E is M.
+Uh K coloring
+Is a function
+Um C of C which maps V into one top to K.
+Such that
+If there's an edge UV in the edge set, it implies that C of U is not equal to C of V.
+Okay. So we have to color vertices in such a way that adjacent vertices do not have the same color. And the goal
+Is to decide
+If uh K coloring exists.
+Oh
+Okay.
+Good. Notice that it's equivalent an equivalent question
+Uh decide
+Or equivalent problem, decide if uh V can
+be partitioned
+Into K independent sets.
+What's an independent set? An independent set is a set of vertices such that there are no edges between any vertices.
+in that set. So if you can partition, so these questions are equivalent, why? If you can partition into K independent sets, then everything that goes in the first set you'll give color one, the next set color two, okay, and then you know that it's a valid K coloring.
+Now how about the other direction? If you had a valid K coloring, then what would your partition be? Everyone that had color one would be one partition, everyone had color two would be.
+Partition two, etc. So these are equivalent problems. Okay.
+So we're gonna focus on this version.
+Now
+What are the what are some algorithms for K colorability?
+Someone tell me some.
+Yeah.
+Brute force. I'll just tell you brute force. So brute force O star of K to the N is just br time.
+Poly and space.
+This is brute force. Okay, how about something smarter? Does anyone know what you can do that's better than say you don't care about space. You want to get better time. What do people know?
+Dynamic programming? Dynamic programming, yeah. We we've seen that so much today. So what what kind of does anyone know what time you would get out of dynamic programming?
+I'll tell you what the dynamic program is. So
+Kind of your s you're you're trying to compute F of R S
+Is
+Um one, if possible
+It's a partition
+S into our independent sets.
+And zero otherwise. And we want
+F of KV, right?
+And there's a simple recursion to s to compute F of R S. Basically try just loop over all subsets. Capital R. Let me not use R twice. Okay, so
+There's a simple recursion to compute capital F of T S, loop over all subsets R of S.
+And you know if it's an if R is an independent set, then now try and see if F of T minus1 S minus R is possible.
+Right? So the space of this, you have to remember T. That's just n po that's just at most K. This is a number that's at most K.
+You have to remember this subset S, there's two to the N possibilities. And within each for each state of the DP, you have this recursion that's trying all subsets of that.
+So definitely the time is at most four to the N.
+Right? For every subset, you loop over all subsets. Actually the time is even three to the end.
+Do people see why the time is three to the end?
+Right, so the time
+is O star is uh let's say at most star, that's O star for my made up notation of the sum over all S's subset of V of roughly two to the S, right?
+Which is the same thing as the sum well what's the size of S? The size of S is anything from you know one up to N of N choose I, because I can choose the set S, they're N choose I possibilities, times two to the I.
+Here's one way of interpreting this sanation.
+I have a string where every digit of the string is either0, one or two.
+I choose I of the digits to not be zero.
+Okay, so I loop over all I, I choose I of the digits to not be zero. All the other ones are zero. And then from the ones that are not zero, they're two I choose if it's gonna be one or two. So there are two to the I possibilities for that. So this counts the total number of strings of length n where all the digits are zero, one or two. So this is exactly three to
+the n minus one because I didn't count the all zero string.
+So
+time
+Is O star three to the N?
+And the space
+is Paul Yen
+Uh no, the space is already saying is O star two to the N.
+Because I have to remember all these sets, right? S can be any can be one of two to the end possibilities.
+Inclusion exclusion, on the other hand
+Oh whoa, let me not erase
+Right. Okay, sure. I think I'll actually be able to finish saying this. Inclusion or exclusion
+You can either get O star of three to the N time.
+And poly N space
+Or O star two to the N time
+And space.
+Okay. And how does that work?
+Let's define
+F of S to be one
+If S is a non-empty
+Independent set.
+and zero otherwise and define
+The uh
+Mo it's called the Zeta transform. Think it's Fourier transform, except it's not. F out of S to be the sum
+Overall R is subset or equal to S of F of S.
+Okay? It just counts how many subsets how many subsets of S are non-empty independent sets.
+And the claim
+claim is that
+Um G is K colorable.
+If and only if the sum over all S's subset of the vertices negative one to the n minus the size of S, G of S to the K is bigger than zero.
+Okay.
+In F hat, is it some Oh, what's G.
+Uh
+The summit, is it F of X or F of R? Yeah, big one.
+Okay, I think we're basically out of time, but let me just say something. I'll finish up uh maybe I'll just put the proof of this in the notes. This follows this is like almost immediate from inclusion exclusion.
+Okay. But um
+The point is now you can compute you can compute all the F hat of S values in um
+three to the end time and polynomial space. So basically the basically the new problem
+It's to compute
+F had of S
+For all this.
+Okay, and I claim that you can do this um you can do this in the time and space that I that I said, and I'll maybe I'll devote the beginning of Tuesday to explaining why and then we'll do something.
+Okay.

@@ -1,0 +1,715 @@
+JELANI NELSON: So this is
+CS224, Advanced Algorithms. My name is Jelani Nelson. And we have a TF,
+who's in the back. It's Jeffery with his hand up. If you want to contact
+us, you should email cs224-f-14-staff@cs.harvard.edu. Also, there's a yellow sheet
+of paper that's going around. You should fill it out. Let's see, what
+else should I say? And there's a
+course website, so I won't bother writing the URL of
+the course website on the board. Just Google the course
+or Google my name, and it's linked from my website. One thing I will say
+about the course website is we have a mailing list. So please go to the
+website and sign up. Put yourself on
+the mailing list. Before I get
+started with things, I guess I'll tell you
+some logistical things about the course. Then I'll tell you
+what the course-- what the goals of the
+course are, and then I'll start on something. So logistics-- oh, wait, I
+completely did it backwards. So there are three components to
+this course in terms of grading. One is scribing. And this is 10% of your grade. Basically, you just do
+it, and you get the 10% So there's no textbook
+for this course. Students will take turns taking
+notes on what I say in lecture. And the course is recorded, so
+you can go back over the lecture and see anything
+you missed and then basically write up some
+lecture notes in LaTeX describing the lecture. And there's a template on
+the website, a LaTeX template to use. Two is P sets. That's 60% of your grade. OK, and the third one
+is a final project, which is the remaining 30%,
+And that's just written. So there are details on the
+website about the final project. You do it the last
+day of reading period. You submit your
+project, and I grade it. So let's, see final project-- so there's a proposal
+for your final project. It's on the website, but
+I think it's October 30. And then project due last
+day of reading period. So yeah, I'll read
+through the proposals and make sure I like
+the idea of the project and give you feedback
+regarding it. And then you spend
+the last six weeks working on the project,
+roughly six weeks. Let's see what else. P sets-- all P sets
+should be LaTeXed, and you submit them by email. And also P sets have page
+limits, meaning your P set should not be longer than
+the specified page limit to avoid people just typing
+mindlessly if they don't the answer to a problem. Actually, brief solutions
+are appreciated. There's one part of
+the course that-- so we'll see how many people
+actually stay in this class. Right now, it looks like a
+lot, but it's shopping period. Depending on the final
+size of the class-- or actually, this will
+most likely happen. Students will also take
+turns being graders. You probably only have to do
+it once during the semester, but a team of maybe three to
+four or some number of students together with the TF will
+meet once a week or once per P set and do-- and grade that P set. OK, so that's a required
+part of the class. Students have to be
+graders at least once. And these things are
+first come, first serve. And you have to describe at
+least once, possibly twice if the class gets very small. These things are first
+come first, serve. So if there's a
+date that you really want-- you know you'll
+be available to scribe, for example, then sign up right
+away before it gets taken. Also, scribe notes are
+due the following day, so you have a little
+more than 24 hours to scribe your lecture notes. They're due 9:00 PM
+on the following day. And is there something I
+wanted to say about that? Yeah, I mean, I know it's
+a short amount of time, so just do the best job you can. And then I might
+make a pass over them myself and make some edits. OK, good. So I think that's all I
+want to say about logistics. Any questions about that? STUDENT: May I suggest
+having the lecture notes in some sort of Git
+repository or something so we can see changes and
+change them after the fact rather than just putting
+PDFs on the website. Seems more sensible. JELANI NELSON: I'll put them in. Maybe talk to me afterward
+because I-- yeah. And-- Anything else? Yeah. STUDENT: Only a
+subset of students will be scribing each
+lecture, or everyone scribes every lecture? JELANI NELSON: One person will
+be the scribe for that lecture. Actually, yeah, I need
+a scribe for today. Who thinks that they're going
+to be in this class for sure and is willing to
+scribe today's lecture? OK, good. Any other questions? Good, so this is
+Advanced Algorithms. Who has taken CS 124 or some
+form of algorithms course before this? OK, a lot, most people, I guess. So I guess the main difference
+between CS124 and CS224-- well, well, first of all, I
+guess algorithms is very broad. So even though 124 was a
+whole semester of algorithms, we didn't see all there
+is to about algorithms, even in terms of topics. So in 224, we'll see some
+models for analyzing efficiency or some measures of efficiency
+or models of algorithms that we didn't see in 124. Also, I guess it will
+be more theory focused. There won't be any
+programming assignments, although for the
+final project, you can do an implementation project
+that's described on the website, but the D sets will be
+purely just written-- written P sets, no programming. What else do I want to say? So I guess the goals
+of this course-- I guess they're what
+you would expect-- increased ability to analyze
+and create algorithms. We're going to see lots
+of different techniques in this class for
+analyzing algorithms, some of-- many of which were
+not in 124, and also modeling, creating-- so looking
+at different models. We're seeing
+inspiration for models, looking at different
+models within which to analyze algorithms. So in 124, we usually just
+looked at, say, running time, and running time, we didn't, I
+guess, really ever define it. It was just the number of
+steps of the algorithm. And we also looked at memory,
+minimizing the amount of memory used by the algorithm. But here there will
+be other parameters that we'll look at as well. So I think I'm just
+going to get started. And I used the
+wrong board first. So speaking of models, so
+who here has seen sorting? OK, good. That's what I expected. Who here knows that you can't
+n numbers faster than n log n? So that's actually--
+I lied to you. You can n numbers
+faster than n log n. OK, so today and
+the next lecture, we're going to see something. We're not going to do the
+full sorting algorithm. But we're going to look at
+a related problem, a data structural problem,
+which is a predecessor. We'll look at the static
+predecessor problem. We say static
+predecessor problem. So this is a data
+structural problem. So the data structure represents
+a set, S of items x1 up to xn. And we support
+one kind of query, which is predecessor of x. Predecessor of x is the max
+element which is less than x, or let me say predecessor of
+z is the maximum of x and S. Let me write it like this. The maximum x and S such
+that x is less than z. We want low space
+and fast query. And this word predecessor,
+you see why that's there. Static, in data structure
+speak, static just means that the set S of
+items doesn't change. If you had said a dynamic
+data structure problem, like dynamic predecessor,
+you would also support the insertion
+and deletion of items. We'll also look at-- so static versus dynamic. Static, no insertions,
+dynamic insertions. OK, so what's one
+way someone knows how to solve a dynamic or static
+predecessor quickly using, say, linear space? STUDENT: You just store the
+numbers in a binary search. JELANI NELSON: In a binary
+search tree, or store the numbers in two
+binary search trees. STUDENT: Binary search. JELANI NELSON: Yeah. So an example
+solution that works-- store numbers sorted and
+then do binary search. Is this static or dynamic? STUDENT: Static. JELANI NELSON: OK. So this is static. And what's the query time? STUDENT: Log n. JELANI NELSON: Log n. And what if you wanted
+log n dynamic query time? STUDENT: Some sort
+of balanced tree. JELANI NELSON: Yeah, so. log n-- so a log n dynamic
+query using a balanced BST-- say like a red-black
+tree or something. And the second solution also
+supports log n for updates, for insertions and deletions. I mean, this is not Shayna? No? OK. This is not usually
+the way people teach sorting algorithms at first. But I claim that if you
+have such a solution to dynamic predecessor,
+then you can get-- and let's say all the
+numbers are distinct. You can get a fast
+sorting algorithm. So what do you do to get a
+fast sorting algorithm using dynamic predecessor? You first go through in
+linear time your input and find the maximum, and
+then you go through the input again and just insert them
+all into a predecessor data structure. And then now you output the max. You compute its predecessor. Now you have the second biggest
+compute its predecessor, et cetera, and you'll retrieve
+all the items in sorted order. So you've just
+sorted the elements using a dynamic
+predecessor data structure. And what I'm going
+to show you today, and as well as Thursday, is a
+faster, dynamic predecessor, faster than log n. So actually, I won't
+exactly show you that. Today, I'll show you. I'll show you two data
+structures, one of which is dynamic, and the other, I'll
+show you the static version. It can be made dynamic,
+but it's more complicated. I'll just show you
+the basic ideas to get the static
+data structure. But I promise I'll give you
+a reference that shows you it can be made dynamic. And if you use those
+data structures, you can beat-- you can
+beat n log n for sorting. OK, but some people
+raise their hand when they said that they
+knew that sorting couldn't be done faster than n log n. So for the people who
+said they knew sorting can't be done
+faster than n log n, what assumption are you making
+about the sorting algorithm? Comparison-- it's
+comparison sort. It's comparison-based sorting,
+which means you have n items. And in each step, your algorithm
+is allowed to choose two items and compare them. And based on the results
+of the comparison, it can make further comparisons. OK, but that's not how
+real computers work. So when you code in C, first
+of all, all the input numbers are integers, let's
+say, or floats. They're something that fit in
+some, say, 32 or 64-bit word. And you can do bitwise
+XOR and bit shifting and all kinds of
+other operations which are not just comparison
+and multiplication. So that inspires
+the word-RAM model. So items are integers in
+the range from 0, 1, up to 2 to the w minus 1, and
+W is the word size. And the universe size u is 2 to
+the W. That's 2 to the w minus 1 it's 2 to the W minus 1. And we also assume-- also assume that
+pointers fit in a word. So for the last assumption, if
+you have a data structure that's storing n items, presumably-- presumably your data structure
+is using at least n space to even remember
+what the items were. So we know that
+space is at least n. And if a pointer fits in
+a word, well, a pointer is what, an address
+into our space. So W should be at least log
+of the space, which we just said is at least log n. So we're always going to
+assume that our word size W is at least log n. And what I'm going
+to show you today and on Thursday are two
+different predecessor data structures that get
+different bounds. One is going to be better when W
+is small, like closer to log n. One is going to be better
+when W is very large. So two data structures. So one is the-- it's called the van-- well, that's the lowercase-- van Emde Boas trees. This is from what year? Somewhere sometime in the '70s. So I'll frequently put
+the conference or journal name in the year. So this is for the scribes. And this is due
+to van Emde Boas. And if you Google it,
+you'll find a reference. So please put a reference
+in the scribe notes. And what this gets is
+update this dynamic, so it supports updates. Update and query are both
+going to be log W time. And the second thing that I'm
+going to cover, and it's-- and we're going to show
+also that-- well, let me say something else. The unfortunate thing, though,
+is going to be that the space-- the space is going to be u. I like linear space independent
+of the universe size. Imagine if you have
+a 64-bit machine. U is 2 to the 64. So I don't want to use
+to the 64 space ever. And we'll see that this can be
+made theta n with randomization. And we'll also see a related
+data structure called y-fast-- y-fast trees, tries,
+which get the same bounds. And this is due to
+Willard in IPL 83. So, originally, van
+Emde Boas and his paper didn't get linear
+space, but the move from u-space to linear
+space is going to turn out to be pretty simple. And the second data structure
+we're going to see-- so this is the one that
+can be made dynamic. But I'm only going to present
+the static version in class. Otherwise, it gets
+too complicated. These are fusion trees. And this is due to
+Fredman and Willard. I believe in JCSS '93. And these support query
+in time log base W of n. And it's also linear space. So already, this beats
+binary search trees. If W is at least log n, log-- remember log base W of n is the
+same thing as log n over log W. So this is never going to be
+more than log n over log log n. But of course, we could choose-- if we know W, I mean,
+we know the machine that we're coding on. If we know W, we can
+choose the better of fusion, trees and
+let's say, van Emde Boas trees or y-fast trees. So that implies that we can
+achieve the min of log W and log base W of n. And the min of this is-- if we want to maximize
+this expression, we'll do it when these
+two things are equal, which means log W equals
+log n over log W, which means log n is the
+square of log W. So this will be always at
+most square root log n. OK, good. And I mentioned that
+this can be made dynamic. So in particular, that means
+you can sort in time n times the square root of log n. Things that I won't
+cover in this class-- this implies with dynamic fusion
+trees O of n root log n sorting. OK, question. STUDENT: So first
+thing, why do we need dynamic random
+static [INAUDIBLE]? JELANI NELSON: So
+there's going to be an-- yeah, so there's an issue,
+which I haven't discussed, which is the pre-processing
+time to actually create the data structure. So in the dynamic case, when
+you start with an empty data structure, that
+doesn't come into play, but with the static
+case, we're going to spend polynomial time to
+actually create this fusion tree. And that's going to
+be bad for sorting. Any other questions? So you could ask is n root
+log n the best sorting algorithm in this model? And you can actually
+get faster sorting. So you can get O of n
+log log n deterministic. This is due to Han
+and Stock 2002. You can also get O of n
+square root log log n, expected time randomized. This is due to Han and
+Thorup in Fox of 2002, which is about five months later. And it's an open
+question whether or not you can get a linear time
+sorting algorithm in this model. So it's possible. There's nothing saying
+that you can't do it. And let me go back
+to the word-RAM model before I actually present the
+van Emde Boas data structure. So I mentioned we can do
+more than just compare. So what can we do? So in word-RAM, assume that
+given X, Y fitting in a word, we can do basically
+all the things that you can do in, say, C. So you can do
+integer arithmetic. So plus, minus-- I mean divide times minus. And this is integer
+division, so it rounds down. You can also do a bitwise
+negation XOR, OR, and AND. I can't write and properly. And you can also do bit shifting
+with some fixed constant or with each other. OK, yeah. STUDENT: So the result
+of the calculation, like in multiplication, you
+also have to pick a number and that can be whatever. JELANI NELSON: So we'll assume
+that for multiplication, it fits in two words. So the upper bits will
+be in the second word. Yeah. OK, any other questions? Do I think it's also-- I think it's also
+accurate to say-- I mean, we don't need to I
+think make that assumption. There could be integer
+overflow, in which case, we'll get the overflow of
+the correct answer. But you can simulate multiplying
+bigger numbers using-- in the word-RAM, anyway. Yeah, so maybe I'll leave
+that as an exercise. You might need to use a
+couple of words yourself when you do the arithmetic. So we can do these
+in constant time. So just out of curiosity,
+who's seen van Emde Boas Trees? So one. Who's seen fusion trees? OK, good, just making
+sure I'm not teaching you something you've seen. So we're doing van Emde Boas. So the basic idea is-- well, I guess you
+guessed that we're going to do something
+with fudging with bits because we can't
+just do comparisons. The basic idea is some
+divide and conquer. So VEB trees will be
+defined recursively-- so what a VEB tree
+will look like. And it'll be parametrized
+by the universe size. So let's say this is on a
+universe, say of size u. It will look like-- if I open up what it looks like
+inside of that data structure, it'll have square root u
+VEB data structures each on a universe of
+size square root 2u. And there will also be a top
+one of size of-- on universes of size square root u. And separately, we'll also
+store one extra element, which is the minimum element
+in the data structure. And I'm going to say more. So let's say you're using some
+object-oriented programming language, and you wanted to
+declare the fields that your VEB data structure has-- so the fields of VEB, let's
+say, on a size u universe. You would have an array of size
+root u-- a root u size array. Let's call this thing v. V
+is our VEB data structure. You'd have v dot cluster 0 up
+until v dot cluster square root u minus 1. And this is a VEB square
+root u data structure. What I mean is the elements
+in here are numbers between 0 and square root u minus 1. We'll also store the Max. Maybe I'll say that too. Let's say we also store the Max. So I'm going to
+write that down here. We also have a v.summary
+is a VEB square root u instance as well. And v.Min v.Max are integers in
+the range from 0 to u minus 1. Any questions? I haven't actually told you
+how you insert into the state. This will be a dynamic
+data structure. So I haven't told you how you
+query, and I haven't told you how you insert. So let's see that. So say we have an item
+that we want to have living in this data structure. So x is some integer. So we can write x in binary. And we can divide x into the
+leftmost half of the bits and the rightmost
+half of the bits. Let me call this C, and we call
+this I. So let's write x as ci. And notice that
+these numbers C and I are in the range from
+up to root u minus 1. So we're basically
+writing x in base root u. And the idea behind
+van Emde Boas trees is that we will store-- if x lives in the
+data structure, then we will store the
+number I in the cth cluster in this picture. So now tell me, if
+given what I just said, how would you, say, do a query
+for the predecessor of x? And people hopefully people
+agree that you can extract-- you can extract C and
+I each in constant time just by bitwise
+anding and shifting. So how would you search
+for the predecessor of x in this recursive data
+structure, as I've defined it? So I didn't tell you
+what the summary does. Let me tell you what
+the summary does too. So I told you that I'll
+insert I into the cth cluster. Also, if the cth
+cluster happened to be empty when I
+did the insertion, I'll also insert C
+itself into the summary. So the summary keeps track of
+which clusters are non-empty. That's the point of the summary. So now how would you
+do a predecessor? Yeah. STUDENT: You have your
+query element look-- extract the query element. Look in that cluster. Do the recursive
+query on that cluster. And if it's the lowest
+element in that cluster, you find the next lowest
+non-empty cluster in the summary and look at the maximum. JELANI NELSON: OK, yeah. So what you said works. There's one recursive
+call you could save, which is we store the
+Min in explicitly. So let me just say-- repeat what you said
+but using that fact. Are you here for
+Advanced Algorithms? STUDENT: Yeah JELANI NELSON: OK. STUDENT: You just
+don't worry about that. JELANI NELSON: So
+here is the idea. So I can extract C and I each
+in constant time using shifts and masking with bitwise AND. And then what I do is I
+look in the cth cluster. And I look at the Min,
+the minimum element, in the cth cluster. If I'm bigger than it, then
+I know my predecessor lives in the same cluster as me,
+and I can just recursively do a predecessor in that cluster-- a predecessor on
+I in that cluster. If there is no minimum element,
+if that cluster happened to be empty, or maybe
+I'm bigger than the Min, bigger than or equal
+to the Min, then I know my predecessor
+is not in my cluster. He's in the largest cluster
+before me that's non-empty. And how do I find that? I find that by doing a
+predecessor on C in the summary, and then I return the Max
+inside of that cluster. OK, good. I don't need to recurse
+on that cluster. I just returned the Max. Good, so let me write that down. So Predecessor takes as
+input V as well as this X, which I write as CI. And I say the first if is
+if x is bigger than v.Max-- so if x is bigger
+than everything in my data structure-- I just return v.Max. Otherwise, I look at
+the cth cluster of v, and I check its Min and
+compare its Min to me. L sub v.cluster C
+Min is less than x. Then I'll just recurse. Otherwise, what? I have to look in the summary
+for the predecessor cluster. So C prime will be my
+predecessor cluster. And then I return the maximum
+element in that cluster. OK, so the next thing is
+the insertion algorithm. So the first thing is-- we're going to see
+why in a moment, but I'm going to treat
+the minimum element as being special. So the minimum element will be
+stored in this minimum field. Where are my fields? The minimum element will be
+stored in the minimum field, but I won't also store it
+in its appropriate cluster. So it could be that the v.Min
+is some non-empty value, and everything else in the
+data structure is empty. So if v is empty, I'm going to
+say v.Min gets assigned to x, and then I'll return. Sorry for my pseudocode is like
+changing between C and Python, but you know what
+I mean, I think. Otherwise, what do I do
+based on what I've told you? And also with this
+constraint that the Min only lives in v.Min. I'll say one thing. If the Min only lives in v.Min,
+I'll do if x is less than v.Min. Then I'll swap x with
+v.Min before I continue. OK, so now, I know that the
+x I'm actually inserting is not the minimum element. Think of this v dot min
+field as being like a buffer. So the minimum always
+lives in that buffer. And it's not actually
+recursively stored. So first, I make
+sure that the thing I'm inserting recursively
+into the structure is not the minimum. And then where do
+I have to put it? And let's pretend that
+when I do this swap, the c and i are for the new x. So I don't want to
+write more code. So what I do is-- oh, and there's
+also this issue of, before I recursively
+insert it into the cluster, I should check the summary to
+see if that cluster was empty. If so, I need to insert
+it into there as well. So how can I check if.-- if the cluster is empty, I can
+just check its minimum element and check that it's empty. So if v dot cluster c
+dot min is a null value, then I need to insert
+c into the summary. Then v dot summary, I'll insert
+into v dot summary the value c. And then I'll insert
+i into cluster c. And you can think about what
+you would do for deletion. It's not really that much
+different conceptually. So let's just analyze
+the running time of each of these procedures. So predecessor--
+there's only ever, I guess, one recursive call. In any of the if cases, you'll
+have at most one recursive call. So we have the recurrence. So for predecessor, time,
+we have the recurrence that t of u-- we start off with the
+universe of size u-- is equal to t of u over 2 plus-- t of root u, sorry. And if you remember
+your recurrences, this implies that t
+of u is o of log log u, which is equal to log w. Remember, u is
+basically 2 to the w. u is 2 to the w. How about insertion? STUDENT: So accessing
+any element in the array is constant time and not-- Accessing any element
+in an array [INAUDIBLE]. JELANI NELSON: That's right. So in constant time,
+you can follow a pointer and read the value in
+that memory address. So how about insertion time? It looks a little
+worrisome because this if doesn't necessarily
+return after the if. So if v dot cluster
+min is empty, you insert it into the summary. And then you, again,
+do another insertion. So it looks like t of u is
+at most 2 times t of root u plus o of 1. So another way of
+thinking about this is-- maybe this will make
+it more obvious-- is that t of w is at most 2
+times t of w over 2 plus o of 1. So if we're saying that w
+is getting square rooted, that basically means
+this-- if we're saying u get square
+rooted, that's like saying w got cut in two. So what does this resolve to? It should. Yeah, w. So this solves the w. So that's not great. We're trying to get log w here. But I claim that this
+is overly pessimistic. Why? STUDENT: We did
+the first answer. [INAUDIBLE] That means
+that the second instance. So we're doing a constant
+time because of the first if. JELANI NELSON: Yeah, exactly. So what [INAUDIBLE]
+said is if this if actually happens,
+then the second if will be shallow and
+not recurse further because the second if
+will be in this case and will immediately return. So actually, this 2 really
+can be written as a 1. You can think about this
+one as-- in that case, you can think about just
+moving this line here and then this
+being another else. And this implies that t of
+u is also o of log log u. So that's the basic Van Emde
+Boas tree data structure. And that's also why we stored
+the min kind of separately, to make the insertion
+cost log log u as opposed to w, which would be log u. STUDENT: So if you're going
+to store them separately, then [INAUDIBLE]. JELANI NELSON: Yeah. If you treat the min as the
+same as any other object and start recursively
+in the data structure, then there will be times when
+you have to recursively insert into the summary and recursively
+insert into the cluster. And that will make things w. Yeah. STUDENT: I guess you will
+have to check the max. JELANI NELSON: Oh, yeah. I keep forgetting
+about these maxes. Yeah. STUDENT: [INAUDIBLE] JELANI NELSON:
+You don't have to. Yes. That's a good point. And where's that paper where
+people are signing off? Has it been passing around? Everyone saw the paper? Raise your hand if you
+didn't write your name down on that piece of paper. So toward the front, I guess. OK, so how about the space? What's the space of the Van
+Emde Boas data structure? What's the recurrence, anyway? STUDENT: And so it
+goes for s of u. JELANI NELSON: s of u is equal
+to square root of u plus 1 for the summary s of square
+root of u plus a constant to store, say, the min. So this, I'm not going
+to solve it here. This implies that's
+s of u is theta of u. So this is u space,
+which is not great. So we're going to get
+instead linear space. So what's something
+that intuitively seems a little bit silly
+about this space requirement? STUDENT: You have a
+lot of empty clusters. JELANI NELSON: You have
+a lot of empty clusters. I mean, yeah, that's it. So what could you
+imagine doing instead-- so we will see-- who here has seen hashing? So I gave you a hint. So you know that there's
+something called hashing. What would you do with
+this hashing in order to improve the space? STUDENT: Instead
+of having a thing, that would be a hash table. JELANI NELSON: Yeah. So we're going to
+have a hash table. What does this hash table store? Sorry? What are the keys in
+the-- so in hash tables, there are keys and values. So what are the keys that
+will live in this hash table? And what will the values be? So we'll have a hash table. The keys will be? Yes. The keys will be
+these cluster IDs. So keys are cluster IDs. So what will the value be? Yeah, a pointer to some. So value is a pointer to
+corresponding non-empty cluster. So for the empty clusters,
+they don't live here. And I claim that the space of-- now, this scheme is linear. It's theta of n. Why is it theta of n? How would you account
+for all the space that's being used in a way that
+makes it clear it's theta of n? Yeah. Yeah, each tree has
+a minimum element. So we can charge this
+pointer and value. This is two words. We can charge the
+cost of these two words of storing this
+cluster ID and pointer to the minimum element that's
+contained in that cluster. And now each element is
+stored as a minimum somewhere. Maybe at a leaf cluster
+in this recursion. But it's stored as
+a minimum somewhere. And each minimum element
+is charged exactly once in this way. It's charged in the parent of
+the EB tree that contains it. So charge the cost of storing
+C pointer to cluster C to the minimum
+element of cluster C. Each minimum is charged. So each item in this set,
+let's say each X of S actually is charged
+exactly once. Does that make sense? Questions about it? Yeah. STUDENT: [INAUDIBLE] JELANI NELSON:
+This assumes that-- Yeah, so I guess I haven't
+covered hashing yet. We will see hashing
+later in the course, but it turns out that
+it's possible to-- So first of all, let me say
+something about hashing. Maybe this will-- tell me if
+it doesn't answer your question once I say it. So I think it's good to
+think in terms of problems, and then there are algorithms
+or data structures that solve those problems. So let's forget about hashing. What's the problem
+that we want to solve? The problem we want
+to solve is what's called the dictionary problem. So short aside. So we have something called
+the dictionary problem. And the goal of this problem
+is to store key value pairs. I'm going to assume that
+the keys and the values each fit in a machine word. And the semantics
+are as follows. So query K, what should that do? It should return value
+associated with key K or null if K is not
+associated to anyone. And there's also insert or you
+can think of it as associate. So insert a key
+with a value which associates value V with key K. So you can look at both the
+static and dynamic versions of the dictionary problem. So in the static version you're
+told all the key value pairs up front and you never
+do feature associations. And the dynamic version you
+can make updates to what keys are associated with, and
+you can also delete keys from the dictionary. And it turns out, I don't
+know if we'll see exactly this solution later
+in the course, but we'll see some solutions
+to the dictionary problem. Dynamic dictionary is
+possible with linear space. constant query time--
+worst case query time-- as well as constant expected
+insertion or updates. Insertion and also deletion. Let me write. So this is from-- it's actually not that-- it's fairly recent. I need to look back
+at the reference, but this is by
+Dietzfelbinger and others. And yeah, I mean, it's
+some form of hash table. If you know about
+universal hashing, it wouldn't get worst
+case constant query. It would get expected
+constant query. It turns out you
+can get worst case. So the point is that whether
+it's expected or worst case, and actually you
+can even do better than expected constant time. You can do constant time
+with high probability. But the point is really what
+we need here is a dictionary. We need a dictionary
+that stores the keys or the cluster
+IDs and the values are these pointers to
+those non-empty clusters. And that's a solved
+problem, which we'll just take as a black box for now. Did that answer your question? STUDENT: Yeah. JELANI NELSON: Any
+other questions? STUDENT: [INAUDIBLE] JELANI NELSON: Yeah, I believe-- I can even say that you can even
+make this with high probability. So I guess the
+question is, can this-- I mean, the only thing you
+could hope to improve here is make it fully deterministic. I don't know offhand whether
+that's been ruled out as a possibility. So I have about a little
+more than 15 minutes left. I mentioned that there's
+another data structure called a Y-fast tree or Y-fast trie. Which also gets this bound. I'll just sketch the
+idea which apparently is the original way Van Emde
+Boas Trees were made to support the bounds that I stated. And then much
+later, other people came along and reinterpreted
+the data structural ideas and came up with
+what I showed you. But the Y-fast trie-- I mean, originally Van
+Emde Boas data structures were described in a
+way that got you space. And it wasn't as clear as change
+this to a hash table in the way that it was described
+to make it linear space. So I'll show you another way
+that you can get the same bound. So what's one way that-- pretend
+you didn't care about query time and you're willing
+to use U-space, what's a very, very simple
+data structure for predecessor? I want you to use
+exactly U bits of space. Yeah a bit array. So have a bit array of
+size U, of length U, and the Ith bit is one
+if I is in your set, otherwise the Ith bit is 0. So use a bit array. So another solution. We can use a bit
+array of length U. So let's say U is
+16 or something. So 1011000111001100. So this corresponds to
+elements 0, 1, 2, 3 up to 15. And so what's the running
+time of predecessor now? It's U. That's terrible. So we're going to
+make one small tweak to this, which is we're going
+to build a perfect binary tree over all of these leaves. And each internal node is going
+to store the ore of its two children And we end up with
+a tree that looks like this. Suppose now someone
+gives me a 0-- suppose someone gives me a 0
+and asks for the predecessor. Well, OK. So let me also say this. I'll do one more thing too. I'll store all the ones
+in a doubly linked list. OK, so suppose someone
+asked me for the predecessor of a one, what would I do? Yeah, go back one
+in the linked list. Constant time. Suppose someone asked me
+for a predecessor of a 0. So, for example, they asked
+me for the predecessor of this element. What would I do? And then what? STUDENT: Go down to
+the right [INAUDIBLE] JELANI NELSON: So I go up
+the tree until I find a one. And then I know that-- so here when I transitioned
+into a 1, I went up this way. So then I know that I am
+bigger than everything on the left-hand
+side, so I should just find the maximum element in this
+subtree, which I can do by going down to ones, for example. But what if someone asked me for
+the predecessor of this element? I would go up. And here's the first one. So now I don't go and find
+the minimum element here. That's not my predecessor. But what is the
+minimum element here? It's my successor. The minimum element
+here is my successor. And all the ones are stored
+in a doubly linked list. So I can just go back one and
+that will be my predecessor. So I can just keep going
+up until I find a one, and then either I will find the
+predecessor or the successor, depending on whether I went up
+that way or went back that way. And I can get this-- I can get the predecessor. So now there's still
+one problem though, which is what's the
+running time of this-- What's the height of this tree? Log of U. So my running time, it
+seems like it would be log of U. So I'm trying to get log log
+U. So what does that suggest? STUDENT: [INAUDIBLE] JELANI NELSON: Binary search. Yeah actually I do want to do
+a binary search, but so justify where am I doing a binary
+search and why am I doing a binary search. STUDENT: JELANI NELSON: The lowest one. Right. Exactly. So the point is on
+any leaf to root path, the bits are monotone. Meaning that they're
+0 for a while and then they're one after that. So I can binary search
+and find the first one. And that will give me log log U.
+There's still a catch, though, which is how do I binary
+search on following pointers. If I need to follow
+seven pointers, I need to actually them. How can I just access the
+guy who's seven above me? Do you see what I mean? Any ideas on that? Yeah. STUDENT: [INAUDIBLE] JELANI NELSON: Yeah, so if
+it's stored the right way. So what's the right way? Yeah, so you could
+store this entire tree. So if people remember
+binary heaps, you can store this
+entire tree as an array. This is index 0, that's
+index 1, and that's index 2. So in general let me write this. Store tree as an array,
+root is at index 0, node V has left child at 2V plus
+1 and right child at 2V plus 2. So if I want to find the
+ancestor whose K above me, what do I need to do? STUDENT: [INAUDIBLE] JELANI NELSON: Divide by what? By 2 to the K, by
+integer division. So that's a bit shift. So I can find anyone who's
+K above me in constant time. So there's that. So this implies I can find
+Kth ancestor in constant time by doing bit shift to the
+right by K. That's a bit shift. Another thing you could
+do which uses more space is to actually store
+the tree using pointers. But for each node you don't
+just store its parent, but you store its 2 to the
+Kth ancestor for every K. So it could also, for each node,
+store its 2 to the Kth ancestor for each K going from 0 up to
+log log U because the tree has height log U. That would make
+the space of the data structure U times log log U or
+U times log W. OK, but there's still the dominant
+part of the space is U. Yeah. STUDENT: [INAUDIBLE] JELANI NELSON: What do you mean? STUDENT: [INAUDIBLE] JELANI NELSON: You mean the
+height of the tree is 16? STUDENT: [INAUDIBLE] JELANI NELSON: Oh, I see. You're saying I only need-- STUDENT: [INAUDIBLE] JELANI NELSON: OK, so
+suppose the 8 one fails, so let's do a bigger
+power of two, 1,024. Suppose 512 fails and
+now I have to go to 256. That fails and I
+have to go to 128. Would I need all those? Oh, I could just use the
+ancestor of that node. I have to think about it. Maybe what you're
+saying is accurate. STUDENT: [INAUDIBLE] JELANI NELSON: So he's saying-- STUDENT: [INAUDIBLE] JELANI NELSON: Your height
+of the tree is 2 to the L? STUDENT: No, no, no. [INAUDIBLE] JELANI NELSON: OK, well,
+maybe what you're saying-- I have to think about
+what you're saying. But anyway, I'm going
+to do better space right now because I'm
+still using U-space. I'm still using
+more than U-space and I want to use linear space. I mean, so the main trick to
+getting linear space in the Van Emde Boas data structure
+was to use a hash table to store non-empty clusters. So I want to do
+something similar here. So any thoughts, again,
+using hash tables? So this one maybe is a little
+trickier, so I'll just say it. To save space only store
+the ones in a hash table. So at each level of the tree
+there are at most n ones, so this hash table contains
+n times W items in it. So I'm using n times W space. Or you could imagine having
+W different hash tables, one for each level of the tree
+which stores all the ones that occur in that level. So for each level of tree, hash
+table stores locations of ones. So as I'm doing
+my binary search, if I want to know whether
+something is a one or a 0, I just look it up
+in the hash table. And if it's a miss
+in the hash table, if it's not in my dictionary,
+then I know it's a 0. This implies space
+n times W, and this is called an X-fast trie. So if you look at the paper by-- I mentioned that Y-fast
+tries are due to Willard. That was an 83. It's like a four
+page paper including the intro and bibliography. And in the first page or two he
+describes X-fast tries, and then he gives a Y-fast tries in
+the very next section, which eliminates that W. And the trick to
+eliminating that W is a trick that is good to
+know, because I mentioned one goal of this course was
+knowing the right techniques to apply to data
+structures and algorithms. So this is a technique
+that gets used a lot. So from X-fast to Y-fast you
+use what's called indirection. So the basic idea is I'll
+have my data structure-- I'll have my X-fast
+trie, it takes nW space. This is an X-fast trie
+on n over W items. What do you know? It uses n space. But what's each item? So these are my n over W items. Each item if you open
+it up it's actually like a super item that
+contains roughly W items. So approximately this contains
+the first W items, the next W items, et cetera. And one of them will be
+like the representative item that actually lives
+in the X-fast trie. And the way that I'll
+store these items is, I'll build a balanced
+binary search tree on them. STUDENT: [INAUDIBLE] JELANI NELSON: Yes. Theta W, let's say. I mean, there's a problem
+besides the space. There's one minute left,
+let me just say this. I'll just sketch this. You've already seen a
+solution that gets this bound. So if you want to see the full
+details of the Y-fast trie you can read about
+it on your own. But I just want to give you a
+flavor of what's going on here. So the space is nW. But actually the time is
+also W instead of log W. Why is the time W? The time is W because if
+you think about this tree, if I insert a guy and
+change him to one, I need to or all
+the way up the tree. I need to change W things. So the time is W and the
+space is off by a factor of W. And this idea basically
+fixes both issues. So in terms of the
+space, this is now definitely using linear space. In terms of the query
+time, the query time is still log log U because I can
+search in an X-fast try and log log U time, and then I reach the
+BST containing that super item, and to search in that BST
+takes log W time, which is, again log log U. How about insertions? So the point is these super
+items contain somewhere between let's say W over
+2, and 2W items. So they're going to
+contain theta W items. And the basic idea is going
+to be when I do an insertion, I'm not going to actually
+insert into the X-fast trie, I'm going to find where
+it goes and insert it into the balanced BST. And only when this
+thing overflows, when it becomes
+size bigger than 2W, I'll split it into two super
+items and then insert those into the above 1. But approximately that only
+happens like every W steps. OK, so in an amortized
+sense, it only costs me a constant to do that. Well it only costs me-- I only have to do that
+once every W steps. And then when I do it,
+it costs me log of W. So I know I didn't go into
+the full details on that, but I'm not going to get
+too deep into Y-fast tries since they get the same
+exact bound as this, I think simpler one. But that's the basic idea. So questions? Class is basically done. Any final questions before next
+time we'll see fusion trees? Oh, and actually I do want
+to say one thing which is-- so I told you the
+balance for fusion trees and I told you the balance
+for Van Emde Boas trees. There's actually a paper that
+shows a matching lower bound, which shows that you can never
+do better than the mean of Van Emde Boas and fusion trees,
+or a slightly tweaked version of Van Emde Boas. So these are known to be
+optimal for linear space or for nearly linear
+space data structures.

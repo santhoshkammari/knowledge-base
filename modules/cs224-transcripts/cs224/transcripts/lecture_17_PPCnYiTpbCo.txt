@@ -1,0 +1,791 @@
+Uh
+Yeah.
+I don't know, I'm not sure exactly where people are.
+I guess I'll wait one more minute.
+Is there some event today, you know?
+Oh, let me make sure each ring, right?
+Charge with some
+Yeah.
+Okay, well uh
+And building
+I guess I'll just get started. So uh today I promised you we're gonna cover interior point.
+Okay, so this is oh, are you today scribe? Okay, good. Let me uh
+Uh a problem. So okay, so I just started like five seconds ago. Awesome. Um so today we're covering the interior point method. And uh this is in j this is a a method for solving
+solving uh convex programs, but you know we're just gonna look at it
+We're just going to look at it for linear programming.
+Okay.
+And
+I think I mentioned last time at the end of last lecture, um this is introduced
+As a method.
+For solving LPs.
+Uh by Karmarkar
+This is Common Torah84 , right? So Common Taurica.
+Okay.
+remind you of the vague outline. Our setup is we want to minimize C transpose X subject to AX is at least B.
+Okay. Where this is coordinate wise. Um
+A is an let's say it's an M by N matrix uh and B
+So and B is uh well, B has to now be an R M and X is an R N.
+Okay.
+So the basic idea of an anterior point method
+And let me I'm gonna keep abbreviating the interior point method as IPM.
+Okay. The basic idea
+Is
+Minimize
+F of lambda of x, which I'll define to be lambda times C transpose X, plus some barrier function.
+Uh, let's call it P of
+We'll say what this is in a second. P of S of X
+Where
+SMXI is the
+Slack
+AI dot X minus B I
+Right, so in for any feasible solution X, we have that the I throw of A, let's call it AI. AI dot X is at least BI. Okay, so AI dot x minus BI is some non-negative reel for any feasible solution.
+X. And the vector of all of these differences is called the Slack vector.
+Okay, I'm calling it the slack vector. And
+Where so S is defined as follow as this and
+Uh P of X P of S of X goes to infinity if any S of XI goes to zero.
+Okay. So the point is that if any of the S of XIs are zero, that means you're right up on the boundary of the feasible region. Right?
+And by penalizing the uh objective function in terms of this barrier, th this P is called a barrier function because it keeps you away
+So it stays well in the interior of the feasible region. And that that's why it's called an interior point method.
+have you you basically keep track of points interior in in uh the feasible region. Okay.
+And the point is as
+Lambda goes to zero.
+Um basically C doesn't matter.
+And
+The optimizer
+Let me call it X Lambda. So this is the optimal solution for this F of Lambda.
+the minimizer. This goes to what's called the analytic center.
+Of the feasible region. The feasible region let's call it P, which is the set of all points X or something.
+set A X is at least P.
+Meanwhile
+As X goes to infinity, or Lambda goes to infinity, X of Lambda goes to um X star where
+X star is the minimizer.
+Okay. And I I'm not gonna spend too much time on this, but um you can assume that if this thing is feasible and bounded, that the minimizer is a unique vertex. There's only one vertex which achieves the minimum. The basic idea to ensure that is so we discussed earlier that there's some precision that's about that this LP obeys, like all the entries have L bits of precision or something.
+some such thing, right? What you can do is you can create a new cost vector where you just add kind of random noise at you know at the10 L bit bit of precision and beyond.
+Okay, so that random noise will ensure that there's a unique vertex that's that's optimal once you randomly perturb this cost vector. So I I don't want to get into precision issues, but there are standard tricks that ensure um that the vertex which achieves the minimum is unique.
+Okay.
+Um I'll I'll put I'll put a link in the notes uh to some of these because there are too many such uh minor tricks that I don't want to get into.
+Okay.
+Okay, good. So to actually implement this basic idea, well I mean who says that who says that um we can solve this problem either, right? I mean
+So what are we going to do? So uh the vague outline
+Of of the algorithm will look as follows step one.
+Let me call this
+This is our LP.
+Modify
+LP to LP prime.
+such that L P Prime uh trivially has some has some trivial
+Interior point.
+Um
+Two
+uh show that
+If the LP is bounded and feasible
+Yeah.
+Then uh we can
+read off basically
+The optimal solution.
+To LP from the optimal solution to the to LP prime.
+Okay.
+Okay, so now we have this LP prime that we're trying to minimize instead. What do we do there?
+So we start
+Uh so let's say let's say uh
+X prime is initial
+Interior point
+For LP Prime
+Everything I'm writing by the way here is the vague outline, okay? Uh so I will start being a little more specific right after I write this.
+Okay, so let's say we have some initial interior point for LP prime. I didn't tell you how we do this modification, but I'll I'll tell you uh later how we do this, okay, but
+Let's say that there is some LP prime that su it suffices to minimize that instead. Um to optimize that instead.
+Okay. So then we'll
+Step four from X prime obtain
+Um X tilda Lambda zero.
+Which approximately
+Minimizes
+F of lambda zero.
+Uh
+Okay. And then the main work then happens here. So this is all initialization. Steps one through four are all initialization.
+Now finally step five.
+While
+Uh K is smaller than some threshold, which we'll see in the analysis.
+Oh
+Use uh X tilde of Lambda K as an approximate
+Okay.
+Solution
+to F lambda k plus one. So lambda k plus one is gonna be something
+Slightly bigger than Lambda K.
+And then iteratively
+Refine
+To get
+And even better
+Solution
+for F lambda k plus one using some iterative algorithm like Newton's method. And I'll tell you more about that throughout the lecture.
+And then increment K
+And continue loop.
+Okay, so somehow somehow from an interior point we're gonna get an approximate minimizer for lambda zero being something very simple.
+Right? When Lambda zero is something very small
+We basically don't care about the cost function at all. We just want to find something that's well inside of the poly well inside of the feasible region.
+Okay. And then from lambda zero, we're gonna just very slightly, you're gonna see how by how much, but very slightly increment lambda zero to get lambda one. And we're gonna use this thing, this approximate minimizer of lambda zero, as a starting point for an approximate minimizer of F of Lambda1 .
+F sub lambda one. So the point is if we didn't increment lambda by much, if lambda one is very, very close to lambda zero but slightly bigger, then you know by some continuity argument
+The an approximate minimizer for F lambda zero will still be an approximate minimizer for F Lambda1.
+Not as good an approximate solution, but still some level of approximation.
+And then we can apply some iterative algorithm to gradually refine it and make it a better approximate solution to F Lambda1 .
+And then that will give us x tilde lambda one. And then we go back to the loop and we use that as an approximate minimizer for f sub lambda two.
+and then we keep iterating until finally lambda k is big enough. And once lambda k is big enough, then
+This becomes the dominant term in the sum, not the
+barrier function and then you can show that once lambda's big enough an optimizer for this uh function
+Basically is an uh can be easily rounded to an an optimal solution for the original LP. Uh is there a question? Okay.
+So everything I've said has been the vague outline. We you know, I have to somehow make this more precise. But uh are there questions about at least strategy?
+Okay. Okay, so
+So um so this is the the order the algorithm does things in, but I this is not the order I'm gonna explain things in. Okay, so I'm gonna assume that we already have completed step four.
+Okay. We already have something that approximately minimizes F of lambda zero.
+And then I want to talk about how to do this step five.
+And also when do we finish?
+Okay. And then once I explain that, I'll go back and talk about how to actually implement steps one.
+Okay.
+Okay.
+Okay, so
+We'll come back.
+To steps one through four. Later.
+So let's go to step five.
+So we'll see this when we actually do steps one through four, but Lambda zero will be something that's you know exponentially small.
+in the precision. So just a reminder, I think I mentioned this last time, but L is something like um the max of log of
+B infinity uh
+and log of
+the maximum determinant of a submatrix.
+as well as log.
+Of C infinity.
+Okay.
+What is this term? So you remember from uh when we were looking at the simplex algorithm, right, vertices are specified by solving linear systems on submatrices of A. Okay.
+So how much precision do you need to um so you basically have to invert some some matrix and then that gives you your answer, right? Invert a matrix and multiply it by the right hand.
+side to get a vertex.
+Okay. And the number of bits of precision um involved in inverting that matrix is proportional to the logarithm of the determinant of that matrix. So debt max is the maximum overall submatrices of the logarithm of of the determinant of of the submatrix.
+in magnitude. So this is uh just think of this just think of this as precision
+Okay.
+So somehow in steps one through four, we're gonna end up with an approximate solution, approximate minimizer of F sub lambda zero, where lambda zero is really tiny.
+And now we ask ourselves
+Uh for what
+Lambda K uh can we stop?
+Well
+Okay.
+So for this
+Basically, uh we can stop
+When
+Uh let's say C transpose of X star of X lambda, sorry, minus uh C transpose of X star. So C transpose X star is the true minimum.
+C transpose of X Lambda is uh what is if we used X Lambda as a solution to the actual LP as opposed to this
+modified pain penalized function, uh then what would our cost be? Once this is less than let's say epsilon.
+An epsilon is also going to be something that's exponentially small in the precision.
+Okay, so I'll put details in the notes for this. I don't want to really get into precision issues, but the point is once once the difference in cost is really, really tiny, like like this, then you can easily round uh this thing to a
+to the closest vertex and get the actual vertex that that achieves the minimizing the minimum for the LP. Okay.
+So um if you're not comfortable with that, then let's just say that you're not actually gonna solve the LP, you're gonna
+You're gonna minimize it up to some very, very small error. Okay?
+Okay, so we can stop when this is the case. Well, I want to understand when is that going to happen? How big does Lambda have to be?
+So uh one observation
+Is that this function this is now calculus? So F lambda from
+Lambda varingal zero is uh strictly convex.
+From as a function from of the X's from R into R.
+Okay. So there is a
+Unique minimizer.
+X of Lambda and the gradient
+of F sub lambda of X Lambda will be zero.
+Okay. So the minimizer of this function F of Lambda is the X, which makes the gradient zero. Right? Okay, so if if people are forgetting their multivariate calculus, hopefully people at least remember in univaric calculus, you know, you want to set the derivative to zero. Okay, so just uh
+Just think think like that. Okay.
+Okay, good. So we know that zero
+Is oh and let me write actually what the gradient is.
+The gradient, if you calculate the gradient of F lambda, oh and I didn't tell you I didn't actually tell you what this uh what barrier function we're going to use, right? Did I? I did not tell you.
+So the very function we're going to use
+I'm gonna just write this here.
+We're gonna use minus the sum i goes from one to m of log of s of x i.
+Okay.
+Um I mean the reason we're using this is because it has certain nice properties that will make our analysis work. But it does it does at least fit what I said, right? So if any of the slacks go to zero, then log of zero is like minus infinity, and there's a minute.
+this sign out there, which makes it infinity. Okay, so this function does go to infinity as you approach as the slack as any slack goes to zero, which means you're approaching the boundary.
+Great.
+Okay.
+Okay, good. So now that we have an explicit function written there.
+We can compute
+the gradient explicitly and the gradient is equal to
+Uh Lambda C
+minus A transpose uh S of X lamb S of uh let's say at the point X
+Is SX inverse?
+E where
+E is just the all ones vector. Actually, let me just see who's all ones.
+So the all ones vector is well it's the all ones vector.
+And S of X, this is the slack matrix at X, which is just has the slacks on the diagonals. S of X1
+S of XM, so diagonal matrix.
+Okay, so the inverse is just one over the slacks on the diagonal.
+Right. And notice that if X is not on up on the boundary, if it's in the interior, none of these slacks are zero. Okay.
+Okay. So we can actually that actually has an inverse. Okay.
+Okay, good. So
+What do we have here? So we have that
+Well, zero is equal to definitely zero dotted with X Lambda minus X star.
+And then now I will replace this zero with the gradient at x of lambda.
+Okay. Because the gradient X of Lambda is zero. And this is equal to the gradient at F sub Lambda X Lambda.
+Dotted with X Lambda minus X star.
+Okay.
+Okay. And then now let me just write explicitly what that gradient is. We said that that gradient is lambda C
+Minus A transpose SX inverse, the all ones vector.
+X Lambda minus X star.
+Okay.
+Yeah.
+Oh
+Good to be
+Yeah.
+Okay, and just remember that all of this is equal to zero.
+Which implies
+That Lambda C transpose X of Lambda minus X star
+is equal to and then so I just want to say that so you have two terms here. You have lambda C transpose times this thing, and then you also have this vector dotted with this thing.
+Yeah.
+So this thing is equal to the all-ones vector.
+Transpose
+S X in verse.
+A
+Uh X Lambda minus X star.
+Okay.
+So tell me though, what is A X Lambda minus A of X star?
+In terms of slacks anyway.
+Right, so
+A of X lambda minus B.
+That's the definition of the slack vector for X of Lambda.
+Right. A times X star minus B, that's the definition of the slack vector for X.
+star. And then we're just taking so when you when you take the difference between them, the bees cancel.
+Right. So this is just equal to
+One transpose.
+SX inverse. Uh and then now let's say this use little less for the actual vector of slacks.
+Little less of X Lambda.
+Minus a little less of X star.
+Okay.
+Okay.
+But then this thing, this dot product, right, we're taking the all ones vector.
+dotted with this vector.
+Okay. So this is some diagonal matrix where each diagonal entry is one over the slack in some coordinate.
+Right? So this thing is equal to the sum I going from one to m
+Of S of X
+Uh this is all S of X uh lambda.
+This is the gradient at X Lambda. So this is the Slack vector at X Lambda.
+Yeah.
+So this is the sum of S of X lambda.
+Sub i minus s of x star sub i over the slack of x of x lambda.
+Bye.
+Uh
+Yeah? Are people with me?
+Okay. And then now we'll use I guess the only inequality here, which is what's the only thing basically you can tell me about
+S of X star
+What's the only thing you can tell me about any slack vector?
+It's not negative. So this is certainly at most the sum over i of s of x lambda i over s of x lambda i.
+Which is just M.
+Yeah.
+Yeah.
+So overall, you know, this is exactly what we wanted. We wanted to understand to see transports of X of Lambda
+minus C trans of X star. So this implies
+This implies that C transpose of X lambda minus C transpose of X star is at most.
+Uh M over Lambda.
+Okay.
+Okay.
+Good
+Uh
+Um so what is this telling us? This tells us that once
+Lambda is at least say m over epsilon.
+Yeah.
+And remember Epsilon, I mentioned if you want to actually round to a vertex, uh Epsilon can be as small as exponential in the precision, exponentially small in the precision. So this is this is roughly uh you know XP of CL.
+uh times M
+Okay.
+Yeah, yeah.
+Um
+So that tells us how big Lambda needs to be in our step five before we before we can terminate and have a really good solution.
+That doesn't tell us how many iterations this takes because I didn't really tell you how much will increment lambda by in each step.
+Okay. But we will get there. So we will show
+We will show
+that you can take
+Lambda k plus one to be something like one plus one over root m
+Of uh Lambda K
+Okay.
+Okay. I haven't shown this yet, but we'll show that right? What what's the constraint in choosing lambda k plus one? The constraint in choosing lambda k plus one is we want to make sure that the approximate solution we have for lambda k still is somewhat good for the next function for F of Lambda K.
+K plus one. So when we actually work out that calculation, we're gonna see that if you don't increment lambda k plus one by too much, if you just do it by this small multiplicative factor, then your old solution here will still be a good solution will still be roughly a good solution here, okay?
+I'm gonna show that. So just given these two things, how many iterations in this loop do we need?
+to actually uh terminate.
+Right, so did I tell you what the original lambda zero was? Uh I think I did.
+Yeah. Oh good, yeah. So the original lambda zero is is that. So the question is how many powers of one plus one over root m do we need to go from that kind of lambda zero to this kind of lambda zero, m times exponential C L?
+Log yeah, so good. So um yeah, so I want I want uh I w give me an answer in terms of log base two, let's say. So
+So one one good uh you know heuristic calculation to keep in mind.
+Is in general if you have one plus uh
+Uh one plus one over x to the x, that's roughly e.
+Right? So if I do this step root am times, it means I've increased lambda by a constant factor.
+Right? Every root M times that I go through the sloop, I've increased lambda by a constant.
+And then now I need to go from this val from that value to this value.
+So that's log base E, let's say, or
+Log log based a constant of the ratio.
+Right, so
+This implies to get
+from lambda zero to big enough lambda.
+Suffices
+To go for
+Well root m, right? Root m steps just to get a constant factor increase in lambda times log of the ratio, which is gonna be something like L plus log m
+Uh iterations.
+So
+Okay.
+So that's the kind of bound.
+gonna be getting. In fact, I think if you go from paper to paper, people define L slightly differently. So for example, some papers
+Uh L is the the max of many logs. They also put log N and log M in there, for example, in some pages.
+papers, in which case L plus log m is basically L again. Okay, so you'll often just see the number of iterations written as root m times L.
+And just a little bit of history before I continue. So
+The original
+Original
+Uh IPM
+for LP due to Car Marcar
+Needed
+Something like O of ML iterations.
+Okay. And this was improved.
+To O of root ML
+Iterations by Renegar
+Oh
+This was in nineteen eighty eight.
+Okay.
+Okay. And recently
+Uh improved.
+To uh O of Otilda. So Otilda's hiding like log factors.
+Uh Otilda of square root rank of A
+Times L. And this was due to Lee and Sidford.
+Of uh this was this year, Fox of
+This was well this was not just this year, this was like a week ago, two weeks ago or something. I think yeah, a week ago. This was a week ago. Okay. Um and I think at some point I sent uh an email to this class saying if you wanna see something related to the class, go to this talk. So I'm not gonna show you this. I'm gonna show you basically this, but I'm gonna show you this using um I guess mostly notation. I mean the notation I'm gonna use is like heavily borrowed from this paper. In fact, um
+even the way I'm presenting it came from me uh getting Aaron Sidford and just forcing him to explain everything to me. So so
+And
+So thank you, Aaron. Okay. Good. So I want to show you this. And I guess you saw roughly how where the bound is coming from, even though I didn't justify um I didn't justify why you can do this, for example.
+Yeah.
+Oh good. Yeah. So you're saying that's the number of iterations, but what do we do inside of an iteration, right?
+So uh we're gonna see that, but we're not actually going to compute, right? We're not actually gonna compute minimizers of F lambda. Where's F Lambda?
+Well maybe I erased it. We're not actually gonna compute minimizers of lambda. We're gonna compute approximate minimizers. Um and the way I'm gonna define approximate minimizer, I'm uh I'm not even I mean it's not gonna be uh
+It shouldn't be obvious at this point how I will even define that, but I will give a definition of it and I'll show that we can do that. Right? So we don't have x of lambda zero, we have x tilde lambda zero and that's gonna stay
+that way. Um and in each iteration, basically what we're gonna have to do is we're going to have to
+compute a constant number of um solutions to various linear systems.
+Okay.
+So that's um that's what's involved.
+Yeah, so layer systems on end-by-n matrices.
+Yeah, good question. Any other any other uh questions?
+Yeah, that is also something that differs uh
+From IPM to IPM. So right the vi so even this this vague idea here, so like
+Let me say another few words. So
+Vague idea
+outlined
+Above
+is uh called
+kind of path following
+Calfalling interior point.
+It's called a path following and two point method. And where that name comes from is
+uh we define a curve
+Okay.
+Uh Lambda
+X of Lambda.
+For all uh lambda bigger than or equal to zero. So as we as we increment lambda from zero to infinity, this traces out a curve.
+Okay. When lambda is is is equal to zero, we're at what's called the analytic center of the feasible region, right?
+And then as lambda goes to infinity, we arrive at some optimal vertex. Okay, and that curve, uh this curve is called
+The central path.
+Gangless curve. And what path following interpoint methods try to do is they try to start somewhere at the beginning of this curve, and then they try and follow the curve.
+Okay.
+But let me tr let me draw some kind of
+picture, I'm not great at pictures, but let's say this is the feasible region.
+And let's say we're trying to just minimize, let's say gravity, let's say that the cost function points upward and we're trying to minimize it, so this is the optimal vertex.
+Okay. So the analytics center is somewhere. I don't know exactly where it is in this picture, but let's say it's here.
+And there's some curve that goes from there to the optimal vertex.
+Okay. And
+So this this is the central path.
+And what Pot Path Following Interior Point tries to do is it starts
+No, this is let's say this this corresponds to lambda zero, then lambda one, then lambda two, etc.
+And all along the way, we never are actually exactly on this central path, but we always try to stay near it. Okay, so we have some we have some uh X lambda z X tilda lambda zero, which is sort of near the true minimizer of F Lambda zero.
+And then we refine it to get even closer. Well let's say we refine it to get even closer.
+And then now we use that as the approximate solution for this thing, and then we we iterate and try to get closer. And we just keep kind of staying near the central path.
+Uh we never quite get on it, but that's roughly what the algorithm does.
+Okay. And this this is us. Okay.
+So this is kind of a cartoon picture, but that's uh
+Okay. Right. So not all interior point methods are described in this path following way, but at least the way I'm going to show you in class
+Um I will show you a path following version.
+Questions?
+Okay. So um
+So uh
+Digression
+into optimization.
+So before I can tell you how we actually carry out uh the vague plan
+I need to tell you, right? Uh I guess I erased up five. I need to tell you once we have a solution that's roughly good at minimizing something, um, how do we improve the error via some iterative approach?
+Okay. So that gets into the territory of optimization. And I just want to tell you a couple things that you'll need to know to be able to understand.
+how we're actually going to do this. And this is going to come to your question of what do we do inside every iteration.
+Okay.
+So
+Um
+Yeah.
+So we're gonna look at iterative procedures.
+For minimizing
+Well say for computing X star, which is the arg min
+Over X and R N
+Of F of X.
+where F of X
+F maps R into R.
+Okay.
+Okay.
+So first I want to tell you, before I tell you what Enter Point we'll actually use, I want to tell you something that's um kind of a precursor to that. So first order methods.
+We assume
+We assume that uh first of all one
+There is some Oracle
+That given
+An X and R N
+It tells us that Oracle tells us F of X
+And the gradient of F at X.
+Okay.
+Two
+We have some control.
+We have some we have some gi bound given to us.
+On uh how
+The Hessian of F can can uh behave.
+Okay. So let me remind you
+Remember
+That the Hessian
+At any point X
+Is a matrix. Okay.
+It's an end by n matrix.
+Where
+The IJ thin tree, del squared of F of X.
+I J is equal to uh D squared.
+Del XI del X J of F
+Okay.
+Yeah.
+And what I mean by how it can behave is we're told
+Yeah.
+So this is back to two. In particular, there exists, let's say, zero less than mu less than L.
+Such that
+Yeah.
+Mu times the identity, and I'll say what this means in a second.
+is at most L times the identity.
+For all X and R N
+And when I say that A is at most B
+I mean
+that B minus A is positive semi-definite.
+Okay, and if you're not comfortable with what I mean there, that's the same thing as saying
+For all X.
+X transpose B minus A. X is at least zero.
+Okay.
+So really what this thing is saying is that if you look at this matrix, right? So for any X, this is a matrix.
+If you look at this matrix, its largest eigenvalue in magnitude is at most L.
+And its smallest eigenvalue, or the one that's closest to to zero, is still at least mu. None of the eigenvalues are too small. So this I this matrix is somehow well conditioned.
+It doesn't have any really big or really small eigenvalues and magnitude.
+Questions?
+This thing here, this squiggly less than thing, is usually called uh the loner
+Ordering
+On matrices.
+Yeah.
+Oh um
+So yeah, so okay, good.
+So I don't okay, I'm not gonna get in so for this class you don't need to know it. I'm not going to assume uh you know it. I'll just just take it by faith, but uh the way you do it is by something called the real equation. Okay
+Okay, so the largest um the largest eigenvalue is the soup overall X of or the max overall X of X transpose AX.
+Okay. Um
+So right if you
+Um
+Right. Uh I don't know, does that answer your
+Right, so X transpose LIX uh is just L times the square number of X.
+So sorry, when I said uh it's the max of raw x of x transpose AX, uh that's where X has unit norm. You have otherwise you have to normalize by the square number of X. You have to normalize by X transpose X.
+So if X is unit norm, the max of X transpose LIX is just L times the square norm of X, which is just L if X is unit norm.
+Whereas here it's um it's at most x transpose times the largest eigenvalue.
+Uh it's at most the largest eigenvalue times X transpose X.
+which is the largest Ian value, which is that most largest I can value.
+So
+That says the largest I can do as it must tell.
+Yeah.
+more on more linear algebra stuff.
+Are there any other I don't know, I d did I answer your question sort of or okay.
+Uh yeah but at least for what I'm gonna say from now on uh
+You won't need to understand the proof of that to to appreciate
+But interrupt me if that if that's not the case.
+Any other questions?
+Okay.
+So
+So what do iterative methods do?
+Okay.
+For minimizing
+F of X. Okay, what do they do? So start
+With some
+X naught in R N
+Okay.
+Iteratively
+Compute
+Okay.
+Um X K plus one
+From X K
+VS um
+Update rule.
+And then, you know, stop after some number of iterations.
+Right, so the thing that we'd like to understand
+Okay.
+Is
+How well does iterating help us? Okay.
+Okay.
+So
+We would
+like to find an update rule
+Such that
+say if you look at F of
+X K minus F of X K plus one minus F of X star
+This is at most
+Say alpha times
+F of x zero minus f of x star.
+Where alpha is small.
+So alpha doesn't depend.
+And uh K there? Um oh, this should have been X K.
+Yeah. Right. So yeah, so the point is like as you said, just by induction, um this means that if you go from say X zero and iterate K times and get X K, then you've gone from you've you've multiplied your error by alpha to the K. And if alpha is less than one, it means you're kind of exponentially becoming
+Okay. So that's kind of the goal of of uh
+kind of first order methods and you should do this in the update rule, your update rule is only allowed to depend on F of X and Lambda and and uh gradient of F of X.
+Okay, because that's all your oracle gives you. And in your analysis, you're allowed to use the fact that you have control of the Hessian.
+But the the oracle doesn't let you compute the hashen.
+Okay. If you could compute the hash and that would be called the second order method. So kath order I think means you have information about kind of kath order parcel derivatives.
+Do you always have a bound of one higher one? Uh sorry, say it again. Do you always have a bound like
+Oh no, so actually the thing that Interior Point will use, it will use a second order method and um we won't have we won't assume control on the third order partial derivatives. We'll assume some other kind of control, which I'll I'll state when we get there.
+So from what I know Newton's method if they weren't
+only just uses the first the the gradient but achieves second order.
+It just uh uh right. So I actually I'm gonna I'm gonna look at I'm gonna tell you about Newton's method soon. Okay.
+But um
+It's not gonna be a pure first ordered method in the sense that we will actually need access to the Hessian. Like the update rule will depend on the Hessian.
+Yeah. Okay. But there is a first order rule which just needs information about the gradient and it's called gradient descent. Okay, so I'll tell you I'll tell you about that soon.
+So
+So one such update rule.
+Which is a first order method.
+Is gradient descent.
+Okay, so let me just tell you what that what that is.
+So who here has heard of gradient descent?
+Okay. Who here has seen it actually, you know, analyzed rigorously with proofs of
+convergence and things like that.
+Okay. Well not definitely not as many. Okay, good. So you'll see some analysis now. In particular, when you have that kind of control, you can give some kind of bound.
+So gradient descent.
+Um
+Okay, so
+Before I tell you what the update rule actually is, suppose
+We have some X0 and X1 that are two points in Rn.
+And define
+X T to be equal to
+X zero plus T
+Uh I should probably be
+Yep. X zero plus t times X one minus X zero.
+Okay. So in particular X zero is X zero and X one is X one.
+So
+I'm not gonna prove this. This is this follows from Taylor's theorem.
+with an explicit remainder. Okay, if you want to see a proof. Should be in pretty much any calculus book.
+F of x one
+So the first two or the first two uh terms in the tailor expansion are F of X zero plus the gradient at F of X.
+zero dotted with x1 minus x zero.
+Okay, so those are the two first those are the two first terms. The the first two terms in the tailor expansion of F of X1 . And then there's an error term. Okay.
+Okay. And you can write this error turn ex error term explicitly. Okay.
+some funny form. And if you write Taylor's theorem with remainder, this error term looks like the integral from zero to one, the integral from zero to t
+of X one minus X zero times the Hessian
+at some X alpha uh X1 minus X0.
+D alpha D T
+Okay. So just to recap, uh just take it by faith that this thing here, or look at the notes later once uh I I I'll insert something for linear algebra, this second inequality here, this lower ordering inequality means that the largest uh singular value of this matrix is at most L.
+Okay. What does that tell you about any one of these dot products? So this is a dot product between X1 minus X zero and the Hessian times X1 minus X zero.
+Yeah, exactly. So this thing
+Is at most L times X1 minus X0.
+L two norm square.
+Okay, good. So what we have is that F of X1 is at most
+F of x zero plus
+The gradient at F of X0 dotted with X1 minus X0 plus L over2 . We need to integrate this expression from alpha going from zero to t and from t going from zero to one. Right? This doesn't depend on alpha at all. So when you integrate alpha from zero to t, you just get t.
+And when you integrate t, you get t squared over two. That's going from zero to one, that's one half. So this is L over2 times x1 minus x0.
+I'll tune on a squared.
+Okay.
+So
+Given so now let me tell you what grading descent does, what's the update rule. Given so
+Let me call and let me call this this uh inequality inequality star.
+Given some iterate x0.
+Radiant descent
+Updates.
+To X one
+Which minimizes
+The upper bound. It minimizes the right hand side of the star.
+Right.
+Okay. And you can show just using calculus that this minimizer is X1 is equal to X0 minus1 over2 L times.
+the gradient of F of X0 L2 M squared.
+Okay.
+Questions?
+Yeah. X vector.
+Oh
+That is a very good point. That is not what I mean.
+Yeah.
+Okay.
+And the upper bound that you'll get
+And this will imply that if you if you just plug this into the right hand side there, that will imply that f of x1 is at most f of x zero minus1 over2 L times the gradient of F at X0 .
+I'll zoom squared.
+Yeah.
+Okay. Okay, so we have some kind of explicit bound on progress, right? So remember we're trying to minimize F. So before we were getting a value of x0, now we're getting of x0 minus something.
+Right. And kind of this is why you need to say that the Hessian never gets too small.
+'Cause for all you know
+Um
+Well I mean basically the problem is you don't want this thing to be equal to
+zero or something very tiny.
+Okay.
+So we need to actually, you know, what we actually want to say is where where did I put that alpha business?
+Uh did I er did I already er did I just erase that? Oh well. Right. So
+We wanted to say that if you look at f of x one minus f of x star, this multiplicatively decreases from f of x0 minus f of x star.
+Right. So we're not there yet. We have to say something more to actually get that. And here we're going to use the lower bound on the Hessian.
+Okay.
+Okay. So
+On the one hand, we said that this thing is at most something. It's also at least something.
+Right.
+Do you agree with me?
+Okay, so what changes if I wanted to put the inequality in the other direction?
+Yeah, I'll change this to mu.
+Yeah.
+So we also have that
+In particular, um let's say F of X star
+is at least
+Oh mein I write like this.
+F of y for any y f of y is equal to
+Where is that least?
+F of x minus or plus the gradient of f at x y minus x.
+My uh minus uh mu over two times x minus y L two norm squared.
+This is true for all XY.
+So
+Let's fix X.
+And let's take the minimum overall y.
+Okay.
+So what's the minimum overall y of the left hand side?
+Seven X star, so FX star
+Is at least the main overall why of
+Of x plus this gradient.
+Y minus mu over two times x minus y squared.
+Um
+And this thing again you can write down an explicit formula for when it's minimum.
+Basically uh
+Um
+Think
+Uh oh okay, well I didn't have to recalculate it. But you can show that this thing is when it's minimized it equals um f of x minus one over two mu
+F of uh X, the gradient of F of X.
+K F of X uh squared.
+Yeah.
+So this is just calculus to figure out which y minimizes this right hand side.
+Okay, and actually I wanna fix
+So I want to fix X to be let's say X K or K iterate.
+Okay.
+Okay.
+So now I want to combine these things.
+So
+What do I know?
+I know that
+F of x k plus one.
+And let me actually write this. Let me actually bring this thing over here. And let me just say that this implies that
+The gradient.
+Is at least
+Two mu
+times f of x k minus f of x star.
+Okay.
+So this looks sort of nice because we know that our progress is measured in terms of subtracting off some multiple of the gradient. So we'd like to say that the gradient is big so that we made a lot of progress. And this is telling us some lower bound on the gradient.
+So on the one hand, what do we know? So summary.
+We know from up there that F of X K plus one
+is at most, let's say, F of X K.
+Minus one over two L
+times the squared norm of the gradient.
+And we also know that the gradient is not too small. This is the gradient XK. We also know the gradient XK is not too small.
+Yeah.
+Okay.
+So this impl so what do we have here?
+Yeah.
+This implies
+What do I want to look at? I want to look at f of x k plus one minus f of x star.
+Right.
+Okay.
+This implies that F of X
+K plus one minus f of x star.
+Okay.
+Is at most
+Well, I subtract I'm just subtracting FX star from both sides. I'm not doing anything fancy.
+This is at most f of x k minus f of x star. There's me subtracting from both sides.
+Minus what over2 L times is gradient squared.
+Yeah.
+But now I have a bound on this, right?
+Yeah.
+Well I have it I know that this thing is big, so when I subtract it I know that I have an upper bound on this right hand side.
+And you when you just manipulate that, what you get is that this thing is at most one minus mu over L.
+Times um
+F of x k minus f of x star.
+Okay, so this
+Is the thing I was saying was alpha before. Okay, so in one step of gradient descent, you have some promised reduction in your error.
+That depends on basically the singular values of the Hessian. As long as um
+Right. As long as this ratio is small, you have some good band. Or
+Yeah.
+As long as this ratio is big, you have a good bound because you're taking one minus that.
+Okay. Yeah.
+So why did you also write X T that is equal to X O plus T times X one minus X over there? Uh wait, sorry, can you say it again? So here you would
+Here? Yeah, so this is so right, so this is basically my update rule. So XK plus one is X.
+X K minus one row X K.
+Right.
+So okay, so what's your question?
+Even next year there, that's what we did, right? Um here? Yeah.
+Oh, I mean so I just wanted to tell you where gradient descent comes from.
+So the place where greater descent comes from is um
+writing down kind of writing down F of X one in terms of F of X zero using Taylor's theorem with an explicit remainder.
+And then now upper bounding the right hand side using the information you have about the Hessian.
+Right? So we said using information we have about the hash, this right hand side is at most that.
+And then grading descent just tries to minimize that, right?
+So really really I mean F of X for any X could be written in this way with Taylor's theorem.
+So the real thing we wanted to do is just minimize this whole right hand side. But this whole right hand side is complicated. In particular this integral part looks complicated.
+So we just bound that thing using information about the Hessian, and then we just minimize the right hand side of this expression.
+And that's what Great Independent does.
+I think he was talking about the negation. Oh, why did I define that at all?
+Oh I see. You mean the notations the notations collide, is that what you mean?
+Yeah, okay. Yeah, sorry. The no the notations do collide, yeah. Yeah.
+Yeah.
+Okay. So there's only a few minutes.
+left. So okay, so that's
+That's um
+Gradient descent. So what's the punchline you should take away? Well
+Suppose I have some initial iterate point X0 that's that kicks off my gradient descent, and then I keep updating X0 to get X1 , then X2 .
+etc right and I want to decrease my error by a certain multiplicative factor. I want to go from error uh
+delta to error epsilon times delta.
+Right.
+So you could ask, you know, how many iterations do I need before I have that promise? So again, using that heuristic calculation I told you where one, let's say one minus one minus one over x to the x is roughly one over e.
+Okay.
+How many iterations do I need to have my error?
+Sorry, just to have my arrow, let's say.
+L of remute, right? Yeah, but exactly as you said. So so so to to guarantee that I I have use I think as a verb is it is it have with a V?
+to guarante to to have my error
+We need O of L over Mu iterations.
+Right, because one minus mu over L to the L over mu is one is at most one over E.
+Okay. Um this implies t and as you were saying, to reduce error for
+From let's say
+delta to epsilon delta, we need
+Oh of L over mu times log of one over epsilon.
+So you could ask yourself, I mean, so this is not this is not gonna be too relevant for what we're gonna do with with the interior point, but I just want to mention you can ask yourself, well, in this model, in this model where I have an oracle for F and its gradient, and I have these bounds on the Hessian, okay?
+What's the best bound I could get? Is L of RMU login reps on the best, right? Or like to have my error do I really need L of RMU? So
+It turns out
+This is not an optimal method.
+There's another method. There's another method called accelerated gradient descent.
+How's er
+In O of square root L over Mu iterations.
+And this is due to uh Nestorov.
+And the exact reference
+Okay.
+is uh Soviet math
+In eighty three
+Okay. So I'm I'm not gonna not really gonna cover not gonna cover that. I just thought I'd make you aware of its existence. I mean for us actually when we do this, um all our kind of control parameters will all be constants, so there's not really gonna be a difference between
+blah and square root of blah. But I just thought I would point out that uh in later in the future if you ever think, hey, how does gradient descent work again for some other problem you're working on, I want you to know that uh there is this that exists. So you can go read about that if you want to.
+Okay, so we're basically out of time.
+So
+Next lecture
+We'll state
+Second order method.
+Yeah.
+And bounds.
+This is New Newton's method.
+I probably won't because we're I don't want to spend too much time here. I I probably won't actually go through the proof of what it achieves, but I'll just state it and you can read the
+The proof in the notes.
+And then and then we'll finish off by showing
+How to use
+Newton's method
+We'll show how to use Newton's method.
+to get
+Kind of an X tilde lambda k plus one.
+from X tilde lambda K. Okay, so we're not gonna be using gradient descent because we will actually need to not just have bounds on the Hessian, but actually explicitly compute the Hessian in interior point.
+Okay, but what you should have in your mind right now is kind of our Newton's method, which think of it as something like reading descent some iterative method.
+It's gonna start off what what it's trying to do at every step is minimize F sub lambda k plus one. And what have we done in the last uh what have we done previously? We've we've approximately minimized F of lambda k.
+So since we've approximately minimized F of lambda k, we basically have this thing in our hands. X tilde lambda k is an approximate minimizer.
+Okay. And this is gonna be our X zero for Newton's method. It's gonna be the initial well, it's gonna be that X zero. The the initial point that we star off Newton's method with will be this.
+And then we'll run the update rule many times until the error gets small enough that the new point we have with small error, that will be our X tilde lambda cap plus one.
+Okay. And then now we'll use that as the starting point in Newton's method to to minimize or approximately minimize F of lambda k plus two.
+Okay.
+So
+Um are there questions about where we're gonna go in next lecture or about anything that I said in this lecture?
+Yeah.
+Okay. Well I guess the P set's due tomorrow and
+Also the product proposal. It was it last night?
+Really? Oh great. Okay, it was due last night. Okay. Right. Something is due soon, right? Project proposal. Yes. Project proposal is due.
+Yeah, this Thursday at eleven fifty nine PM I think. It's yeah, I believe eleven fifty nine PM.
+Yeah. Okay. Well the P set's due whenever the website said it was due. I thought it was tomorrow night, but maybe I'm just
+The project. Yeah, good. That that I was more sure of. But the P setue whenever the website said that was due, so
+Yeah. Okay.

@@ -1,0 +1,764 @@
+Oh. I guess I'll just get started. Uh so a couple things. One is I think I sent an email about project proposals which are due next week Thursday. I don't think the website has a time. Uh if it does have a time you should stick to that. I think it doesn't. So that means anytime Thursday, which means I guess
+eleven fifty nine PM Thursday evening
+Um yeah, and you know the primary purpose of this product proposal is to
+just make sure that you're looking into potential projects, right? So the the project is due sometime in December
+during I guess the last day of reading period, whenever that is. And I just wanted to make sure that you know you don't uh start, you know, you don't start thinking about project ideas the week before or something, right? So this is this date is here to force you to think about project ideas.
+And yeah, so you you shouldn't you know, even if you think you might want to change your project later, you still have to do this. Uh and if you do want to change you can, but you'd have to like submit a new proposal. And these things aren't that long anyway, but uh I just want to make sure you have some project idea.
+by next week.
+A questi questions about anything related to the project?
+Okay.
+Um good, so
+Yeah, so I guess last week you had a couple guest lectures and
+And before that, I think I ended with um FP tasses, F Prasses, and uh SDPs, integrality gaps and SDPs, right? So okay, so good. So for a while now we've just been talking about linear programming and saying
+There is some magic machine that can solve linear programs, and we never really got into how you would actually do it. Okay. So it's about time that we actually give algorithms to solve linear programs. So today I'm gonna start off with the simplex. I'm also gonna prove strong duality. Um and you'll see that kind of the proof that simplex works implies
+Okay, so that that implies strong duality. Um and then if I have time I'll say a little bit about um so the one issue with Simplex is that it works well in practice. I'll cite something during lecture that gives some
+some evidence for why. But uh in the worst case, all known implementations of Simplex in the worst case take exponential time.
+Um so then I want to tell you a little bit about how to get polynomial time uh linear programming algorithms.
+Okay. Okay, so today
+So one uh so is gonna be well so let's say solving LPs.
+So one is gonna be the simplex algorithm.
+two is gonna be uh we'll see for example certain things like strong duality
+And complimentary slackness.
+And three
+We'll see a little
+Or what it's roughly about.
+Okay.
+So um first of all so LPs linear programming.
+So far I've been saying that we want to do minimize C transpose X such that and then um you know
+So many linear inequalities.
+Okay. So w for example it could be that um a dot x is equal to b, or is that most b or is that least b?
+There are many different types of inequalities you could have here. Okay. So I want to put everything in what's called standard form.
+Okay. Which is min C transpose X such that AX is equal to B and X is at least zero.
+Okay. Um where when I this is a vector, so what I mean here is that coordinate wise it's at least zero.
+Okay, and here um
+Uh X is an N-dimensional vector. A is m by n.
+And um
+N is cer is at least M. Okay, so I claim that any um
+Any LP of this form can be written as as in this form, and I'll say why. And you know, if you have a maximization problem like max C transpose X, that's the same thing as uh like so this could be max or min, right?
+But you could without loss of generality say it's min because if it's max, that's just minimizing the negative. So you can put a negative sign on all the entries of C.
+Okay, so so how can I write anything in this form?
+So first of all
+So getting to standard form, how do I do that?
+Because as I'm going to describe the simplex algorithm, it assumes
+that your LP is written in standard form. So that's why I want to put it like that. Okay. So how do we do that? Well, if I have a constraint
+Imagine this is like a row of A. If I have a constraint that says AI dot x is equal to BI
+Okay. This is the same thing as having the two constraints, uh AI dot x is at least BI as well as uh AI dot x negative a dot X is at least B I negative B I.
+Uh is that what I wanted to say? So I wanted to say yes, I believe so. Okay.
+And similarly uh AI dot x is at most BI is the same thing as negative AI dot x.
+is at least minus BI.
+So this already says that the only constraints we have to deal with are greater than or equal to constraints.
+Okay. And then we can define Slack variables.
+For each constraint I
+We define
+Slack variable.
+S I, which we and we write a constraint that SI has to be at least zero. And the point is SI needs SI is gonna represent the difference. So if this is greater than or equal to BI, then this means that we can write AI dot X as BI plus SI. So SI is just the gap between these two between
+between the left and the right hand side. Okay, so so uh replace
+Okay.
+AI dot X is
+At least BI with
+AI dot X plus uh minus S I equals
+Close B I
+Okay.
+Very good. And then so that already
+That already says we can turn everything into this form that AX equals B.
+But there's one more thing which is this x greater than or equal to zero business.
+Let me just let me just write that here actually.
+So
+Okay.
+Uh we can write for example X
+XI to be X I plus minus XI minus where
+Xi plus is at least zero and XI minus is at least zero.
+Right. Any number, whether positive or negative, can be written as the difference of two non-negative numbers.
+Okay. Good. So once we do all these transformations, then all the variables that appear in our LP
+The slacks as well as these plus minus variables are all non-negative. Okay, so all the variables in the LP are non-negative and all the constraints are equality constraints.
+Okay. And the reason that n is at least m is because for each of the constraints we have a slack variable.
+Right. Plus we have all the variables we had before. So the number of variables in this LP is at least the number of constraints.
+Questions about that?
+Yeah. Uh why is that
+Or uh I mean I I haven't tell I haven't told you why any of this is important, right? Like why why did I put it in this form as opposed to some other form?
+I'm just putting it in this form because Simplex is going to operate on LPs in this form.
+Or at least the way this the way I'm gonna present sublicks.
+Okay.
+Okay, so simplex is gonna be a greedy algorithm. Well first of all, let's
+You know, let's look at what an LP is geometrically.
+Okay. So let me draw one in2 D.
+We have um so let okay, so let's say we have these x greater than equal to zero, y greater than equal to zero constraints.
+Then we have some other constraints as well.
+So one constraint might say you're on this side of the space, another might say you're on you're on this side of this, you're in this half space, etc.
+So at the end of the day your
+Feasible region is
+Is this polygon?
+Okay. And b the basic way that Simplex starts
+The basic way that it proceeds is it starts at some oh and then there's gonna be the C vector, right? So C, let's say C
+This is C right here.
+Okay. Um let me also okay, so that's fine. So the basic way simplex starts is are that it goes it starts at some vertex.
+Okay, and then it it like greedily walks to neighboring vertices that do strictly better.
+Okay. Um so you know first it might walk here.
+And then we walk here, and then it's done. So there's an issue of like how do you get an initial vertex? How do you prove that there's always a better vertex that's adjacent to you?
+Um and if there are many adjacent verses that are better, you know, how do you choose how do you choose one?
+Oh does that matter? And also, how do you even know that the optimal solution is obtain obtained out of vertex?
+Okay, maybe maybe uh vertices aren't always optimal.
+Okay. So
+So simplex
+It's by uh Dan Zig. Oh, do you have a scribe for today? Okay, great.
+Dad's again in forty seven. Um
+Start at some vertex.
+Um greedily move
+Two vertices, two adjacent vertices.
+Uh to adjacent vertices which do better.
+Stop.
+when at the optimal vertex.
+And you know, how do you know that you're out the optimal vertex while
+uh as I say more about how simplex works, uh we'll see exactly what the stopping condition is.
+Okay, so first of all let me um so that's all nice in pictures, but let me be a little more precise about stuff.
+Okay. So definition
+Um so uh let's say before I give the definition let me define P is the set of all points
+x such that a x is equal to b and x is greater and equal to zero. So it's the polytope over which we're trying to minimize this objective function.
+And then definition.
+Okay.
+We say X and P is a vertex.
+What do I mean by something negative?
+Vertex if
+There exists a y, a vector y which is not zero.
+such that
+X minus y is in P and also X plus Y is in P.
+Okay.
+Okay, so that's what I mean by vertex.
+Yeah.
+So first of all I want to say um
+What? Question? That's if it's not a
+Oh yeah yeah. We say is a vertex if there does not exist a Y.
+Uh
+Okay.
+If there does not exist a y such that, yeah. If there exists such a y, then it's not a vertex. Okay.
+Yes, sorry.
+Okay. Um okay good. So now I wanna I wanna just immediately tackle the first one. So start at some vertex.
+Now how do we get the initial vertex? Okay.
+So that seems a little uh so
+It's easy to maybe confuse yourself on this one because of the following. So I claim that feasibility, meaning checking checking that there is a solution to these constraints. Forget about the objective function. Just suppose you want to check some that some X satisfies those constraints.
+I claim that that's equivalent to actually solving the minimization problem.
+Right? Why is that? Because I can sort of guess the optimal value and then do a binary search.
+So suppose that I guess the optimal value is R.
+Okay. Then I can have another constraint which says that C transpose X is at most R.
+I can move the objective into the constraint and then I can just ask, is there an X which achieves at most R? And if not, I'll move on in my binary search.
+Okay. So even finding a point so we can reduce a we can reduce the minimization problem to finding a point in this P.
+And it yeah.
+Right. So okay, so I didn't really um
+That's a very good point. So why would it terminate? So you would get more and more precision, more and more bits of precision as you go through these iterations of binary search.
+And
+Yeah.
+We're gonna see this soon. I'm I'm skipping ahead a little, but
+Okay, so there are n variables and m constraints, right?
+So what does it mean? What is a vertex exactly? We're gonna see that a vertex is basically a point where m of the constraints
+matter are tight and then the others it's like the intersection of M constraints.
+Okay. And all the other variables that don't co correspond to those constraints uh don't
+Matter. Okay. Um so
+Like how many vertices are there? Are there gonna be at most n choose m of them?
+Okay. And given the M constraints that define the vertex, figuring out what that vertex is is solving a linear system.
+Okay, so if you assume that all the entries in A and B and C are bounded precision integers, let's say they all take some number of bits B
+Well then you can you can bound the number of bits that's that are necessary to write down a vertex.
+Right? It so to write down a vertex you have to take some submatrix of A and then solve a linear system.
+Right, and in terms of the precision of the input bits, you can write down how many bits are needed to to solve the system.
+Right. So so you know that the optimal x is a rational number of bounded precision, and you can write a b you can write a bound for that precision. So you know that you know that this optimal value is a rational number of a certain precision.
+So your binary search doesn't need to go beyond that precision.
+Um yeah, so I'm I skipped ahead, so but we'll see. Basically I mean you know what you know a priori uh uh like an
+Upper bound on the number of bits of precision you need to actually represent opt or to represent the X which achieves opt.
+So you only need to binary search that number of times to get that pr level of precision. Does that make sense?
+based on our future
+Verstices will be optimal, right? Yeah, yeah. So assuming that vertices are optimal and also assuming that vertices are obtained by solving linear systems on submatrices of A, then yeah, you can bound precis the number amount of precision you need to write down a vertex, to write down optimism.
+And you only need to binary search that number of iterations.
+Yeah, that's a good question. Any any other uh any other questions?
+Okay, so what I was trying to say I guess is that like it
+It seems maybe a little weird that we're able to get a starting vertex.
+Because even finding a point
+If in general you could find a point in a polytope given the given the polytope, given the hyperplanes that define
+it the half spaces that define it. If you could solve that problem in general, you would be able to solve arbitrary linear programming because you could you could binary search on the objective and put that as a constraint. But that's only if you could solve general LPs.
+uh feasibility, but we're gonna write down a particular LP, okay? So we're going to reduce finding a starting vertex to to uh another LP. Okay, but that LP will have a very clear starting vertex.
+So we can run we're gonna run simplex twice basically. We're gonna run simplex on another LP to find a starting vertex, and then we're gonna take that as our starting vertex for the original LP.
+Okay. So what's this new LP that I'm talking about? So
+to get
+Starting vertex.
+We're gonna minimize T
+Such that
+A X is equal
+Uh one minus T times B.
+And also X is greater than equal to zero, uh zero is less than or equal to T is less than or equal.
+to white.
+Okay, so this is not in
+This is not in standard form because we have this constraint that T is at
+most one. This this right here, so you can write T is at least zero and then T is at most one. So this constraint here is not the kind of constraint we like.
+Okay.
+Equal to one.
+And the slack is also not negative.
+Okay, so now we're in standard form.
+Great. So
+Uh what's a what's some vertex? What's a give me just any point or vertex in this
+uh that's feasible for this for this for these constraints.
+X is all zero. Yeah, X is zero and what? T zero S
+one or T one s T is one, S T is zero. Okay, great. So this point does satisfy those constraints.
+And why is it a vertex?
+Right, so simple we I didn't give you simplex yet, but you know it's it starts at a vertex. So we're gonna run simplex on this. So we need to make sure that we have a starting vertex, not just a feasible point, but a vertex for this. I claim that this is a vertex.
+Okay, do people believe that under that definition of vertex?
+Right. So the point is, suppose you have a y so say it's not a vertex, so that means there is a y, so that x minus y and x plus y are both in P.
+And by the way, when when we say x, we mean all the variables. So x here means this concatenated with that variable, concatenated with that variable.
+So if you look at why, it can't have it's not allowed to have any non-zero mass on these variables.
+on the X variables. Right? Because if you add Y and subtract Y,
+One of these is gonna go negative if you have non-zero mass there.
+And we have a constraint that that uh the variables are non-negative. Okay? So we can't have any mass here.
+It also um can't have any mass on the slack.
+Right? Because similar the same reason. And also it can't have mass on T because uh one of them is gonna be positive and when you add to T um
+You're gonna violate this constraint.
+T is greater than zero. Yeah, T's great yeah, but that doesn't mean but you you're allowed to um that's okay.
+T is greater than equal to zero, but T or T is one.
+Um okay.
+Right. And the point is you're trying to minimize T, so what you hope is that the optimal T will be zero. And when T is zero, what do you have? You have AX is equal to B.
+So so you have a feasible point now. Okay.
+Yeah.
+And actually the the point you get will be a vertex for the original thing.
+Yeah.
+Okay, good.
+Okay, so we know how to get a starting vertex, but um I want to say more about vertices, like for example, why are they optimal? So
+Okay, so uh first let me give some more definitions.
+So I guess I've been using this word, but I never really defined it. So X is feasible.
+If X is in P and an L P is feasible
+If there exists a feasible X
+And also an LP is infeasible if there
+Doesn't exist one.
+And an LP is bounded.
+If uh this min of C transpose X such that X is in P is not minus infinity. Okay, we can't make it arbitrarily small.
+All right.
+All right, so claim
+Is that if
+An LP is bounded.
+Then for all feasible X
+There exists a vertex.
+A vertex X prime such that C transpose X prime is at most C transpose X. Okay, so I just want to say that any vertices do as well as any other thing.
+So proof
+Okay.
+Okay, so if X prime is equal to X if X is already a vertex, then we're done.
+So if X prime
+If X is a vertex
+Then we set X prime to equal X.
+Else
+Okay, what does it mean? So now I mean we don't have anything other than than than the definition, right? So if x is not a vertex, else there exists a y which is not equal to zero, such that x plus y is in p.
+And x minus y is in P.
+Okay. So in particular, this implies
+So what does it mean to be in P? Well one thing it means is that A times X plus Y is equal to B.
+A times x plus y equals a times x minus y is equal to b.
+And then if you take this constraint, if you take this expression
+And subtract this
+This implies that
+Uh AY is equal to zero.
+Right? I just took these two equalities. This is equal to B, that's equal to B, and then I subtracted those two equalities. It implies that Y is in the kernel of A.
+Okay.
+Okay.
+Uh uh
+Okay, so
+Okay, so now without loss of generality
+Uh C transpose Y is less than or equal to zero.
+Okay, so why is why is that the case?
+I just want to make sure people are with me. Right? So we we had this y such that AY is zero.
+And also X plus Y and X minus Y are in P. And I claim that we can assume that C transpose Y is non-positive. Why is that?
+Yeah. So e if why if y doesn't give it to you, then minus Y will, right?
+So um
+If not, replace uh y with minus y.
+Okay.
+Also
+If C pro if C transpose Y actually equals zero
+Can assume
+That there is an index J such that
+Such that Y J is strictly negative.
+For the same reason, right? So y is a non-zero vector. So if C transpose y is zero, then one of y and minus y will have a negative entry somewhere.
+Okay. And it will still satisfy C transpose y is zero.
+Okay. So
+So case one
+Case one is that there exists a J
+Such that Y J is less than zero.
+Okay. So
+Okay. Remember what I want to do is I want to I'm gonna I'm gonna give you a procedure that's gonna gradually change X until we finally have a vertex.
+Okay. So what am I gonna do in this case? Well
+Um I'm going to I guess gradually increase that variable.
+I mean YJ is is negative.
+Not C J Y J but just YJ.
+Okay, so what I'm gonna do is I'll look at
+X plus T Y
+Okay, four T bigger than zero.
+Okay. And I claim so first of all
+Uh let's let me let me say one thing.
+If yi is equal, if XI
+Okay. If XI is zero, I claim that then
+Y I has to be zero.
+Okay. That's just true because I know that X plus Y and X minus Y are both in P. And if XI had been zero, then um if X I were zero and Y I were not zero, one of these would make that coordinate uh negative, which would violate my non-negativity.
+constraint in the LP, wherever that is. Right? I have this constraint that everything in the LP is non right, this this constraint. Okay.
+So that implies this. So so what's going on here?
+As I increment T, so imagine T starts at zero, right? As I increment T
+Um the J coordinate
+Of of this of this vector here, the J th coordinate is decreasing.
+Right.
+And as I make T as I make T bigger and bigger, eventually the J th coordinate of this vector will be zero.
+Right.
+I um if I pick J so that um
+Such that YJ is the most negative out of all of them.
+Well, not the most thing about all of them, but uh let's say
+So as I incre as I increased
+As I increase T
+Um
+X plus TY sub J goes down.
+Toward zero.
+For all
+For all J such that Y J is less than zero.
+Right.
+And there is some I am gonna do this for some uh positive T, not n not a zero T. I'm gonna do this for some positive T because
+before um one of the constraints becomes tight, before I get a new zero component, right? So
+There is some
+T star, let's say, bigger than zero, strictly bigger than zero, such that um X plus T star Y uh is
+It's still feasible.
+Right.
+Uh T star as large as possible.
+So that
+X plus T star Y is in P.
+Okay.
+Okay, good. Um and notice that
+This case one
+Can happen.
+At most end times
+Because
+each time it happens
+Our new X
+has at least one more
+Zero coordinate.
+So uh where do we use the if
+XI equals zero, then y i equals zero. Ah good. So here's the problem. So
+Let's write X
+Um let's say X is one, five, zero, three, two, whatever something, okay?
+And let's say why is
+zero one minus two zero one or something.
+Okay. So this is a problem because I want to be able to add t times y for some positive amount t.
+But notice that I can't add t times y for any positive t here because for immediately this coordinate would become negative.
+Right.
+So the existence of the T star
+Uh
+Right. So I mean in particular so wh you know why does this T star so you can ask why why is okay, so maybe I should have said this a little clearer, why does T star
+You know, why is T star strictly positive?
+Okay. So the point is just
+So proof
+If Y J
+Is less than zero.
+Then well then it means it's not zero. So that means XJ is not zero either. But X is a XJ X is a is a feasible point, right? X is a feasible point, so it means it's positive. Then XJ is strictly positive.
+Right. So that means that um there we can adjust we can add T times Y and
+still keep this thing positive, right? So for example, this implies that T times Y J
+uh plus x j is still strictly positive
+If now you just write an equality, if t is at least minus xj over yj.
+Okay. Uh
+Right. It seems a little T J T ten board X J is
+Good. Ah. But Y J is a negative number. So when I divided Y J in this inequality I flipped the in I flipped this
+direction of the inequality. That le that seems a little weird. T should not be bigger than something. It should have been less than something. So as long as t is less than minus XJ over yj, I'm guaranteed to keep this non non-negative.
+Or or let's say it like that. Then I'm guaranteed to keep it non-negative. So for each J, there's an upper bound on T that works. So I'll choose the smallest of all those upper bounds.
+That's my that's T star. So okay, so maybe I should have just said this to begin with. So so T star is just the min over over all J such that Yj is negative of minus XJ over Yj.
+Okay, if you choose T to be if you choose T start like that, then you'll still be feasible. And you'll have at least one more zero component.
+in your vector.
+Does that make sense?
+Okay. So that can happen at most end times. Okay.
+because they're only n coordinates, so we can't we can't uh increase the number of zero coordinates indefinitely. So that's case one.
+Case one was that there exists a J such that Y J is less than zero. So case two
+Is that for all J, Y J is bigger than equal to zero?
+The opposite of case one. And in particular, one of these inequalities has to be strict.
+Right.
+But now what can I do? Now I notice
+Now we have that um
+A of X plus TY
+is well it's that's still equal to a x plus t times a y, which is equal to b. And also
+We also have that x plus t y is bigger than equal to zero for all t bigger than zero.
+So X plus TY is always feasible.
+Okay.
+But uh C transpose X plus TY
+Um
+Is equal to
+Uh C transpose X plus T times C transpose Y. This is a this is a positive number. And what did I say? I said that
+I said that this is true.
+Right.
+But case one handles all the cases when we have equality, when C transpose y is zero.
+So if when we're if we're in case two, it means that this inequality is strict. So it means that this thing here is strict.
+negative.
+Which means that we can send T to infinity and this weapon goes to minus infinity. Which means that this LP is unbounded. Right? But in our claim we said if the LP is bounded, so this violates this is a contradiction.
+So this case two can't happen if if the LP is bound.
+Okay.
+And then when we're done, so if if so when we're done, uh you know case one can only happen a certain number of times, case two can never happen. When we're when we're ne when we're not in any of these cases, we're finally at a vertex and we're done.
+Okay.
+Are there questions about this proof?
+So wait, so how uh how do you get the that stripped?
+How do I get that this inequality has to be strict?
+So what do we know? We know that C transpose y is less than or equal to zero. And we also know that if it were actually equal to zero, then there would be a j such that y j is strictly negative.
+Right.
+Um I didn't see how that was related to s
+Why? So what is so what does this mean? It means it's either equal to zero or it's strictly less than zero. And what I'm saying is if it's equal to zero
+then there is a J such that Y J is strictly negative.
+In other words, if it's equal to zero, we're in case one.
+Yeah, but that that part when you show
+that there is such a j. So if there is such a J, if there so for if there is such a J, then um there are two cases, right? Either this thing is strictly negative plus there's such a J, or this thing is equal to zero
+And there's such a J. But when it's equal to zero, there's always such a J. So like this this case one here covers a superset of the cases when say
+C transpose y equals zero.
+Like if if we're in case two, that means there is no such J. Right? But if there is no such J, then that's the contrapositive of this. If there's no such J, that means it's not true that C transpose y equals zero.
+But if it if it's not true that C transpose y equals zero, well the only other possibility left is that it's strictly less than zero.
+Does that make sense? Yeah. Okay. So yeah. So um yeah, so for us to be in case two, this thing has to be strictly less than zero.
+If we're equal to zero, we would there would be a J, and then we would be in case one.
+Yeah. Any any other questions?
+Okay.
+Okay.
+Okay, so so the crawler here
+Is that if the LP is finite
+There exists a vertex.
+in P achieving Opt
+Um and here's another crawlery.
+If P is not empty
+Then it has at least one vertex.
+Hey why is why is this true?
+There's there's no objective function here anymore, right?
+So achieving op means that C transpose X is minimized at some vertex.
+If P is not empty, then why does it have at least one vertex?
+Because there must be a vertex that is uh according to your proof there must be a vertex that's better. Better for what there's no objective function here.
+I'm just saying if I give you constraints of the form AX equals B, X is at least zero. There's no objective function. I'm saying that this set has at least one vertex. Right? Verstices are defined in terms of P, they're not defined in terms of
+Yeah, but I mean uh
+Yeah, okay, I mean yeah geometrically it makes sense, but I mean you have to be careful, right? Like if I if I allowed you other types of um if I allowed you other types of constraints
+You could imagine you could imagine a picture in an LP where one constraint is that you're below this line and the other constraint is that you're below this line.
+Right. Um so now your feasible region is like everything in this range, right?
+This does not have a vertex.
+Right, but the problem with this uh to to create this, this is not in standard form. So I claim that an LP in standard form
+has a vertex. Why? Well we know that we know that for any objective function there is a vertex achieving opt for that objective function.
+So just make up one. Okay, so consider the objective function, minimize zero transpose X, subject to X and P. That has a vertex achieving opt, so that's a vertex that's in P. Okay, so
+Yeah.
+Yeah.
+Okay, so before I finally write simplex in some precise form, I want to say one more thing about vertices.
+Okay. So definition
+Given
+Uh some X in R N
+Fine A sub X
+As the submatrix
+Of A corresponding
+Okay.
+to the indices J such that XJ is strictly well let's say X is in P
+It's strictly bigger than zero.
+Okay.
+So X can have some zero coordinates. I just want to look at the non-zero coordinates.
+And claim
+The claim is that X is a vertex.
+If and only if
+The columns of A
+are linearly independent.
+Okay.
+Yes, thank you.
+So let me let me just write the let me just call this set B sub X, okay?
+So first of all
+If this claim is true, what does it tell you about the size of B sub X?
+Potentially B sub X could be N, right?
+Okay. So so and I told you n is at least M if we're in standard form. So can it actually be N?
+Like it can be M, right? So the column like this is linear algebra now, column rank equals row rank, right?
+We only have M rows and A.
+So the column rank of A sub X cannot possibly be more than M.
+Okay. So if it has full column rank, being linearly independent means it has full column rank.
+Column rank, it means that A sub X is has at most M columns. So this matrix is M by something which is at most M.
+Okay.
+Um okay good. And by the way, I claim A I claim A does have full rank in standard form.
+The column rank of A is at least M.
+Okay, so first of all, why is that the case? Uh look at the rows of A.
+If any of the rows are linearly dependent, that means there are redundant constraints.
+So you can just toss out toss them out.
+Okay. Um so these these rows that are linearly dependent, they're either redundant constraints or they're constraints that obviously violate another one.
+Right? Like if if I have a constraint that says x plus y equals five and I have another linearly dependent constraint which says x plus y equals seven
+That's an obvious violation and I can just forget and forget it and say this is an infeasible LP. So
+Just standard form and then also
+Yeah yeah I guess I didn't say that, but yeah let's just assume let's just assume that I I take out all those redundancies.
+Okay, so I I remove redundant rows. So now I have linearly independent rows.
+Okay.
+And now for a given vertex, I know that A sub X has um linearly dependent columns and there are at most M of them.
+If there are strictly less than m, I can then pad them with more columns to make it equal m.
+Okay. I know that the full column rank of A is M.
+So if this thing has rank less than m, I'll just add more columns to make it equal m. And now have a square matrix.
+Add more columns, don't you have to change X? Well no, because I know that I mean let me maybe I'm getting too far ahead of myself. Let me let me prove this theorem. So but no, I don't have to change X.
+Or which J are in BX, right? And changing which J are in yeah, I am. I'm adding more of them. Uh yeah, I mean I'm changing the set. Okay, let me okay, be f let me let me prove this theorem and then I'll get to what I want to say. Uh
+'Cause I think I'm trying to say too much without writing anything and it's
+confusing. So okay, so let me let me prove this claim.
+So the way I'm gonna prove this claim is I'm gonna prove the contrapositive twice.
+Okay. I'm gonna prove that not this implies not this and also not this implies not this.
+So
+So uh I wanna show
+Not vertex.
+implies not linearly independent.
+Okay. So again I'll use the definition of vertex.
+If X is not a vertex
+Implies that there exists why
+uh not equal to zero such that again x plus y um and x minus y are both in p
+And I I know that this implies which
+Which implies that first of all it implies that Ay is zero.
+Um
+And it also implies well A sub y so
+of y of y is zero, right? It also implies that if x i is zero, it implies that y i is zero. Remember we saw this last time.
+Okay.
+So what does this mean? This means that the columns of A sub Y are dependent.
+Right? But a sub y is a submatrix of a sub x because of this.
+Right? The place where Y puts mass is a subset of the places where X puts mass.
+So this
+Implies that AY has dependent columns.
+And which implies that AX has dependent columns.
+Since A sub y is a submatrix.
+The base.
+Um
+I don't think so because more wise you can see that
+No, it's
+No no no. Right?
+If XI is zero, that implies yi is zero.
+Which means the contrapositive if y I is not zero.
+That implies XI is not zero. Yeah.
+Yeah, okay. Okay, good. Okay.
+Okay, so two
+Is we want to show the contrapositive in the other direction, which is that not linear not linearly independent imposed
+Implies X is not vertex.
+Okay.
+So
+Not linearly independent.
+Implies that there exists a why
+Such that A sub X
+Y is equal to zero.
+Right? Now what can we do? We can extend so this this y is not an n-dimensional vector. Its dimension is equal to the number of columns of A sub x.
+But we can extend why
+Two N dimensions
+By making all other coordinates zero
+Oh there and this y is not zero. Making all other coordinates zero.
+So implies that there exists a y which is not equal to zero, such that AY is equal to
+Okay.
+And again I again I claim that so what do we need to do to show that x is not a vertex? We need to show that x plus y and x minus y are both in P.
+So the claim I claim that
+For some
+Strictly positive T
+X plus TY and X minus TY are both in P.
+Okay.
+So why is that?
+Do people believe that?
+I'm wondering why you need the T here. Oh, um I mean I'm afraid I I don't want to be in a situation where this has negative right so to be in P, I want to make sure that all the entries of these vectors are non-negative.
+Right. So the point is that Y only has mass in places where X also has mass. Right? So if Y I is not zero, that implies that XI is also not zero.
+Which implies that we can add or subtract a very tiny amount there and still make it positive.
+So
+Yeah, so y is now TY.
+Yeah. So
+Yeah, so that so this implies that X is not a vertex.
+Okay, good. So now I can finally tell you what the simplex algorithm actually is.
+Yeah.
+Okay, so
+For each um vertex
+X and P we have
+some what's called a basis
+Or base actually.
+Basis, yes, thank you.
+We have some basis, um B, which is the set of all J such that XJ is bigger than zero.
+And B is at most M.
+Okay.
+So
+Let me just remind uh people a basic linear algebra fact, which is that if you have a matrix vector product, so let's say you have um
+C Z where C is let's say a matrix of columns, C one up to C uh M.
+This implies that C Z you can verify this yourself if you want. C is just the sum over I from one to m of ZICI. So ZIs are scalars, right? So whenever you have a matrix vector product that's just a linear combination of columns.
+Right, so
+What do I know?
+I know that I know that AX is equal to B.
+Because this X is in P.
+So this thing here is just the sum over i of XIAI.
+But XI is only non-zero.
+for I for I that are in B. So this is equal to the sum I and B
+of XIAI, which I'm gonna write as uh A sub B X sub B. So A sub B is A with restricted to the columns in B.
+Now
+If B is equal to M, the size of B is equal to M, then A sub B is M by M and it's full rank. Remember the theorem we just proved said that at vertices the columns are linearly independent. So here we have an M by M matrix with linearly independent columns, which means it's full rank. So it's invertible. So this implies that
+So we have we have A B XB is equal to B, which implies that XB is equal to uh AB inverse B.
+Okay.
+Right.
+So what this tells us is
+What this tells us is that if we're in a situ if we have a vertex whose basis has size exactly m
+Then
+We can figure out what that vertex is just by solving this linear system.
+Right? If we know which basis it is, which set of uh columns it is, we'd we'd get it. Now this is what I was trying to say earlier. What if this thing is less than admin size?
+Then A sub B is not a square matrix anymore. It's m by something less than M.
+Okay. But the point is that even if it's even it has less than M columns
+I could have extended the definition of B to add more columns to make it exactly M while maintaining linear independence.
+Right, then this would still equal that. Because the extra things would just have a zero here.
+So I would still have A B being a linear being a full rank matrix times XB would equal B, and I would still solve to get this, and this would still be true.
+Okay. So
+So this I wanted to say is like a linear algebra fact.
+So what we'll do is
+For every vertex V
+Um extend its base.
+To have size M
+While still being
+Linearly independent.
+Yeah.
+So now we can rewrite we can rewrite the LP as follows min C transpose for any base. For any base we can rewrite the LP as min C transpose XB plus let's say C B transpose XB plus C N transpose XN where
+N is just the vertices that are not in the the coordinates that are not in the base.
+Such that
+A B XB plus A N XN is equal to B and XBXN are both non-negative.
+Okay.
+Yeah.
+Okay.
+Uh
+And also notice that
+So
+Um
+Good. So
+If I apply A B inverse
+to this equality here, this here implies that for all X and P
+Okay.
+X B plus
+A B inverse ANXN is equal to A B inverse B.
+Yeah.
+Yeah, so okay, so here's what I'm saying.
+Take a vertex, take its base. Okay? And now what I'm saying is we can write
+So B is the base for some vertex?
+Yeah, so every X so I'm what I'm saying is fix a vertex and fix its base. Right? And now you can rewrite the original LP in this way.
+Okay. So this is not a
+base for X. This is the same. Sorry, this is a base for some vertex. B is a base for some vertex. Fix it. Rewrite the LP in this way. Just break the coordinates into two and partition the coordinates in two. The ones in the base and the ones that are not in the base.
+So we can rewrite it this way. We haven't lost anything. And now I can also mo I can just multiply this equality by A B inverse on both sides.
+Okay. A B is a full rank matrix.
+So I know that for any X and P I can write I can write that this holds.
+So in particular
+X B is equal to A B inverse B minus A B inverse ANXN.
+For any X and B
+Which implies, for example, that um
+C B Transposex
+Or let's say C transpose X
+The objective is equal to
+CB transpose XB
+Yeah.
+Plus
+Well C N transpose X N
+And then I can expand XB
+So this is equal to C B transpose AB inverse B.
+Yeah.
+Uh plus
+C N
+Mm.
+Uh Cn gets XN. Um there's too many variables here.
+Uh
+C N transpose
+C and transpose minus
+C B transpose A B inverse.
+Uh
+Uh C transpose X B. Let me write it slowly so I don't confuse myself more.
+Yeah.
+This is minus C B transpose AB inverse ANXN.
+plus Cn transpose Xn
+And then this thing here
+Is equal to uh C N
+plus or minus
+A N transpose A B inverse
+Transpose, transpose.
+Transpose Xine. Okay. Phew. Sorry.
+Okay.
+So I just wanted to rewrite so using the fact that I can write X B in terms of something that's a constant, basically, right? This is a constant that doesn't depend on X at all.
+And then something that depends on Xn.
+And then now I wanna rewrite this objective after I make the substitution for XB.
+So here's my CN transpose XN.
+Okay. Huh?
+C B is here.
+Oh, is there a C B there as well?
+Yeah, there's a C B here I guess.
+Right, and then there's my CB transpose blah blah blah. Okay, so okay, good.
+So this
+This thing here
+Inside here I'm gonna call C sub n tilde.
+So
+Okay.
+So here's now finally I can write simplex. Simplex
+Maintain
+Current vertex X
+And it's base B
+Okay. Rewrite the LP as above.
+In terms of
+you know, like XB and XN, etcetera
+Okay.
+If
+Okay.
+If C tilde n is a non-negative vector
+Then halt.
+And return X.
+If
+there exist J such that uh if there exists a J and N
+such that uh C tilde J is strictly negative
+Then increment
+XJ as long as we can.
+Uh so that
+We maintain feasibility.
+The max.
+Okay, so this is the simplex algorithm. There's one annoying detail which I'll tell you right now.
+Yeah.
+Okay, so I mean I haven't proven that this works yet, but uh is it clear what the algorithm is?
+Right. Okay.
+And the initial vertex, I told you in the beginning how to get that by solving another LP.
+Using simple X, okay.
+Okay.
+So what do I mean by increment it as long as we can so that we maintain feasibility?
+Well the point is that um
+X B
+Actually depends on Xn, right? So if you take some coordinate that's in Xn, if you take some J that's in N, and you start changing it.
+You'll actually change what XB is
+Okay.
+And one of those things in XB might start decreasing.
+And then eventually become zero, right? And then you can't change you can't change X J anymore because then that coordinate will become negative. So you change it as long as you can so that XB maintains that it's non-zero.
+Okay, so by this thing here, what I mean is keep incrementing
+It's J as long as
+XB is non-negative. And remember XB depends on XJ. It depends on all the on on the XNs over there. Okay, so here's the annoying thing. Now, remember we did this business of augmenting B to make sure it has size exactly M?
+Okay, if it actually had size M always, we're happy because what does it mean for B to have size exactly M without augmentation? It means that all of the e all of X B is strictly positive.
+Right? Which means that there's some amount we can increment XJ by. There's some non-zero amount we can actually increment X J by before we violate feasibility.
+However, if we augmented it to become size m but it actually had size less than m before, that means that some people in XB were already zero. Which means that you might not be able to actually increment XJ at all.
+Right? So what you do in that case is you just you you put X you put J into the base into the basis
+and you kick someone out.
+One of the people who's already zero.
+But then now there's the question of which zero coordinate do I kick out to make room for J?
+And if there are multiple J's with negative cost here, which one do I put in?
+Okay. So
+If uh X B is strictly z positive
+Can increment XJ
+a strictly positive amount.
+To keep X B at least zero.
+If um
+Some J if some let's say K in B has X K equal to zero, we might not
+We might not uh be able
+to increment XJ at all.
+At all.
+While maintaining feasibility
+Replace
+Uh K and B with J
+But when I say replace one thing and B with another thing, I'm basically saying change your vertex. Right? Because vertices are in correspondence with bases with bases.
+Right? Same thing here. When I increment J and then eventually something in XB becomes zero, that thing that became zero gets kicked out of the base and then J gets put into the base. I'm now at a new vertex.
+Okay.
+So how do you deal with this?
+So if you're not careful, if you just replace any K and B that's zero with J, with any J that's negative, you could actually come up with examples where you get into an infinite loop.
+You basically put someone in and kick someone out and then the very next iteration you'll do the the opposite thing over and over again. Okay.
+So
+There is
+a pivoting rule, basically a way of choosing a way of greedily choosing who gets kicked out and who gets put in.
+Which probably
+Has no infinite loops.
+This is called Bland's rule.
+And that's due to bland.
+And uh I guess the journalist math operations research.
+In nineteen seventy seven
+So maybe next time we're out of time. Next time I'll I won't prove that it has this property, but I'll just tell you what the rule is. And then what I'll say is I'll you know I'll I'll prove why this thing actually works. It's it's not gonna be too hard given what we've already done. And then I'll show you why you can read you can basically read strong duality off of the halting condition.
+Okay, so when you're actually in this halting condition
+You can easily say a dual feasible solution which achieves the same cost as what the primal cost is.
+Okay. Um yeah. Questions?
+Right, so this is seventy seven. You said simplex itself was like forty something. Yeah. So
+Was it not realized that this was necessary originally or I so uh definitely since bland there have been other pivoting rules which also don't give you infinite loops?
+But I think I think even in practice today, people people use sometimes use pivoting rules that they know can have infinite loops. But they just don't care because they think that that's not gonna arise in practice anyway.
+Yeah, so I think it's true that before bland, um like they all add input loops. I I I think that's true. But uh
+See what I'm doing.
+I don't yeah, they might have even known that it could, but they probably just didn't care, I'm not sure.
+Yeah.
+I mean anyway this algorithm is not by the way, Simplex is still used a lot today even though uh all known pivoting rules. So right, there's always
+There's always um a choice here, right? So
+There might be many J's with negative tilde cost here. So which one do you choose to actually increment XJ?
+Right? Or if you're in this case where you can't increment anyone, which one do you choose to put to put into the basin to take out?
+So these are called pivoting rules. And there are many provid pivoting rules that people use. Some provably halt and some can get into infinite loops. But there is no known pivoting rule that takes sub that takes less than exponential time.
+Okay, there's definitely there's no there's none that takes polynomial time. So no implementation of simplex is actually fast.
+Okay. But they are fast in practice on real LPs that people want to solve.
+So people use simplex anyway. I will tell you more about algorithms that provably take polynomial time, but the first such discovered algorithm, the ellipsoid algorithm, uh is it's polynomial, but it's not practical, and I think people don't really
+Okay.
+But there are faster polynomial time algorithms such as interior point algorithms, which I'll say something about.
+So um any other questions?
+Sorry.
+Okay.

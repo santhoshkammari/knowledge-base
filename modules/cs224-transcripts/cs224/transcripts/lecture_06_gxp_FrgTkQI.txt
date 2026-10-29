@@ -1,0 +1,751 @@
+SPEAKER: I guess
+I'll get started. Just a couple things. One is I just put
+a poll on Piazza. I meant to put this
+in piece one itself. Please let me know how much
+time you spent on piece on one. I want to monitor how much
+time things are taking up. Another thing is we did have
+a scribe for September 30, which is a week from
+Tuesday, we no longer do. So please, someone take that
+slot, if you have a later slot and want to switch and be
+earlier, that's also very good. Another thing is our
+videographer has asked, if anyone wants the
+board shot differently or anything in the videos,
+please, yeah, let us know. OK. Thanks. Oh, and also, I
+fixed the two bugs-- of by one in cuckoo
+hashing, and the lemma, I didn't actually prove
+for power of two choices is fixed in the notes, so you
+can go read it if you want. So we're going to start
+a different topic today. We're not going to
+operate in word RAM anymore, at least for now. We're going to look
+at amortized analysis. And we're going to start
+off with data structures. And the two, we're going to
+look at are Fibonacci heaps. Well, we'll look at something
+else right before Fibonacci heaps, another heap. And we'll also look
+at splay trees. Good. So I think people
+who took 124 here, people who were
+undergrads here, I guess you've seen some
+amount of amortized analysis. Well, at least one bit of
+it when we did union-find, but we're going to
+say a little more. So what's the idea behind
+amortized analysis? So amortization or
+amortized bounds, we'll say, like suppose our data
+structure supports some number of operations,
+operations A, B, C. Then we say the
+amortized cost, amortized costs of these
+operations are-- let's say, t sub A, the time
+for A, t sub B and t sub C if any sequence of nA A
+operations and nB B operations, et cetera and nC C operations
+takes time at most nA tA plus nB tB plus nC tC. So usually we talk
+about worst case running times for
+say data structures. So a balanced binary search
+tree a red black tree takes log n time to do a search. If we say that it takes log n
+amortized time to do a search, it means that if
+we do n searches in a row or some number, some
+k searches in a row on a data structure of n items, then it
+should take us at most k times log n steps total. So some of these operations
+can be expensive. Some of them can even
+take linear time. But as long as the sum
+of all the time we spent is at most as far
+as this, then we say that that's our
+amortized complexity. And we're going to
+see some examples. And a common way of giving
+proving amortized bounds is what's known as the
+potential function method. And we'll see this with
+splay trees sometimes. This can get a little-- sometimes it can be
+weirder than other times. So common way to
+prove amortized bounds is via the potential
+function method. So what is that? So we define a
+potential function. Let's call it capital. Call it phi. It maps, states a state
+space of our data structure into non-negative
+reals, let's say. I don't know if that's
+the usual notation. Somehow I feel like it should
+be a subscript, anyway. And also phi of like an
+empty data structure is zero. So let's say that we perform k
+operations with actual running times t1 tk. So here I don't mean we
+support key different types of operations. I mean, suppose we actually
+have a sequence of operations on our data structure, for
+example, k insertions or k searches or something. And the actual running
+time of each operation of the i-th operation is tI. And the states of
+the data structure are S is zero before we start
+any operation S1 up to SK. So SI is the state
+of the data structure after the i-th operation, S zero
+before we do anything at all. Our amortized cost
+of an operation is we define it to be
+defined to be the actual time plus the potential difference. And why does this make sense? So the total amortized cost-- oh, sorry. This is not the diff-- this is not what
+I wanted to say. I guess what I
+wanted to say is-- so this is what I define the
+amortized cost of a sequence to be. So I want to say-- we'll show that this is the
+case, is bounded by, let's say. The amortized cost of one given
+operation is bounded by this. And why is that the case? Well, let's sum this
+over all operations. So the total amortized
+cost is we're bounding it by the sum over
+i tI plus the difference in potential. But this is a telescoping sum. And all we're left with is the
+sum of the actual costs plus the final potential minus
+the original potential, which was zero, if we started
+with an empty data structure, it's zero. Which is certainly
+at least the actual-- remember that phi maps
+into positive numbers. So this is at least
+the actual cost. So definitely, if
+we define or if we bound the cost per
+operation as this thing, that will give us a correct
+upper bound on the actual cost. So then we can say that
+the amortized cost-- so if we look at a given type
+of operation like an insertion or deletion or through
+search, then it's OK for us to say that the amortized cost
+per operation of that type is what's the worst
+case of this quantity for that type of operation. So that was all kind
+of slightly abstract. So let's actually do
+this for something. So I said we're going to
+look at Fibonacci heaps. Before that, let's just
+refresh our memory on heaps. So example is heaps. So a heap is an
+abstract data type. What does it support? Supports, insert, let's say
+insert x, where it just inserts into the data structure. Let's say that x some-- the values x are comparable. So you can do less than
+and greater than on x. There's some total
+ordering on them. You can also do delete min. This returns the min x. Let's say we have a heap,
+a heap H. The Min x and H and then deletes it. And then there is
+decrease key, which takes a pointer to some
+item in the data structure. Say a P is a pointer to item. And this k is-- a key is a comparable element. And what this does is
+replaces the key at item p, p is a pointer with
+key, which must be at most p is current key. So this is just an abstraction
+of the kind of data structure you would need to implement, for
+example, Dijkstra's algorithm. Remember Dijkstra's algorithm? For each vertex, we insert it
+into a heap, with key infinity, except for the thing
+we're searching for which we give zero. And then in a loop, we
+keep doing delete mins and then the relax step is
+a decrease key basically. So you can go revise your
+memory if you forgot. But this is exactly
+what Dijkstra needs. So Dijkstra single pair shortest
+paths with non-negative edge weights. The runtime I mentioned this
+last time is O of n times-- let's see, you do
+n insertions, you do n delete mins
+n times insert-- let's say time to insert plus
+time to decrease key plus m times time to do a delete min. OK, where n is the
+number of vertices, and m is the number of edges. So what's an
+implementation of a heap? So implementation of
+the heap data type. So we have binary heaps
+that's due to Williams in '64. What does that give you? All operations are
+worst case log n time. Insertion time, and delete
+min time, and decrease key are all O of log n. We also have binomial heaps. I think these are
+due to Guillemin-- oh, Vuillemin. Oh, yeah, and I
+should have checked. I do have a scribe, right? OK, great. And what does that give you? So these are now worst case. But if you know, if you're
+using your data structure inside some algorithm
+like this, you don't really care if your bounds
+are worst case or amortized, right? The worst case is a
+stronger property. But depending on your
+application, you might not care. So good. So what does he get? He gets an amortized
+tI being constant, and let's see, decrease key,
+and also delete min log n. I guess that's actually
+a worst case bound. So the other two are worst case. So worst case t delete min and
+t decrease K are both log n. Question or? AUDIENCE: I think
+the extra thing is-- SPEAKER: The bound? AUDIENCE: It should be
+m times decrease key. SPEAKER: Oh, m
+times decrease key. Sorry, yeah. Yeah. So this is, I guess,
+a little better. And the worst case of t
+insertion of-- the time to insert is also log n. So in the worst case, it's
+no worse than binary heaps, at least up to constant factors. But the amortized
+insertion time is better. That's not enough to speed
+up Dijkstra's algorithm. But then there are
+Fibonacci heaps. I think that's from '87. Yeah. This is due to
+Fredman and Tarjan. You're going to see Tarjan
+a lot in this class. Have we seen him already? No, I don't think
+we've seen Tarjan yet. But Fibonacci heap,
+splay trees, we'll also see him for cache
+replacement policies. Fibonacci heaps, what
+do they give you? So they give you amortized,
+insertion time, as well as decrease key-- or delete min, sorry. No, no, no, decrease
+key being constant. And they give worst case-- and also, what do I want to say? Delete min is log n. These are all amortized bounds. So Dijkstra actually gets
+faster because the log n doesn't multiply m. I'll say a little bit more-- so I'm going to assume
+you know binary heaps, or if you don't, then
+you can look them up. They're not going to
+be relevant for what I'm going to talk about today. And they're not
+too bad to pick up. I'm going to actually cover
+binomial heaps just because I think the best way
+of understanding Fibonacci heaps is an optimized
+version of binomial heaps. You'll see-- once you
+see binomial heaps, you'll see where
+Fibonacci heaps come from. And then I'll cover
+Fibonacci heaps. There are two more things
+that happened afterward, which I'm not going to cover,
+but I'll give you the pointers. One is Gerth Brodal,
+and this is in SODA '96. What does he do? Gets all the same bounds
+as Fibonacci heaps, but worst case, not amortized. Yeah, so he gets that. And then there's
+a paper by Brodal, Tarjan, and one other
+person whose name I'm going to misspell, Lagogiannis. Then there's a Brodal,
+Lagogiannis, and Tarjan, that's just two years ago, Stock 2012. So they get the
+same exact bounds. The thing is there are
+weaker and weaker models of computation, like word RAM. You saw you can
+do lots of stuff. I have a question. I'm going to tell you that these
+data structures, these three are all comparison-based
+data structures. The only thing
+they do with items, the keys is compare
+their values. So why can't you hope to
+get all of these constant? Why should delete
+min be log n here? Yeah, because of heap sort. You could always-- if you
+have n items you want to sort, you could always insert
+them all into a heap, and then repeatedly delete min. So if all your running times
+are constant or amortized bounds even, you would have
+a constant time sorting algorithm, which is impossible
+in the comparison model. But we saw that in word RAM, you
+can do some things faster than in comparison. So there's this game
+in data structures of getting bounds with the
+weakest model of computation. So once you get
+something in word RAM, you could ask
+yourself, do I really need the power of word RAM? Could I get it in the
+comparison-based model? Or maybe all I need is like a
+random access in arrays to array entries, but I
+don't actually need bit shifts, and XOR, et cetera. So Brodal solution uses, I
+think, random access and arrays. I don't think it really
+needs more than that. Maybe I'm mistaken. But this is actually just a
+pointer machine implementation. So they got same as above just
+using pointers with no arrays. So, I mean as you're
+going to see-- well, you're not
+going to see that. But you can implement
+this using arrays. It makes indexing your parent
+and children a little easier, but you don't really need them. Here, you're just going
+to see pure pointer-based implementations. Yeah. AUDIENCE: So has anyone been
+able to do better using the word RAM or something? SPEAKER: Yes. So, right. So we saw I guess fusion trees
+and Van Emde Boas, right. So the better of them gets-- basically, you can do every
+operation in, let's say, root log n. AUDIENCE: So, if you think of
+one of those as a key, then [INAUDIBLE] SPEAKER: Yeah, you can use
+them to implement heaps. Yeah, and all your operations. So if you take the min at the
+better of fusion trees and Van Emde Boas, you would get
+everything in root log n. Although what I presented in
+class was a static fusion tree. So it didn't support
+insertion or deletion. It just supported queries. And I guess if you're
+just searching for the min all the time, it's not
+really interesting. But there is a
+dynamic implementation of a data structure achieving
+the same bounds as fusion trees. So I asked last time who
+had seen Fibonacci heaps. Out of curiosity, who's
+seen binomial heaps? OK, so let me just-- so some people have,
+but many haven't. Let me tell you what
+binomial heaps are. And then from there, we'll see
+how to get Fibonacci heaps. Yeah. AUDIENCE: I have a question
+about the static structures. So can you not use them to-- you take the largest-- oh, never mind. SPEAKER: Yeah, there's
+the pre-processing phase that could be expensive. Yeah. OK. Oh, and what do I-- oh, yeah. So, binomial heaps. And I want to say
+one more thing. Actually, I'll put one
+more reference up here. Who are these folks? So there's also a paper on
+the archive just this summer. So Kaplan, Tarjan, and Zwick
+on the arXiv this summer. So what do they do? So they don't actually improve
+any bounds, they just-- so you're going to see
+with binomial heaps. So for the people
+who have seen-- who has seen binary
+heaps, raise your hand. So almost everyone,
+not everyone. But a binary heap is a
+tree-- it looks like a tree. As you're going to see with
+binomial heaps and Fibonacci heaps, they're not
+trees, but forests. We're going to maintain
+all our items in a forest, in a forest looking thing. They show how to get the same
+bounds as Fibonacci heaps, where you never have a forest,
+like, it's always a single tree. [LAUGHS] So there are just
+different variations on making things
+simpler to implement or nicer for whatever reason. So I'll just say also see
+that paper if you want. But there are no
+improved bounds in there. Yeah. I guess part of the issue
+is Fibonacci heaps are known as having somewhat
+large constants, so you wouldn't actually use
+them in real applications. So then now people are trying to
+simplify them in various ways, and hope that one
+day they'll get Fibonacci heaps people will
+actually use all over the place. So binomial heap. So each item is a
+node, and we maintain these nodes in a forest. And also, if x is
+the parent of y, then the key of x should
+be at the key of y, just like in binary heaps. So for example, you
+could have a 5, 7, 22. But you couldn't have a 7
+up here and a 5 below it. Now, for a tree in our heap, its
+rank is the degree of its root. And what we're going
+to maintain is that-- and also, a tree with rank
+k will have exactly to the k nodes in it. Also, for each k will
+have at most-- so very soon I'll start
+drawing a picture and then this will be very
+clear what I'm talking about. For each k, we'll have at
+most one tree of rank k. And also, the root of
+rank k has k subtrees. And these are trees of ranks
+zero, one, up to k minus one. So let's just draw a picture. So what is a rank
+zero tree look like? A rank zero tree just
+looks like a node. A rank one tree-- well, I have degree one,
+the root has degree one. And this is now a rank zero
+tree, which is just by itself. A rank two tree, it has a
+child which is a rank zero, and a child which is a rank one,
+which means it looks like this. And a rank three
+looks like this. That's a rank zero child. That's a rank one child. And this is a rank two child,
+which means it has a rank zero child, and a rank one child. And remember these
+keys should be stored-- as you go from as you go
+from any node to its parent, numbers should decrease. So that's what it looks like. Good. Now, how do we do
+the operations? So decrease key is the easiest. We're given a pointer
+to some element, and we're told that
+we're decreasing its key. We do the usual thing
+with binary heaps. We change its key, and now it
+might violate the heap order property. It might be smaller
+than its parent. If so, we swap it
+with its parent. And if it's still smaller than
+its parent, we swap it again. And we swap it up the tree
+until it's in the right place. So change the key, then keep
+swapping upward as necessary. How about inserting an element? Maybe this is actually what
+our binomial heap looks like. So we'll store all these roots
+in a linked list or something in a doubly linked list. So what do we do? We take x, and we just add
+it on to this linked list. So now here's our value x. We just inserted x. But now we're
+violating our property that we should have at
+most one tree of rank k, because now we have two trees
+of rank zero So what do we do? We basically do binary
+addition, right? So you can write a
+bit vector, where you have a one in
+the k-th position if you have a tree of rank k,
+and you have a zero otherwise. And now we're adding one,
+we just added one element. So we're adding one in
+binary to this number. Currently, our data structure
+looks like, we have a rank zero tree, we have a rank
+one, we have rank two, we have a rank three. And now we're adding
+one to this number. And that's going to give us
+one, zero, zero, zero, zero. So what's going on here? Well, we're going
+to merge these two. So let's say x happens to
+be bigger than that element. So x will get moved here. So now there's a carry. We have two rank one trees. We need to merge them. One will be the
+child of the other, just depending on the roots. So for example, maybe this
+guy hangs off here now. And then now we
+have two rank twos, there's a carry we
+add them, et cetera, until finally, this will all
+merge into a rank four tree. So, add a new singleton
+tree to forest, then repeatedly merge
+trees of equal rank. And delete min is very similar,
+delete min is as follows. So one of these roots,
+let's look at this picture, one of these roots
+is the minimum. It could be any
+one of these roots. So let's say that's the minimum. So what do we do? We return it, we delete it,
+and all its children now become roots. All of these children become
+new trees in our forest. And again, it's like
+binary addition. So we have to merge
+things of equal rank. And what trees do we have? Well, we have the
+trees that correspond to binary adding this number,
+namely-- so this is basically one, one to what's left up top. So delete min is remove the
+root of some tree, namely the minimum, and
+insert all its children as roots in the main forest. Yeah. AUDIENCE: Would it be better to
+have a meta tree or something so we wouldn't have to search
+through all the roots or? SPEAKER: Well, we're only
+shooting for a better amortized bound for insertion. And because a rank k tree has
+exactly two to the k nodes, we know that the highest
+rank possible is log n. And also because we
+know that there's only at most one tree
+of each rank, that implies that there are at
+most log n trees in our data structure. So finding the smallest guy
+will take at most log n time. We can just check all of them. Yeah. So, good. Roots in the main forest. Now, merge equal rank trees. Good. So, what's the worst case time-- I said we're shooting
+for insertion, taking constant amortized time. What's the worst case
+time for insertion? Log n, right? Because we could
+be in a situation like this where we have a
+tree of every possible rank up to log n. And then we will have to keep
+repeatedly merging as we carry, as we have these carry bits. It's true for all
+of the operations. In the worst case, the all
+operations take log n time. We want to prove a
+better amortized bound. And we're going to do it using
+the potential function method. So, remember we're
+going to bound the amortized cost per
+operation by the actual cost, plus the potential difference. So we need to define a
+potential function, which is always non-negative. So it takes as input a
+state of the data structure. So if we're looking at a
+picture of the data structure, does anyone have any ideas
+of a good potential function? Well, first of all,
+I'll tell you this. What's the time it takes to
+actually do an insertion? So, I mean, log n
+is the worst case, but say it in terms of
+what we're actually doing? AUDIENCE: The smallest
+rank should have a tree? SPEAKER: The smallest rank
+for which you don't-- yes, that is true. That is true. Yeah, so I think that's right. Yeah? AUDIENCE: So that was the
+number of tree you have. SPEAKER: The number of? AUDIENCE: The number tree
+that you already have? SPEAKER: The number of
+trees you already have. That's right. So let me just say something. So the actual cost, let me say
+actual cost of an insertion is big O of the number of
+trees we have, let's say. Yeah. So let's say t minus
+t, which is plus one. This is the old number of trees. This is the new number of trees. So I'm going to
+define the potential of the state of
+the data structure to just be the number of trees. And now let's look at
+the cost of an insertion. Remember what I said it is? It's the actual cost plus
+the potential difference. Let me see. This big O is-- let me just ignore
+the big O for now. There's some
+constant times this. So I could put a constant
+on the outside of this and then put the
+same constant there. That's not really going
+to matter so much. So the actual cost,
+this is the actual cost plus the potential difference. So the actual cost, we said
+was t minus t plus one. And what's the
+potential difference? Oh, and what do you know? So that's it. And you could look at
+also the amortized cost of the other operations. The actual cost will be
+certainly at most log n. I mean, for the others, we're
+just getting a log n bound. The actual cost is
+certainly most log n. And the potential
+difference, I mean, you're never going to have
+more than log n trees anyway. So you're going from some number
+less than log n to some number less than log n. So the other operations also
+with this kind of calculation are rebounding
+them by log n too. OK. So that's basically
+it for binomial heaps. So now I want to get
+into Fibonacci heaps. So what are Fibonacci
+heaps trying to achieve? So they're trying to achieve
+constant time insertion and also constant time decrease key. So the main idea
+Fibonacci heaps is to be lazy, which is the
+main idea behind a lot of amortized data structures. And don't really do
+work until you're at the point where you
+really have to do it. So one example of
+being lazy is-- so wait. So delete min is
+going to take log n, decrease key should
+take constant. That's right. So one idea to be lazy
+is, first of all, why-- so as soon as we
+do an insertion, we enforce that
+this thing holds. We do merges as soon
+as we do an insertion. There's no real reason to do it. I mean, if all we do ever in
+the data structure is insert, then why bother doing any work? Just like add that
+element to the top of add it to a linked list. I mean, the only reason we
+do this merging thing is that the other
+operations are faster. For example, a delete min. So why don't we just make the
+delete min do all the work? So there will be lots of
+nodes up in this top linked list, lots of trees. And when the delete
+min comes along, he'll consolidate everything
+when he gets called. The insertion doesn't
+have to do it. There's no reason for that. So there's no reason
+for insertions to spend time consolidating. Do all consolidation
+during delete min. But it's not delete
+min we're trying to speed up, its decrease key. And it looks decrease
+key is in bad shape. I mean, if you're in a
+tree that has big rank and you're doing
+this bubble-up stuff, then you're going the height
+of the tree, which is log n. So if someone keeps doing
+decrease keys over and over again in the large rank
+tree, then we're out of luck, and they can do that. So what's something extreme? I mean, it's not going
+to work, but just tell me something ultra
+lazy that you could do to implement decrease key. I want decrease key
+to take constant time. Yeah. AUDIENCE: Put it back
+on the linked list. SPEAKER: Yeah. So if I want to decrease key-- if I want to decrease key
+on, like, say this guy, let me do someone that
+actually has children. Let's say I want to
+decrease key on this guy, all decreases-- so first
+of all, I'll update him. And if he doesn't violate
+the heap order property, that's great. I don't have to do
+any bubbling up. But if he does violate
+the heap order property, I'll just cut this edge and
+just put him up as a tree. Great. So really lazy decrease key. But it's the right idea to-- first start off, really
+lazy, and then figure out if you need to do more,
+just do the bare minimum to get the job done. Really lazy decrease key
+is a decrease x is key. And if x now is
+smaller than parent, cut x's tree out and
+place as a top level tree in our linked list. So, unfortunately,
+being this lazy is not going to get
+us the desired bounds. It can be pretty terrible. And the main reason is-- so what was the actual
+cost in binomial heaps? What was the actual cost
+of a delete min or-- let's say a delete min. The actual cost of a delete min? This is not a trick question. So what was the cost of
+delete min in a binomial heap? What is a delete min do? It has to look through all
+of those top level roots, find them in. So let's say that the maximum
+rank in your tree is k. It looks at k different
+roots, finds the min, then deletes that
+out of the tree, and then puts the children
+in and then merges things. So in terms of k, what's
+the worst case running time? K, sort of k. And what was the
+argument that we said for why-- so k is at most what? What's the worst case
+for k in a binomial heap? Log n. And why is that? What was the
+justification for that? AUDIENCE: [INAUDIBLE]. SPEAKER: Huh? AUDIENCE: Each tree [INAUDIBLE]. SPEAKER: Yeah, each tree
+is of size to the k. We only have n
+items, so we can't have a tree of rank
+bigger than log n. But the problem is that
+if we start with this-- if we use this really
+lazy decrease key, then-- we could have a tree of rank k. That has a lot of stuff
+hanging off of it. Well, I guess nothing's
+hanging off of that. But over here, a lot of
+stuff is hanging off. And then we did a bunch of
+decrease keys on all these guys. We decrease key all these roots. Let me not decrease
+key them exactly. Let me decrease
+key their children. We decrease key
+all of these guys. And what we're left with at the
+end of that is a tree of rank k that has exactly k
+plus one items in it. So our previous argument
+that rank k trees are big, therefore the largest
+rank in our tree is small, therefore delete min doesn't
+take too long is bogus now. So really what's happening
+is this guy, he's rank k and he thinks his tree
+is big, but little does he know that he's losing
+all of his descendants. So we need to somehow
+convey to this guy that he's losing his children
+or his descendants anyway. So here's the one extra thing
+that Fibonacci heaps do, which is if p loses-- let's
+say, if node p loses one child x due to decrease
+key, no problem. But if p loses a second child,
+we cut p out of the tree too, and we make p is tree
+a top level tree. Yeah. AUDIENCE: So when we do that,
+do we also propagate the-- SPEAKER: Yes, this might recur. So p itself has a parent, and
+p might be the second child lost by its parent. And its parent will then
+cut itself out of the tree. AUDIENCE: I was really asking
+when we do this, we also modify the key at that node? So if decrease key, decrease
+the child's key so that it gets cut out. Do we now do the swapping
+when we cut p out? Or do we cut p out as a
+separate tree to the child that it lost or? SPEAKER: So, yeah. So to answer your question. So let's say p loses a child x. That's the first child, OK? It now loses another child y. So y is subtree is now a
+main tree in the top level. And then separately,
+p and what's left under p will be another
+tree at the top level. So p and y will no longer live
+together in the same tree. Does that answer your question? So now let's take a look
+at what a tree of rank k can look like in
+a Fibonacci heap. So let's say the rank is zero. It'll look like this. If the rank is one. It looks like this. And this is what it would look
+like if it were a full rank one tree, like in a binomial heap. But then this we can't
+then cut out any children because it wouldn't be
+a rank one tree anymore. How about a rank two tree? Well, it has two children, and
+this one is a rank one tree. And now, this is what it would
+look like if it were full. But we could have
+done a decrease key-- at some point in the future, we
+could have done a decrease key on this element. And then now this gets cut
+out and made a top level tree. So it's possible
+then to then lose-- is this visible? I don't think this
+thing is that visible. It's then possible
+to lose this part. So let's say that the size
+of a rank k tree, the size here is one, two, three. How about a rank thee tree? So that's what it would
+look like if it were full. But then we could start
+cutting things out. So maybe this guy
+got decreased keyed. And now maybe this guy
+here got decreased keyed. So we lost all of this. Now this guy, this
+guy here, we can't afford to decrease key him,
+because then this guy would cut himself out of the tree
+because he lost two children, and then the rank
+wouldn't be three anymore. So I think this is the most
+that we can cut out of the tree and still keep it
+a rank three tree. And the number of nodes
+left is 1, 2, 3, 4, 5. Let's just do one more. How about if we had
+a rank four tree? So it has four children. This guy looks like this. This guy looks like this. And this guy is a
+rank three tree. So he has one here. This is a rank two tree. Did I do that right? I have one more node than
+I'm supposed to have. Where did I insert
+an extra node? AUDIENCE: Left, left. At that edge. SPEAKER: This? AUDIENCE: Right. SPEAKER: This should
+have been a rank three. So this is a rank two. Oh, OK, good. So contract this edge. Yeah. Good. [LAUGHTER] So now that's a proper
+rank for binomial tree. So now let's try and cut out as
+much as we can cut out and still keep it a rank four tree. We can cut this out. We can cut this out. We can cut all of this out. And we can cut-- I think this out. I think that's all we can cut. And we're left with 1,
+2, 3, 4, 5, 6, 7, 8. So there's a pattern here. [LAUGHTER] Right. As you might have guessed,
+a rank k tree has-- well, it depends on where
+you start indexing Fibonacci numbers, but it has at least
+the k plus two Fibonacci number as its size. So, great. So anyway, we need to
+put all of this together. We need to actually
+prove something, instead of just talking about
+ideas of how to be lazy. So the claim for amortized t of
+insertion and t of decrease key are both constant, and t of
+delete min should be O of log n. And how do I know that
+a node should be cut out when it loses a child? So for each node, I'll
+just keep track one bit. Have I lost a child yet or not? And when I do cut myself
+out, I'll reset that bit. So that's usually called the
+mark bit, if you read the paper or read other people's
+descriptions of Fibonacci heaps or whatever. Great. So proof. So first of all,
+just some notation. So, let's say, mark of x is one,
+if x has lost a child and zero otherwise. Then I'm going to define
+a potential function. My potential function
+on some state will be the number of trees
+plus two times the number of marked items. Let me just call this-- I don't want to keep writing. Let me just call
+this trees of H, and let me call this number
+of marked items of H. That's going to be my
+potential function. So what are these potential
+functions come from? Usually, you just try to-- I mean, usually
+they're just engineered from trying to
+make a proof work. What you do is you look at the
+state of the data structure, and you say, after
+I do an operation, what changed after
+that operation? Well, the number
+of trees changed, and some things that weren't
+marked now get marked, and some that were marked get
+unmarked because I cut them out. And then you try and
+engineer these constants or engineer some function
+here to make everything bounded by what you want. So it's something that will
+make sense I guess in hindsight. But the intuition is basically
+a lazy binomial heap. So now let's bounce some costs. Have question? Insertion. So what's the actual cost? What do we do for
+insertion, do you remember? We're being super lazy here. We're just adding it to
+the top level linked list. So the actual cost plus the
+difference in potentials. So the actual cost
+is a constant. And the difference in potential,
+well, we have one more tree. The number of marked
+items hasn't changed. So this is one. So this whole thing
+is a constant. How about delete min? Again, we have the actual
+cost plus the difference in potential. So now what's the actual cost? [COUGHS] Say it again. AUDIENCE: [INAUDIBLE] SPEAKER: Sorry? AUDIENCE: [INAUDIBLE]
+go to the linked list to find the number of roots. SPEAKER: Yeah. AUDIENCE: Not to compare them? SPEAKER: Oh, right. So, yeah. So you have to go
+through the entire list. Oh, and also I should
+say in Fibonacci heaps, we'll keep track of
+where the min is as well. But I guess, we
+don't actually need to do that because we're
+spending that amount of time anyway. So yeah. So the number of trees--
+so let's use this notation. So we have to spend t time. [COUGHS] So what's now the
+difference in potential? I'm sorry. OK, I have a question. The number of marked items,
+how much did that change by? AUDIENCE: zero. SPEAKER: Almost zero. I mean, so the guy we just
+deleted might have been marked. Maybe, I don't know. So it might have
+gone down by one. But that's lucky. I mean, yeah. So let's just say it's
+certainly at most zero. So the difference in-- let's say plus the difference
+in the number of trees, plus the difference in the
+number of marked items, this is certainly at most zero. No one's being
+marked or not gets changed by deleting the min. And the min himself
+might have been marked. Who knows? The number of trees
+though, that's t minus t. So this is going to be at most-- let's say, this is O of small t. So remember, when we
+actually do the consolidation during a delete
+min, we will enforce the previous binomial
+heap constraint that at most one tree
+of a given rank exists. so we know that we have at most
+one tree of each given rank, and we didn't prove it yet. But we're going to prove
+that the sizes grow like the Fibonacci numbers. And Fibonacci numbers
+grow exponentially. So this will be O of log n. Because if we have
+a rank k tree, that means the tree has size
+at least if sub k plus two, which is exponential in k. So k should be at most log n. Notice, I didn't actually--
+that's just a picture. I didn't actually
+prove it formally. Well, it's a very short proof. We'll see it at the end of this. And now decrease key
+is the last thing. So case one, x
+doesn't get cut out. Because maybe the
+new key we gave it doesn't actually violate
+the heap order property. Then the actual
+cost is a constant. The difference in
+potentials, we don't change the number of trees. We don't change the
+number of marked items. So actual cost is a
+constant, plus the difference in potential is zero. So this is just a constant. Now, case two is
+we do some number-- I didn't really have to
+split it into cases like this now that I think about it. But we do some number c bigger
+than zero of cascaded cuts. When I say we do c
+cascaded cuts, I mean, we cut x out of the tree. And then now because
+its parent was marked, we cut it out of its tree, and
+then its parent was marked. We do the c times. There are c levels
+of cuts that we do. So what's the actual cost? So the actual cost, plus
+the difference in potential. We can split that
+into the difference in the number of trees
+and the difference in the number of marked items. So plus the difference
+and the number of trees. I said t of H plus
+twice the difference in the number of marked items. So what's the actual cost? C, c of c. Let me just skip
+all these, so c. What's the difference
+in the number of trees? The difference the number
+of trees is c, right? And how about this thing? So first of all, yeah. So what's that? So yeah. So this is-- if you include
+the two, minus two c, let me just think for a second. Do I believe that? Am I off by one? So minus two c. But I feel like I
+might have to add a-- so if I cut an item, it's-- oh, I see. So if I cut one, I
+clear here's mark bit. But then, yeah, I think
+there's an extra one, maybe or something. Let's say I cut x and
+that's the only thing I cut. And maybe plus two. Let's say c is one. I cut x, and he's
+the only guy I cut. So now that means his parent
+was not marked before. So his parent is now marked. But now x is marked
+bit can get cleared. So I haven't actually changed
+the number of marked items. AUDIENCE: Wouldn't you move x
+regardless of the amount though? SPEAKER: Oh, yeah. Sorry. But so yeah, I move
+x, but it's marked, it gets cleared when I move it. Oh, wait. AUDIENCE: It might
+not have been marked. SPEAKER: But it might have been. I just want to say it's at most. Yeah. So yeah. Oh, what do you know? So yeah, that's Fibonacci heaps. There's not really
+anything else to say. Questions about anything? Yeah. AUDIENCE: What about delete min
+worst case that's [INAUDIBLE]? SPEAKER: Delete min worst case? Yes, it could be linear. Because we could have done n
+insertions and our whole data structure will be a linked list. That's right. Yeah. AUDIENCE: Sorry. Can you explain the intuition
+for the potential function again? I don't really see
+how it's helping us. SPEAKER: Oh. AUDIENCE: It seems a
+little bit arbitrary. SPEAKER: So you're asking how do
+you design potential functions? AUDIENCE: More like, what is
+it actually helping us do? It just seems really arbitrary
+that we define some definitions of the numbers. SPEAKER: So what you should
+think of potential functions as doing are when we do work
+at some point in the future in the data structure, we
+want to charge the work we did to some previous operations. So we want to say the reason-- so for delete min, we
+might spend n steps doing a delete min. But we can only do those
+n in steps in a delete min if there were n
+previous insertions that caused us to do this. And once that
+delete min happens, everything gets consolidated. So basically, we want to say
+that those n steps n delete min were charged to n
+different insertions. So you should think of maybe the
+potential of the data structure as a bank account. And when someone
+does an operation, they might deposit money
+into the Bank account, which is what an insertion does. An insertion like
+deposits one into the bank account because it increased
+the number of trees. And then later,
+people are allowed to spend some of
+the money that's been deposited so they don't
+have to pay for it themselves. So I think maybe
+that's the right way to think about potential
+function arguments. So I guess insertion
+increases the number of trees, and delete min spends that. But let's see, I guess,
+decrease key, both-- well, sometimes decrease
+key deposits marks as money, and sometimes it
+spends the marks. If there's no cascading,
+it deposits a mark, and then it can spend it
+in a future decrease key. Yeah. AUDIENCE: Couldn't you have
+chosen that coefficient to be something really high? And then we would
+have been able to-- I mean, why choose
+a tight coefficient? SPEAKER: Oh, but I
+mean, we still want-- so the cost of an operation
+is what's the worst case that this could ever be. What's the worst case that
+the actual cost plus delta phi could ever be? And in the worst case, it
+could be that c is zero and then it's constant. AUDIENCE: Got it. SPEAKER: Does that
+answer your question? AUDIENCE: It seems
+like we never used that to anywhere except here? SPEAKER: Yeah. AUDIENCE: So it
+happens that two works, but just like the coefficient
+isn't really that important. SPEAKER: The
+coefficient of the two? I mean, as long as you pick
+something that's at least two, it would work. That's right. Are you worried because this
+looks like it could be negative? AUDIENCE: I don't know. I'm just-- it just
+seems like arbitrary. SPEAKER: I mean, it's
+somewhat arbitrary. There's not just one
+right potential function. The main thing
+that we needed was that in the potential function,
+this coefficient should be at least twice that one. Yeah. AUDIENCE: It doesn't
+seem very arbitrary because the reason it's two is
+because when we remove the mark, we add two trees to it. That's where the
+two-- that's why it's canceling out
+because we add two trees, we remove the mark. Yeah. So if you look at mark scheme,
+you coherent those mark and cut. So it's two additional
+trees potential has gone up by two because you
+got two trees and it's going down by two [INAUDIBLE]. That's why you need two so
+it doesn't screw that up. It's not actually probably
+going to get bigger than two because you can never have-- you can't remove more than that. SPEAKER: Right. Yeah, it's not a problem
+to make it bigger than two. Yeah. AUDIENCE: It's just that
+it's elegant that it's two because [INAUDIBLE]. SPEAKER: Any-- yeah. AUDIENCE: What does
+it mean if it's like, oh, I'll protect
+you or something. SPEAKER: I mean, then we'll
+say that the amortized of this operation was negative. But I mean, usually when we
+say that a particular kind of operation has
+amortized cost, blah, we mean that in the worst case, the
+amortized bound will be blah. So in the worst case
+c could be zero, and the amortized cost
+would be a constant. Yeah. Oh, did you have a question. AUDIENCE: Oh. I was just not sure, maybe we
+should have a constant factor in front of the c or
+something because you're consolidating everything. It might cost you
+another t or something. SPEAKER: Yeah. So everything, all the actual
+costs have big Os here, which hide some
+constant c, and then you would multiply this
+whole thing by c. Yeah, that's right. More questions? Yeah. AUDIENCE: Is there any
+constraints on how you can [INAUDIBLE]? SPEAKER: So I mean, before-- so what did we argue
+in the beginning about potential functions, about
+this amortized analysis stuff? Basically, to make
+it work out, we only needed that phi of the empty
+data structure is zero, and phi is always non-negative. As long as those two things
+hold, then your amortized bound, you prove will be an upper
+bound on the true cost of a sequence of operations. Yeah. AUDIENCE: I think it
+might be [INAUDIBLE] but just to help see how you
+define these potential things, could you find a
+different coefficient for the tree besides this
+one that works nicely? SPEAKER: Besides this one? AUDIENCE: [INAUDIBLE] SPEAKER: You mean, other
+than changing the coefficient in front of that? [LAUGHTER] AUDIENCE: [INAUDIBLE] SPEAKER: So I wouldn't how
+to formalize the statement that this is the
+only one that works. But no, I don't-- you mean something else that
+looks sensible but is somehow conceptually different? I don't know one off
+the top of my head. Yeah. Other questions? So we have two minutes. I guess, I'll just say next
+time, we'll look at splay trees. That's a kind of
+binary search tree. It gets the same job done
+like a balanced binary search tree in terms of log
+n time per operation, but it will be amortized. So in the worst
+case, splay trees could take linear
+time to do a query. But in an amortized
+sense, it'll be log n. But they have a bunch of
+other amazing properties. One such amazing property is
+what's called static optimality. So people who have taken 124 who
+took it last semester have seen it, otherwise, maybe you've
+seen it, maybe you haven't. Suppose I give you n keys,
+and for each of the n keys, I tell you the frequency at
+which that key is searched for. And then I tell you, build
+a binary search tree, which minimizes serving
+queries on this set of items with these frequencies. So you can do this using
+dynamic programming. You can build the best tree. What do I mean by that? So a tree like this,
+a perfect binary tree is great in the worst case. But if you have additional
+information, if you're told that I always search for one
+of these two items, then-- let me color them-- then those people should be
+at the top of the tree, right? And then everybody else you
+don't really care about. They can be wherever you want. I don't know. And you can make funny shapes. You can make it be
+like a perfect path, or you can make
+it look like this. So it's really, really
+imbalanced, just kind of going down like that. There are sets of frequencies
+where this is the optimal tree to build for that
+set of frequencies. So the amazing thing
+about splay trees is that if you keep
+doing queries on them, they keep adjusting
+themselves after every query. They don't know the future. Just given the query
+you just asked, they'll adjust themselves. And if you ask what's the cost
+of serving an entire sequence, they'll do just as well
+up to a constant factor as the tree you found using
+dynamic programming, which was optimal for
+that set of queries. So they balance
+themselves to achieve this, what's called static
+optimality property. But they have other
+properties too. OK, great. So we'll see splay
+trees next time. And I guess that's everything. And please sign up someone
+for September 30 to scribe. That's a week from Tuesday. And fill out the poll on Piazza. [SIDE CONVERSATION]

@@ -1,0 +1,773 @@
+We also have to learn that.
+No, I feel good. Okay.
+Okay, so today we're gonna finish multiplicative weights. I just wanna show you how you would apply it to linear programming to solve uh linear programs or approximately solve them. Um and then after after that we're gonna switch it to a new topic, namely
+flows.
+So uh um
+So right now I'm gonna talk about oh and someone yeah, so Eric just asked me, uh when are you gonna get are you gonna get feedback for uh your project proposals? Yes you will. So I I think I should be done maybe by the end of
+Sunday, like like end of the weekend, let's say, okay, so I'll I'm looking through those to give people feedback.
+Okay. Um good, so applying
+Multiplicing of weights uh to let's say LPs
+Okay, so let's just remember the the theorem from last time. So theorem
+We said that if you um use multiplicative weights to come up with the probability vector
+in each iteration, you get the guarantee that your some of expected costs over all the days.
+So this is mt dot pt. So pt is the probability vector you output over the experts in day t. Mt is the cost vector on day t.
+Remember MT, the Ith coordinate of MT is the cost of the Ith expert on day T. Okay?
+Uh this quantity is at most
+The min overall I from one to n
+So there are N experts.
+of the sum over T
+of the cost of that expert on day tea.
+Plus
+Uh epsilon. So this is for all for any for any epsilon between zero and a half.
+Epsilon times uh the sum of MIT absolute value.
+Plus
+Uh you got slon N over epsilon.
+Okay. That was the theorem from last time.
+Okay. And remember we assumed that all our costs, these these entries of these cost vectors, we assume they're all between minus one and one.
+Okay. So in particular, this sum is is over all the days. So this sum is at most T. So you could also say this is at most the min over I of sum over T M I T.
+T plus epsilon T plus line n over epsilon.
+Okay. And
+Right, so this is true for all epsilon. So you can true you can choose epsilon however you want. As long as T is like say bigger than two lon n, for example. You can pick um you can pick, for example, uh T to be you know, set these two things equal by choosing Epsilon appropriately.
+And this thing will be at most the min over i, sum over t mit, plus uh root of ln n over t.
+Okay. So if you choose
+Epsilon
+to be root.
+Uh
+Lan N over T
+All right.
+I seem to be
+Off somewhere.
+Sorry?
+In the definition of epsilon? No, in the square root.
+Uh here.
+No, I mean I wanna say that if I play for a lot of days my error goes down, right?
+Well that's where you only choose then.
+Right. Oh I see, okay.
+Um
+Oh right, then yeah. So I guess normally people people talk about maybe the average regret and then
+It that decays like one over T. So for example, if you look at the average
+The average thing here. The average
+We'll go down like uh then I think this is okay.
+Uh
+So you'll often hear people talking about talking about like um so this this quantity here, that the the stuff beyond kind of the optimal bound you want is called the regret in some literature. So people talk about trying to minimize regret. So you'll often hear people talking about kind of the square root T and
+loss and regret. Okay, so that's where this comes from. It's by a particular choice of epsilon running multiplicative weights.
+So you go.
+Um so now let's uh
+Uh let's apply this to LPs, so LPs
+Yeah.
+I want to have uh fee so I want to check feasibility.
+Feasibility of
+X and P and AX is at least B, where P is some convex set.
+And uh A is an MIM matrix.
+Okay.
+And I want to give a definition.
+So we will be considering
+Uh subproblems.
+Of the form
+Um does there exist an X such that P transpose AX is at least P transpose B?
+for P a probability vector.
+Okay.
+Uh row bounded
+Oracle
+Okay.
+Which when given
+You know, when given this problem star
+Either
+Okay. If such an X exists
+Output an X such that
+Um
+For all I, ai dot x minus bi should be at most row.
+If no such X exists
+You know, it outputs
+Infeasible.
+Okay.
+So notice that
+If the actual feasibility problem if this problem is actually feasible, then because the entries of P are non negative, um this problem will also always be feasible. Oh and also P transpol actually equ should be greater than P P trans B and
+Uh X is also in P.
+So this feasibility problem is what the Oracle should decide.
+Okay.
+And I just said if that's if that's feasible then certainly this is. Because take an X which is feasible for this, and then just put P transpose on both sides and by non negativity of P.
+um this inequality will hold.
+Questions?
+Then the first one you you want to output
+Uh which is feasible for just a subcobra? Yeah, we assume that the oracle when given so the oracle is given P. The Oracle knows oh whoa, so uh it knows capital P, the convex set. It knows A, it knows B, and it knows little P.
+And then it wants to know it wants the Oracle will tell you whether or not there exists an X such that this thing is fe to make this feasible.
+The first point here should read the f for each e for each I which is in uh
+Ah um but
+But all the constraints are satisfied.
+Oh I see. Um so otherwise it
+No no no no. But this is an absolute value, right?
+It could be the case that AI.x is less than BI.
+But the oracle just guarantees that the the difference in magnitude is small.
+Yeah. Yeah, so I mean you're right. So if I had said that um so really if I had said, you know, this
+where row is positive, then this would this would have been feasible. But I put absolute values here, so I'm not telling you anything about which one is bigger between these two.
+Does that make sense?
+Yeah, so this this X doesn't have to necessarily be feasible for the
+More questions?
+Okay. So okay, so now I want to tell you that if we had such an oracle
+Then we could we could get an approximate LP solver using multiplicative weights and
+And uh I'm gonna describe that now and then I'll I'll go back to I'll say just a few more sentences afterward about uh the the example I gave last time with set cover to tell you how you could get such an oracle for a set cover, for example.
+Okay. Um good. So
+Um clube.
+Okay.
+constraint which is like kind of far away from the the the whole physical model and then this inequality like the non feasible point will be clear
+But you said okay, so you said add a constraint? Which what? Which is far away from the feasible region?
+Okay.
+hyperplane is fi far away. Yeah. But it like the
+the whole feasible political is
+within the the visibility of this constraint. So like the the point first for what I rem uh understand it
+means the the if there exists a feasible point X it re returns
+It outputs point which is
+Close to all the things. If an X exists, which is feasible for this for star
+Yeah, okay.
+X is close to all to all
+All or co constraints.
+For which this this absolute value basically means how far
+Yeah, yeah. Right.
+Yeah.
+Then your row might be terrible. Yeah. Yeah. So you just get a bad row. Yeah. I mean so, you know, like we're gonna end up thinking of this T as being the number of iterations of um the number of iterations of multiplicative weights to get, you know, some good error. So as T gets bigger and bigger our error
+in feasib in violating feasibility will shrink. And the number of iterations we need will depend on row. So in your example, if you know if you're if you're coming up with a polytope such that the you know row has to be very large, it just means that multiplicative weights will run for more steps.
+Does that does that answer your question? Okay, good. Any any more questions?
+Yeah, just I'm a little
+It's store X in X in P
+Yeah so sorry, this this capital P is the convex set, this little P is the probability vector, probability distribution over experts.
+Yeah, yeah, yeah. So exactly. It should it should both be in capital P and this inequality should hold.
+Does that make sense?
+Okay. And notice, you know, intuitively this seems well this seems like an easier problem than that because this has M constraints and this has one constraint.
+I mean aside from the capital P business, right?
+Is
+Right. These are these are just num these are just numbers.
+Okay. So good. So what are we going to do?
+Uh so in each so now it's uh
+Analyze
+Multiplicative weights.
+For
+Um
+for LP and the theorem
+Okay.
+Is that
+If
+We have
+A row bounded oracle.
+For row bigger than epsilon over two.
+Then we can uh
+Use a multiplicative weights.
+to find
+X and P such that uh AX is greater than equal to B minus epsilon times the L1's vector.
+In
+Oh of
+Rho squared uh
+Rho squared D uh Rho squared let me think Lon N
+Lon M over epsilon squared iterations.
+Or days T. Okay.
+So we'll see how to do that.
+So I'm I need to tell you what the actual uh algorithm will be. So proof.
+Okay, so what are we doing multiplicative weights on? What are the costs? What are the experts? So
+The experts
+Are are the constraints?
+So they're M of them.
+Okay. The next thing is what are the costs?
+So
+On day T
+We have
+Some PT
+Right? Remember how multiplicative weights works? So we've gone some number of days. Initially on the first day, the first day PT is just uh the uniform distribution on all the experts, right? And then gradually as we've been running multiplicative weights, uh we change this PT vector. And now we're at some day T and we have some PT. I want to tell you what how I'm gonna define the cost vector. So remember the theorem for multiplicative weights. Um
+MT can be chosen arbitrarily or adversarially. After you choose, just like before when we were talking about learning from experts,
+After you make your decision, the costs are revealed to you. Like who's wrong and who's right was revealed to you, right?
+So same thing here, after you choose your your P vector, your PT vector, M is revealed to you. So I want to tell you how we're going to define M to ensure uh to to to
+to to make it do what we want to prove our theorem. Okay.
+We define the cost vector.
+To be M T is one over D or one over row, sorry.
+Times
+A
+A X minus B.
+Okay.
+Or X T.
+Where
+X T is the output.
+of the oracle.
+Right, so we give the Oracle PT.
+And we tell the Oracle to give us back X T. Now the Oracle might say that there is no XT, right? The Oracle might say it's infeasible. But if it's infeasible, then if this is infeasible, then as I said, the original is infeasible. Right? That's the contrapositive of what I said earlier.
+Right, so if the Oracle says there is no X T, we just halts and we say sorry this uh this LP gave me some people.
+But if it gives us an X T, then we're going to define the cost vector in terms of that XT.
+Okay. And now what do I want to say?
+Yeah.
+Uh
+Sorry. What do I want to say? I wanted to get confusing myself slightly.
+Oh good. So now what I want to say, I want to say that uh M T
+dot product with PT
+What is that equal to? That's equal to
+PT transpose
+uh times this thing here one over row um
+A X T minus B
+Yeah.
+Sorry, this row sort of looks sort of like a P, doesn't it?
+Yeah, so
+I really don't like that. I should have noticed that this might happen. Let me just call this alpha.
+Early called this uh gamma.
+Okay.
+Okay.
+Um which is equal to oh and notice right so this this thing is in minus one one.
+To the um.
+Which the theorem needs.
+Okay.
+I mean the reason we normalized by this gamma was to ensure that.
+Okay. So this thing is equal to
+One over gamma PT transpose.
+A X T minus uh P T transpose B.
+And what can you tell me about this quantity?
+That's not
+Yeah, it's not negative.
+Right? I mean that's that's what the Oracle does. It solves this feasibility problem. So we know that this thing is bigger than equal to that.
+Okay, good. So now so this is one direction. We know that um
+This thing, we know that this quantity is bigger than or equal to zero, but we also know that this quantity is smaller than or equal to something.
+Because of our multiplicative weights theorem, right?
+So we know that now zero is at most
+Went over gamma. Um
+P T
+Well zeros at most, let's say mt.pt.
+So we can sum over all T
+And that's still true because each one individually is non-negative.
+And then now um let me now apply the MW theorem. This is at most
+So let's say for all so for all I, this thing is at most
+The sum T from one to capital T of
+M I of T
+Plus and I don't need the stronger version, I'll just say that this is atmosphere.
+epsilon t plus epsilon t plus lon m over t. Remember m is our number of experts, the number of constraints.
+And now let's expand this out. This is equal to one over uh gamma times uh the
+Some over T
+Uh
+AI Dot X T
+T minus bi plus epsilon t plus line m over t.
+Should they m may look another visual? Uh yeah, thanks.
+And actually
+Uh I'm actually gonna apply this, so I'm gonna apply this with some uh a different epsilon than the final epsilon I want. So the final epsilon I want is this one. I'm gonna apply multiplicative weights with some with some other error, let's call it Ada.
+Right, I can choose I can choose this error parameter however I want as long as it's less than a half. We'll see what8 is gonna end up being.
+Okay. And then now
+What I'm going to do is multiply by uh
+So now
+uh multiply
+By gamma over T
+And what we get is and set also and set
+Set
+X tilde to be uh one over t times the sum over little t
+Of X T
+Right. Notice that by the feasibility conduction uh condition from the oracle, each one of these is in capital P. So this itself, this average is also in capital P by convexity. We assume that
+piece convex.
+Okay. So then if you multiply both sides of the inequality by gamma T
+But you get
+is that uh zero is at most uh
+Um
+AI
+Dot X tilda
+Minus B I
+Plus
+Gamma Ada
+Plus
+Uh yeah, this would have been eight uh
+Lon M
+Over uh
+Gamalon M over A to T.
+Okay.
+Now what I'm gonna do is I'm just gonna s I can set Ada to be whatever I want. So I'm gonna set Ada to make this at most epsilon over two, and then I'm gonna set T to make this at most epsilon over two.
+So
+Now set
+Ada to be um I guess epsilon over two gamma.
+And now set T to make this at most epsilon over two, which means um
+Gamma
+Lon M
+Two gamma line M over eight uh
+Right. Which if you plug in what Ada was, this should be four gamma squared lon m
+Oh and and let me put also an epsilon here because I want this to be epsilon over two.
+Over epsilon squared.
+So all I did you can verify this you know offline if you want. All I did was I I chose
+Ada and T
+Such that let me call this A and let me call this B, such that A and B were at most epsilon over two. That's all that's all this was.
+So now this implies
+that zero is at most AI dot X tilda minus uh BI minus
+I uh plus epsilon, which implies that AI dot x tilde is at least B I minus epsilon.
+Okay, so that's and this is true for all I. So that's that's it. Okay, so what do you do so how do you use multiplicative weights to get an almost feasible solution to the original problem? Uh you keep running this oracle at every step to give you an X T, and at the end of the day, your almost feasible X is the average of all the XTs that you've encountered.
+Okay, so this is this is your final output.
+Okay. So any any questions about about what I just said?
+Okay.
+Okay.
+You okay?
+I I I just I didn't uh I only explain this like several times. Yeah. Um
+That's right. Star star has two constraints. The first constraint is that X should be in P.
+Second constraint is that little P transpose AX should be greater than or equal to little P transpose B.
+But so what is this uh in equal this closeness to the constraint in row I condition to return? Wha uh cl closeness to constrain in row eye? Uh oh yeah, so you're saying is that something else?
+On top of that the Oracle returns. So th if so if um if it's feasible, it'll return an X. And furthermore, the X that it returns
+Furthermore, the X that it returns will satisfy this property. You have that promise that the orcle behaves this way.
+Yeah, it doesn't just find any feasible X X, it finds a feasible X that satisfies this property.
+But yeah.
+So, you know, just going back to set cover, I mentioned this last time, but we hadn't actually proved this theorem yet, so I c I didn't give you the details, but
+I'm gonna just finish that off and then we can start on flow.
+Okay.
+Okay, so
+Let's finish off set cover.
+Remember there we had some collection of sets and we wanted to choose fractionally sets to cover
+our universe of elements. So we wanted to minimize the sum over s of x of s such that uh for all elements E, the sum over s containing E of X.
+X of S should be at least one, and also X should be non-negative.
+And R P
+was going to be the set of all X's such that first of all uh X should be non-negative
+And second of all, the sum over X sub S
+should be at most L
+Or I think that's did I say alpha last time? Uh whatever. Uh
+And the point is we know that if there are M sets, we know that opt is somewhere between one and M. Right?
+So we could just binary search. So remember multiplicative weights, the multiplicative weights theorem for LPs, it lets us get something that's almost feasible, right? There's no uh minimization here. It's just a feasibility question. So the feasibility question we're gonna answer is whether or not it's possible to get cost at most beta. And then if you can do that, you could binary search on beta.
+Okay.
+So how would we implement so the question
+How do we get an oracle? Right? We need an Oracle.
+To be able to apply this multiplicative weights idea for set cover.
+Okay, so
+We're given some pea.
+And we want
+To check
+Uh feasibility
+Of P transpose AX
+is greater than equal to P, uh P transpose B.
+And X has to be in the set.
+Capital P.
+Well first of all, what's P transpose B?
+Yeah, P Trans B is one.
+Okay.
+Right? B is just the right hand side here. And so P transpose of this is just the sum of all the P PEs, which is one. P is a probability distribution.
+So
+We want
+P transpose AX speech and equal to one. Now what's P transpose AX?
+Well let me let's just write this out. This is equal to the sum over all E PE times the sum over all s's containing E of X S.
+And we can write this as the sum over all S's.
+Of X S times what I'll call P of S, where this is just
+The sum over E's
+Okay.
+uh some of her ease and s
+A P E
+Okay.
+So
+Forget about you know forget about the condition that the X U one has to be in uh
+So okay, so ignore this condition for a second and just pretend this condition just says that the sum of the X's has to be beta.
+How would you maximize how would you choose X to maximize the sum?
+Actually maybe it's maybe it'll be more uh inspiring if I say pretend this beta was just one. Right? So X X is uh X is giving specifying some convex combination. Right? X is specifying some convex combination of these PSs.
+Right? So then what would you do to maximize that convex combination?
+Yeah, you would you would place all the mass on the S that has the biggest PS value.
+Right? So you know, you can assume that and and since X is non negative, I mean if you normalize it to to have um
+If you normalize it to have norm like uh to have sum equal to one, then that argument is a real proof. Okay? So if you want to maximize
+Yeah, for X
+Um for X and P
+To maximize
+The sum of XS P of S
+Choose S such that P of S is maximum.
+And set XS to be what? What'd you set XS to be?
+Yeah, it's already beta.
+You place all the possible mass you could there.
+Okay, so
+So that's how the or that's what the oracle will do. Okay?
+So when the oracle is given this P, it's gonna write down this expression, it's gonna observe which PS is the biggest, and it's gonna set X S to be beta.
+So the Oracle
+Hicks
+X to be um you know beta times the S standard basis vector, let's say.
+Yeah, sorry, this is the yeah the the S standard basis vector.
+Okay, and then that'll give you some value. It'll give you beta times p of s
+And if that's less than one, it's just gonna say it's infeasible. I maximized it and I couldn't get one, so it's infeasible.
+Otherwise it'll give you the point. Okay, so
+If P of S
+Um
+is less than ba less than one we output infeasible.
+Otherwise
+What can I say about the row? Remember I want to have a row bounded oracle. What can I say about the row that this thing satisfies?
+Otherwise for all constraints
+E
+I want to look at
+A i dot x minus bi, and I want to bound this, right? Or let's uh
+For all constraints I, maybe, but the constraints are indexed by elements of the universe. What can I say about this quantity? Right? I need to understand this to know how many iterations I need.
+in my also weights algorithm. Well, this is one.
+So what can you tell me about this value?
+Right, so what is X? X is just beta times the S standard basis vector.
+So I claim there are two cases. So let's say for all constraints E, I wanna
+Uh E is an element of the universe. This is in the universe.
+So there are two cases. Either E is in S or it's not an S.
+If E is not an S, what's this dot product, given the X that we're outputting?
+It's zero. Good. In which case this difference is one.
+What if E is in S
+What's the start product?
+It's beta. So this thing is at most the max of one.
+And beta minus one.
+Actually yeah, okay, good. Which let's just call this what you know beta, we're binary searching to get beta anyway, right?
+And we know the answer, we know opt is between one and m. So we're gonna be binary searching between one and m.
+So beta is certainly at least one. So let's just say this is at most beta.
+Which is at most M, for example.
+the number of sets in our input. Okay?
+So this tells us if we combine this with our theorem, which I think we erased, well um
+That's the gamma here, right? So the number of iterations we need
+of the multiplicative weights algorithm is going to be something like m squared log m over epsilon squared.
+So
+This implies O of M squared log m
+over epsilon squared iterations of a multiplicate weights.
+Okay. To to get a um a good solution to
+Fractional set cover. And remember we said that for fractional set cover, if you're violating the constraints by epsilon, you can rescale and get an actual feasible point. But your cost will increase by a factor of roughly one plus epsilon. So you can get a one plus epsilon approximate solution to multiplicative weight to to fractional set cover by just doing this number of iterations of multiplicative weight.
+Okay.
+So
+That's all I want to say about multiplicative weights besides P set problems.
+Uh but uh do you have any questions before I change topics? Yeah.
+So can you say it again?
+It's only true when A has non negative entries or you don't need the same here.
+I don't like in the proof of the theorem I did so before we went move to set cover, in the proof of that general theorem, I don't think I ever used that the interest
+I mean sometimes that can help you to implement oracles. Right? So at the end of the day, you have this general theorem, but to actually make it work for your problem, you have to be able to come up with a P and you have to be able to implement an Oracle with a good row. Right? So um
+Just because you have the theorem doesn't mean you can always use it effectively.
+But yeah, I guess to answer so um to answer your question, I did mention last time that kind of this idea was developed by uh in a paper by Plotkin Schmoys and Tardosh, and they were considering packing and covering LPs.
+But if you look in the Aurora Hazan uh Kala monograph on
+On multiplicative weights, yeah, I mean there's no it doesn't there's no requirement for that theorem that that it be a packing or covering LP.
+Okay.
+So new topic
+So flows.
+Okay. So um
+So, you know, since CS one twenty four is a pre-req, I will assume I'm not gonna so you will be able to follow what I'm gonna say without knowing the details.
+But there are certain details I'm not gonna prove. I'm just gonna assert they're true.
+And if you know the proof great. If you don't you can go read about the proof. Okay. So
+Uh so flows. So we're given
+A directed graph.
+Okay.
+Uh G equals V E and
+We're also given
+capacities
+And the the capacities are all non-negative.
+Okay. And we're also given a start vertex.
+S and in vertex.
+T Goal
+Is to output
+Uh a flow vector
+A flow, I'm gonna define what this means, a flow from S to T
+Uh a feasible flow.
+From S to T, obeying the capacity constraints.
+So let me start defining some of these terms and also drawing pictures.
+Okay. So definition.
+A flow
+F
+Okay, it's uh
+So for me always so M
+N is the size of V and M is the size of E.
+And I'm always just gonna assume that the graph is connected.
+If not, then you can do a DFS in the beginning and only work with a connected component that contains both S and T.
+So in particular, since the graph is connected, m is at least n minus one. So I'm always going to think of M as being at least n whenever I write bounds.
+Okay, so a flow
+Is a vector
+Oh, say an S T flow.
+So one
+Um F should be non negative.
+Two
+For all V uh that are neither S nor T
+The sum over edges
+Uh UV
+An E of the flow of E should equal the sum of all the edges.
+V you
+So this is I'll say this is
+Flow in equals flow out.
+So it's also called conservation of flow.
+Okay. We also want so S and T are special
+We want that
+So I'll draw a picture soon, but imagine that um we're trying to ship water from S to T, okay? So
+Water is flowing out of S and then it's landing in T.
+So what we want is to say that the amount of water that leaves S is equal to the amount that enters T.
+Okay, so um that means that the sum overall edges E being S U of F E is equal to the sum overall edges E equals U T in
+In the edge set E of FE. Okay, so f flow.
+out of s equals flow into t
+Okay, and
+We say
+F is feasible.
+If
+uh for all edges E and E, F E is at most the capacity of that edge.
+Okay, and uh the value, let me let me write
+the value
+Of F
+Which we'll write val of F.
+Is equal is equal to the amount of water we ship.
+Yeah.
+Yeah.
+So you can imagine, for example,
+We have a graph.
+So here's an example.
+Wow.
+This is S, this is T. These are two other vertices. And let's say all the edges, let's say
+There are cell centers like this.
+They're all directed in that in this way. And let me also write down the capacities of these edges.
+One one one. Let's say they all have unit capacities here.
+So one flow is uh one feasible flow is the zero flow. I won't ship anyone.
+Another flow, for example, is I'll ship one unit of water here.
+This way.
+And then I'll go down here, and then it'll go this way.
+I'll say I'll ship one like that. That gets me one unit of flow.
+Another thing I could do is
+I could just
+Uh
+Go this way, send one that way.
+And send one that way. Is that is that purple visible? I feel like it's very dark.
+Right? So this purple flow has a a value of two.
+Whereas the yellow flow has a value of one. So if we're trying to maximize the flow, the purple flow would be better.
+Okay.
+That's what
+Yeah.
+So
+Um
+Also I should say in this goal, we want F has maximum value.
+Okay, so we want to find a max flow.
+Now
+Pretend you've never heard of flow before.
+Okay. Given all the things we've been studying so far, how would you think to find
+Linear programming, right? So this is exactly a linear programming problem.
+So LP formulation.
+Okay.
+We want to maximize the sum of all flow, leaving s
+We have certain constraints. F has to be at least zero.
+For all E, F E has to be at most C E.
+And then we also have the conservation constraints, right? Uh constraints three and two. But those are all those are all linear constraints anyway.
+All right, so
+Plus constraints.
+For two and three, I guess.
+Okay.
+Yeah. I don't understand why you need constraints.
+Three because if you've always considered
+Oh, yeah, yeah, yeah, yeah. That's yeah, they're right.
+That's right.
+Constraint frame is basically equivalent to the to the constraint that no flow is entering versus as. That no flow is entering as. Um
+Oh I see uh
+So you actually need some form of ref I think it could refresh that as a piece uh as it's an each room if you have the
+Oh I see. Okay.
+I see, okay, there you go.
+Okay. So
+So uh we could solve
+Using simplex
+Or ellipsoid
+Or, you know, interior point.
+So okay, let's so simplex we know we don't we don't know any polynomial time implementations of simplex, right? We don't know any pivot rules that are guaranteed to run in polynomial time.
+Elypsoid um
+elypsoid will run in polynomial time. It will also depend on so I didn't I don't I don't think I gave the uh I didn't write explicitly what you get at the end of the day, but remember that you start with some ellipsoid containing it and then you keep shrinking it, um shrinking the volume of this ellipsoid over over various iterations. The number of iterations you need will depend on precision issues. I think I did say that in class. So it will depend on like the the log of the biggest capacity you have.
+Okay, so you'll have like poly n times um some poly log in the largest capacity.
+Let's look at interior point. Because I think that's that's one that we actually some fast algorithm that we actually did go through in class.
+So the number of iterations
+It's like root m up to this uh log factor. Let's let's let let's let L the precision absorb log factor. So root ml
+Iterations
+In each iteration
+O of one Newton steps.
+So what is a Newton stop?
+I mean do people remember in general interior point. So remember in general interior point we want to minimize F of X.
+And
+We said that the the change uh x one is going to be x zero minus some quantity. This is
+The current iterate.
+This is we should use think of these as flows.
+Right, so I know, I don't know let's just call them X's. Okay, so next iterate.
+Right.
+Do people remember what you have to what the step is in in Muton's method?
+Yeah what so the one over L is from gradient descent.
+Yeah, so you you take the Hessian inverse.
+Apply it to the gradient.
+Okay, that's Newton's method.
+So
+Remember in linear programming
+You said that in linear programming
+This hash and inverse
+was equal to something like, I believe, A transpose slack X minus two A.
+Okay.
+So I mean you can also think of this as like
+Um hash and
+X0 should equal some particular vector. So like in each step of iter in each iteration of Newton's method, when you apply it to linear programming, you're solving you're solving a linear you're solving a linear system.
+Okay. So
+Iterations of Newton's method
+For L P.
+And I in to your point method are linear system solves.
+Okay. So that implies
+Total time.
+Well, root admirations. Each one is a liter linear system solve. That's like M cube time.
+or m to the omega using fast matrix multiplication times L. So let's call that O of M to the seven halves L. And this L you can show for flow problems. It's it's possible to to for such flow problems always make this thing polylog
+uh of the maximum capacity U.
+This is the maximum capacity.
+One thing I will say is kind of the dominant term here, if you notice, is these linear system solves.
+This is for an arbitrary LP.
+It turns out that if you write the linear system solves you have to do for the particular case of the flow problem.
+The linear systems you get are a special subclass of linear systems. They're not arbitrary linear systems that you have to solve.
+Okay, and that was exploited by in a paper in2008 . So
+Dich and Spielman.
+Stock two thousand eight showed
+O tilde of M. Otilda is hiding polylog factors. Polylog M factors. Otil of M
+In your system
+When A comes
+from a flow problem.
+Right, so it's not an arbitrary A. It's not coming from this uh basically it's related to if you've ever heard of um Laplossian system solvers.
+So I'm not gonna if you've heard of that, great. If you haven't, you can go look at their paper. But yeah.
+Uh
+They showed Motilda of
+And time for the overall thing or for this M cubed. Oh okay. So this uh
+This M cubed basically turns into turns into that. Which at the end of the day means they get an M to the three halves algorithm times log capacity or polylog.
+M to the three halves times log squared capacity for uh linear programming. Uh max flow. Actually they they look at more than just max flow, they look at other flow problems as well.
+Okay, so that's great.
+But even without that even without that um
+Without uh daspielmin you could apply IPMs, you would just get a terrible
+uh polynomial you'd get m to the3 .5 .
+Okay. So
+Without oh and actually I should mention um when I when we were covering Interior Point, I mentioned that this barrier function uh that we were using, it weighted all constraints the same, right?
+had a sum of uh a sum of log of the slack of the i th constraint. And I mentioned that this is this was kind of weird because if you repeat a constraint multiple times, you're wait you're counting it more, but really that constraint only matters once. And I mentioned that there's this paper by S by Lee and Sidford, which figures out weights to apply to that to make it run faster. And they showed that using their methods for interior point, you can actually turn this root M into
+to a root n for flow for max flow. So you get an M root n algorithm as opposed to M root M, right? And M could be as big as N squared.
+Yeah.
+But so without you know let's let's think purely combinatorially and not uh use any of this uh linear programming technology
+So without
+LP technology.
+Um
+So Ford and Fulkerson
+Oh, actually uh yeah, so Ford and Fulkerson
+I don't remember exactly I think it's the fifties. I figure out exactly uh which when and and where
+Gave an algorithm with time.
+O of m times F star. Okay, so I'm gonna abuse notation. If I mean uh a flow is a vector, it's not a number. If I just write it without the vowel, I just mean the value. So the value of so F star is the max flow. It's the flow that achieves the maximum value.
+And this is the value of that flow F star. So the running time was m times F star, which is not great. Right? So for example, imagine
+Well their algorithm would actually do great on this graph, but imagine I have uh
+You know, S T. According to this bound, their algorithm could take time a billion, even though the graph has two vertices. It wouldn't take I'm not gonna describe their algorithm, it wouldn't take a billion.
+million steps uh on this graph. But for example, if you just modify this graph slightly
+Uh
+And then put one capacity here. Okay, so
+Okay, good. But you know, if your capacities are all one, then that's not terrible.
+And actually I I probably will end up saying what the algorithm is just because I wanted to find certain terms.
+So what does their algorithm do?
+So this Ford Fulkerson algorithm finds
+Augmenting paths.
+Okay, so what's the idea there?
+So
+So we're given G
+And
+We uh find
+Some flow, some feasible flow.
+Okay, so what's
+What's a simple way to find if there is one, what's a simple way to find a feasible flow that has strictly positive value?
+I guess many people have seen flow, so I maybe people are shy to just say things that are that they everyone knows. But you could just DFS. Okay.
+So
+So E G D F
+From S to T. Now you get a path in the graph from S to T.
+Right? And that path has some minimum when I say DFS, only consider the edges that have positive capacity.
+Okay. Do a DFS on that graph. Adapt for a search.
+Now you'll find some path from S to T. That path has a minimum capacity on it.
+So just put that minimum capacity on the flow.
+Right, so
+to find some path
+Who is let's say min capacity edge?
+Is you know some lambda.
+Define F
+To be Lambda.
+on that path.
+And zero uh otherwise. So like for example
+So what is land? So land uh
+Yeah, so I guess all I want to say is
+You know, so we have some graph.
+This is S, this is T. Okay. There's some capacities.
+No, I'm just making up numbers.
+Okay. There's some capacities on these edges, and I just want to DFS from S to find some path. So maybe I find the path that goes here, then here, then here.
+Here
+So this path has three edges.
+The seven capacity, the five, and the two.
+I'd like to push flow along this path.
+But you know, how much flow can I push on this path before I become infeasible? Well I can push two. Basically the minimum. Right? So Lambda here is two.
+That's what I meant. Right? Okay, right.
+So
+So now we def so okay, so now let's say we find some flow in G. We can so given
+Flow F and G
+Yeah.
+Um yeah, so I will I'll assume that capacities are always so there there's some rational numbers that I'm storing on my computer. I'll clear denominators and I'll just assume that they're integers between one and you.
+So wait, if you clear denominators, uh does the running times go up when you multiply everything in bias or something.
+Yeah.
+So uh given a flow F and G
+We define we can define
+A what I call residual graph
+Uh G of F
+I'm the same
+Edge set
+Where
+Uh let's say
+The capacity I'll say capacity prime, this is the capacity
+capacities
+In GF, the new capacity of an edge E
+Well let's say capacity of the edge UV, where say um
+We have an edge E as U V
+is gonna be the old capacity
+So
+Minus the flow along that edge.
+Um
+plus the flow in the opposite direction.
+Right.
+Great. So the flow in the opposite direction, is that across a different edge in a different directed edge that happens to go the opposite direction, or are we maintaining two separate flows for each edge? Um
+Yeah, so our flow vector, let's just imagine that every edge that is in the graph, the reverse is also there. So if the reverse was also there, then it was already there, great. If it wasn't, put it there with zero capacity.
+Yeah.
+So yeah, imagine that we have edges in both directions for for every edge. I mean you can imagine if you want even that uh
+Uh it's the complete graph where vertices where edges that don't actually appear have capacity zero.
+But I don't want to say it like that because I want my ba I want our running time balance to depend on M. But um yeah, so for every edge that appears, imagine it appears in both directions. Maybe one of the directions has capacity zero.
+Does that make sense?
+And
+Yeah.
+So what Ford Fulkerson does
+Yeah, sorry.
+So is that is that true?
+quantification over E as well, so like you're defining the new capacity on these phantom edges every uh in the residual graph as well. Like or are you just flow
+So yeah, I'm defining I'm defining a new capacity function in terms of my flow f
+And this is this is how I define it.
+Yeah, okay.
+Or is it uh
+Any more questions?
+And by the way, this flow vector F is remember it's non-negative. So I'm not imagining that FUV is minus F of V U.
+Like it might be the case that F of UV is five and then F of V U is zero.
+In fact, you can always assume that one of them is zero.
+Right. So for example, if if this were five and this were one, that's the same thing as just saying that this were four and that were zero.
+Question
+In the sense that it would still satisfy, right? If I if any edge and its reverse both had positive flow on them, I could just make one of them zero and subtract from the other, and it would still satisfy all these constraints.
+And it would give you the same exact uh
+Yeah, wait, so if the reverse
+has positive flow. Why not just see that as
+Uh oh wait wait wait. Let me let me just be
+more careful about what I'm
+Oh sorry, say it again? Uh if the
+Reverse edge has positive flow, but not just
+think of that then as the ordinary edge have a negative flow. If the reverse has positive flow oh I mean uh no I I want so my definition of a flow is that it's a non-negative vector
+Yeah, I mean what you're saying makes sense, but I wanna s I wanna stick to a particular definition of flow and my definition of flow
+Um it's so yeah, you could so for example, you know, imagine you have your pipe with water going in it and the water's going in that direction, and it's it's going at a rate of uh I don't know, five liters per second, whatever your unit of of flow is. So let's say it's uh five liters.
+liters per second. That's the same thing as saying there's actually, you know, uh twelve going this way and there's there's seven going backwards.
+But um I mean these it's it's equival both of these are equivalent. I will always just assume one of them zero. Or it's or it's the same as saying that five are going this way and zero is going that way.
+Yeah, so um
+Hope I didn't create any confusion. I just wan I'm just trying to state my uh uh
+What do you call that? My standards, my not notation, but in my notation there's always gonna be o amongst an adjunct's reverse, only one of them is gonna have
+not an um at most one of them can have a non zero flow on it. And um also edges appear both forward and reverse. One of them might have zero capacity. So um
+Yeah.
+Um just as assume it's not gonna really yeah, let's say the uh everything I said is always the case.
+This is m I'm most gonna double the number of edges in the graph.
+Right. And all our balance are big of M something anyway. So it changes things by a constant.
+Okay. So are we everything uh
+So
+So Ford Fokkerson what it does is initialize
+Um
+F to be zero.
+And
+G F is just G.
+Right. By that definition.
+While there exists and then there's a loop, while there exists uh a path, an augmenting path
+In GF
+We're gonna let
+A prime
+B some flow.
+And GF
+And we're gonna set our new F to be our old F plus F prime.
+And then we're gonna set GF
+Uh
+Uh
+Let me write GF
+Uh
+to adjust the GF to the new F.
+Okay. So this is Fort Vulcerson.
+And
+Yeah.
+So it relies on a theorem. So
+Correctness
+Relies on a theorem
+Which is as follows
+So F star is a max flow.
+If and only if a GF star
+Uh has no
+Augmenting path.
+Another meaning that there isn't S and T are disconnected. There is no path from S to T and GF star.
+Okay. So I'm not gonna prove this.
+any algorithms textbook, intro algorithms text textbook. But um that's this is kind of I state this theorem because we're gonna use it for other fancier algorithms soon.
+Oh
+Oh. Okay. And uh I am it's exactly four o'clock. So next time next time we're gonna use this theorem
+to show that there are uh some faster faster flow algorithms than than uh Ford Vulkerson.

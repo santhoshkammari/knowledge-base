@@ -1,0 +1,771 @@
+RONG GE: Yeah. Well, thanks for coming. So my name is Rong Ge. I'm a postdoc at Microsoft
+Research, just down the street. So [? Jelani ?]
+is not here today. And I will be giving
+a guest lecture. So let's wait for more. Well, so today,
+I'm going to talk about learning topic models,
+which is part of a research that I've been doing. We are trying to apply the
+algorithm design techniques in theoretical computer
+science, the stuff that you have been learning
+through this course, to machine learning problems
+and to get algorithms for machine learning problems. So please stop me at any time
+if you have any questions. And [? Jelani ?] told
+me that someone is going to scribe the-- oh, thanks. So if you need anything,
+you can send me an email. So let me start with some
+very brief introduction to what are the machine
+learning problems that we are interested in. Of course, machine learning
+is a very broad area. And machine learning takes
+several courses to explain. So I'm going to explain
+only the part that's most relevant to
+the topic models that we are going
+to talk about today. So in general, there are many
+kind of learning problems. So the most popular
+machine learning problem that people most
+often try to solve is called the supervised
+learning problem. So in supervised
+learning, it's like you want to learn a spam filter. You are given an email,
+where you are actually given a lot of emails. And you have labels whether
+these emails are spam or not. And the goal is to
+learn a function that, given a new email, you
+want to know whether it's spam or not. And that's called
+supervised learning. In supervised learning,
+we are given both data points and labels. And the goal is to-- given new data points, we
+want to predict its label. But that's not the kind
+of learning that we are going to talk about today. So by the way,
+supervised learning is very well studied under
+the name computational learning theory
+for many decades. And there has been a
+lot of beautiful theory. But again, we will not have time
+to touch any of those today. It's a problem that
+we are interested in. It's different because they are
+called unsupervised learning problems. In unsupervised
+learning problem, the idea is sometimes
+it's very hard or costly to get the labels. Usually, to get the labels,
+we will need to human to label all the
+documents or emails or whatever you
+want to classify. So the idea of
+unsupervised learning is, what can we
+do without labels? So in unsupervised learning,
+the input to the problem will just be data points
+x in whatever space that I will not specify. Think of, for example,
+you have a bunch of points given as your data
+for the unsupervised learning problem. But given these data points
+without any labels, what can we hope to do? Well, one thing
+we can hope to do is to learn the
+structure of data. So one thing we can do with just
+data points without any labels is we can say, maybe this data
+has some pattern or structure that's hiding in the data. And we want to find that. For example, in this example,
+one possible structure is maybe there are
+these three clusters. And maybe these clusters
+have some meanings. So clustering is a
+classical example. For unsupervised learning,
+in clustering, you are just given these points. And the goal is really to find
+a certain number of clusters so that the points within
+the same cluster are similar. And points between
+clusters are farther away. So that's the kind
+of problems we are interested in
+unsupervised learning. So one of the important problems
+in unsupervised learning is-- so as I said, our goal is to
+learn the structure in the data. So how can I specify what
+is the kind of structure that I want to learn? For example, in this example,
+I want to learn a clustering. But what other
+kinds of structure might be available in the data? So that's not always
+very easy to define. And in machine learning, there's
+actually a very popular way to define this structure. So defining structure. So the popular way
+of defining structure is to use a probabilistic model. So what is a
+probabilistic model? Well, a probabilistic model-- well, first, it takes in some
+parameters for the model. And then the model will tell you
+how to generate a set of points. And the parameters will
+be the kind of structure we are looking for. So this might be a bit abstract. Well, let me first
+give the definition of probabilistic model. By the way, this is an
+informal definition. So it's a function that
+maps parameter theta to data distribution D of theta. So then, for example, one of
+the simplest probabilistic model is maybe just a Gaussian
+random variable. For a Gaussian
+random variable, we can specify the
+mean and variance of this Gaussian variable. And once we know the mean and
+the variance of the Gaussian variable, of course, we can
+sample points from this Gaussian distribution. And that's quite easy. Then the learning
+problem will correspond to-- given many samples from
+this Gaussian distribution, I want to estimate the mean and
+the variance of this Gaussian. So the learning problem
+is really the inverse of the data generating process. So the Gaussian problem
+might be a bit too simple. So let's look at a more
+complicated example that's called a mixture of Gaussians. A mixture of Gaussians
+model looks-- well, the data points will
+look kind of like this. So basically, the
+assumption or the model says the data points should come
+from one of, say, k Gaussians. Here, k will be equal to
+3, with some probability-- say, with 0.4 probability,
+the data point will be generated
+according to this Gaussian. And maybe with 0.3
+probability, the data point will be generated
+from this Gaussian. And with the rest
+0.3 probability, the data points are going to be
+generated from this Gaussian. So if I know all the
+parameters of the model, in order to generate
+a data point-- so what I do, I first choose
+which Gaussian the data point should come from,
+maybe this one. And then I will sample a point
+according to this Gaussian. And maybe it will be here. But what's important, of course,
+is once I have this data point and I give this as the input
+to some unsupervised learning algorithm, the
+algorithm does not know that this point
+is really generated from this particular Gaussian. It only sees all these points. And it really has to figure out
+which Gaussian it came from. And that's the hardness
+of these kind of problems. Any questions? So let's first
+summarize what are the parameters of the
+mixture of Gaussians model. So there's a number k, which
+is the number of Gaussians. And for each Gaussian, we want
+to know where is its center. Where is the mean
+of the Gaussian? So we have the vectors mu, i. I'll put there
+vector symbol here. So i is from 1 to k. So when I write this, I
+mean the set of 1 to k. So these are the means
+of the Gaussians. And for simplicity, let's assume
+all the Gaussians are spherical, although I didn't
+draw it this way. So all the Gaussians
+are spherical. And they have the same
+covariance matrix. And you know that. So that's not a part
+of the parameter. So what else is there
+in the parameters? Well, in order to generate
+these data points, something that we also need
+are also these weights. Like, what fraction
+of data points come from these
+individual Gaussians? So they are also part
+of the parameters. So let's call them w, i. i is also in 1 to k. These are the weights
+of the Gaussians. So now, given all
+these parameters, it's clear how I can define
+a distribution on the points. And if I really know
+all these parameters, it's actually simple for
+me to sample a data point from this distribution. But then the corresponding
+learning problem-- learning a probabilistic model. So the problem is
+then given maybe polynomially many samples-- polynomially number of
+samples, say v1, v2-- let's just not give the names. Given these many samples
+from the distribution D of theta for an unknown theta-- given all these
+samples, our goal is to really find this
+unknown parameter theta. Yes. AUDIENCE: So when you say
+polynomial number of samples, is that polynomial in k? RONG GE: Right. So actually, in the problem,
+you are given an oracle access to an oracle that
+when you query, you get a sample
+from this D theta. If your algorithm runs
+in polynomial time-- your algorithm is allowed
+to depend on anything. It doesn't even
+necessarily need to take a polynomial number of samples. It's just the kind
+of theorem you write. It can be a very strong result.
+Or it can be a trivial result, for example. Maybe we can learn a mixture
+of Gaussian in n to the k time, where n is the number, well,
+in, say, D to the k time, where D is the dimension. Even that is not so simple. Or we can hope to learn it
+in a poly in D and k time. That's even harder. So it all depends
+on what you want. So that's why it's in brackets. So really, you should think
+you have an oracle access to this distribution. So given some number
+of samples that you can query from the oracle,
+the goal is to find-- ideally, we want to find
+the exact parameter theta. But usually, we cannot do that. And we will find an
+approximate version of theta. Here, it's really
+important that we are allowed to output
+an approximate version. Because in general, even if we
+don't care about computation time, it's usually impossible
+to get the exact theta even if it's a simple Gaussian. I give you many samples. And you want to
+estimate its mean. You just take the average
+of all your samples. But that still has
+a distance depending on how many samples you use. So usually, we can only hope to
+find an approximate theta also with high probability
+because there's always a chance that the samples you
+get are not very informative. So this is really
+the learning problem. It's a general unsupervised
+learning problem that we want to solve. And it's not very easy to
+solve this kind of problem. In practice, there is
+actually an approach that's used in solving
+many of these problems. And that approach is
+called maximum likelihood. Maximum likelihood. So the idea of
+maximum likelihood is I have all these data points. And I know what is the model
+if I have a fixed parameter. So my goal will be I will find
+a model within this family. Or I will find a
+particular parameter such that this model will have the
+best probability of generating the data that I've seen. So the idea is
+find the model that maximizes the probability that
+the data comes from the model. Usually, we assume we
+get independent samples from this distribution D theta. So suppose our data
+points are, say, v1 to vn. Then what we want is we want to
+compute this maximized over all the parameters, sim i from 1
+to n log of probability of vi. So we want to solve this
+optimization problem. Here, I wrote sum of
+log of probability. So this is really the
+same as maximizing the product of these
+probabilities, which is what we want. And people often write it this
+way because it's easier to-- well, it's conceptually easier
+to think of maximizing a sum instead of maximizing a product. So this is the so-called
+maximum likelihood approach. It can be applied effectively
+for some very simple distributions. For example, you can try
+to do maximum likelihood for a single Gaussian. Then basically, this
+will be something that's very easy to solve. And you will see that
+the mean will really be the mean of the samples,
+which is reasonable. But this problem
+is really very hard to solve once you go to some
+more complicated models. For example, if you try
+to do maximum likelihood for this mixture of Gaussians
+model, it will be hard. It is at least as hard as
+doing k-means clustering, which is itself NP-hard. So actually, it's
+worth mentioning that if you think of-- these data points are just
+arbitrary data points. They may not come
+from the distribution. Then it's actually trying to
+solve a more challenging problem if vi's are not from this
+distribution D theta. And when I say NP-hard, it's, of
+course, referring to this case because this is a
+worst case problem. And learning a
+probabilistic model problem, this particular problem,
+where the data points really come from D of theta, this is
+not really a worst case problem. So we cannot say it's
+NP-hard or anything. By the way, sorry, I
+didn't define the problem. It's p theta of vi. But p theta is just
+the density function of the distribution D of theta. So now, we want to solve this
+learning probabilistic model problem. But the most popular approach
+turns out to be NP-hard. So how do we deal
+with NP-hardness? Any idea how do we usually
+deal with NP-hard problems? AUDIENCE: Some sort
+of approximation. RONG GE: Right. So in this lecture,
+you've learned approximation algorithms. And that's a very nice way of
+dealing with NP-hard problems. And in many cases,
+approximation does make sense. For example, if we want
+to do k-means clustering and if the data points are
+really like this, then maybe, even if I get, say, a two
+or three approximation, the clustering could
+still be quite reasonable. But if this maximum
+likelihood problem does not have a very special
+structure, sometimes it's not clear what kind of
+approximation algorithm do because we are maximizing-- really, this is
+a negative number because it's log
+of probabilities. So we are maximizing that. Or we should really be
+thinking we are minimizing the negative version of that. Usually, for most problems, we
+can only get a constant factor approximation. But a constant factor in
+the log probability space does not correspond
+to a constant factor in the probabilities. Because if the logs are
+within a constant factor, it doesn't mean that
+the e to that number is still within a
+constant factor. In fact, the theta we get might
+give a much lower probability than the optimal theta. So in many cases, it's not clear
+what approximation algorithm can do. And of course, another
+thing here is-- as I said, the best
+case is, of course, if we can solve this worst case
+problem, we would be happy. But that only happens for
+very special problems. We will also be
+reasonably happy if we can solve this
+average case problem, where the data actually
+come from D of theta. And that's potentially
+much easier than the worst case problem. Or more realistically,
+we might really want to solve something
+in between when the data points are
+roughly generated according to D of theta. But let's not go into that. So average case is
+also a possibility that the NP-hardness might
+go away because of that. Average case also
+includes sometimes we have some idea of what these
+means of the Gaussians. They might correspond
+in some real system. And the real system
+might have some way of generating these means. For example, maybe we can assume
+these means of the Gaussians are also random
+vectors of some sort. That may further
+simplify the problem. And the third idea-- and actually, that's the idea
+we are going to most focus on today for topic
+models, is to come up with natural assumptions. Again, some mixture of Gaussians
+problem is quite abstract and can be applied
+in many settings. Or maybe in some
+systems, this means and the weights
+have real meanings. And from that, we can
+have natural assumptions about those
+particular parameters. And those additional
+restrictions might allow us to have
+a faster algorithm. And you will see
+an example today. And finally, if
+none of these works, we can always try to use
+a heuristic algorithm. And hopefully, it
+works OK in practice. So none of these points are
+actually mutually exclusive. Using a heuristic
+algorithm doesn't prevent or shouldn't prevent us from
+trying to analyze the heuristic algorithm using either
+an average case analysis or under some
+natural assumptions. So the real hope for
+this kind of research is we have a heuristic algorithm
+that works in practice. But we can analyze under, well,
+either approximation sense or average case or
+natural assumptions-- under approximation average case
+or assumptions or whatever else you can think of. So this is really our hope. We know this is possible
+for a small set of problems. But in general, this is
+really a relatively new area. And there are still many
+open problems in here. So today, we will
+see an algorithm that's different from
+the heuristic algorithms that people have
+been applying before. And that can be analyzed
+under natural assumptions for learning topic models. So now, let's get to,
+really, what is the problem? I wrote the title
+half an hour ago. But I haven't been
+explaining what do I mean by learning
+topic models. So what are topic models? So topic models
+is a way to try-- so it's easier to
+first define what do we want to achieve by
+learning topic models. So goal is to learn
+semantic structure from a large corpus of
+document-- a large text corpus, let's just say. So for example, if I take a New
+York Times articles for, say, 20 years and I try to learn what
+are these articles talking about, some of them might
+be talking about, say, politics or sports or science. And which documents are talking
+about these different topics? For each different
+topic, what words are used when we are
+talking about these topics? So we want an algorithm
+that can automatically learn all those information from
+just a bunch of text documents. And that's really the
+goal of topic models. It has many applications. But let's not go into that. So this is the goal. And the way we do it is-- as I suggested, this is an
+unsupervised learning task. And the way we
+specify what we want to do in unsupervised
+learning is often through a probabilistic model. So these probabilistic models
+are called topic models. So a model should specify
+under some parameter how to generate a
+data distribution. In this case, the
+model should specify how to generate documents. But of course, if
+you think about it, it's not so easy to
+generate a document. We all write articles. But even for me,
+it's a hard task. I don't want to
+do it very often. And it's even harder to
+let a computer program to generate articles, especially
+the grammar structure, and can be quite complicated. So really, it's unlikely that
+we will have a model that can really generate documents. Even here, we need to start
+making simplifying assumptions. And luckily, we
+already have those kind of simplifying
+assumptions thanks to a long line of research. Probably not need
+that in a moment. So we need to make
+simplifying assumptions. So there's really a
+long line of work here. There's the first
+model called pLSI by Hofmann and,
+at the same time, by Papadimitriou and others. And later, there's a famous
+work called latent Dirichlet allocation by David Blei,
+Andrew Ng, and Mike Jordan. And hundreds or maybe
+even thousands of papers following all these papers. So from this long line of work-- well, they are not all focusing
+on simplifying assumptions. But this line of work
+really identified several important assumptions. So the first
+assumption is called the bag of words assumption. So the bag of words
+assumption says, in order to learn the semantic
+structure, we don't really need to care about
+the ordering of the words. So we have an article. We can just forget about
+the ordering of the words and throw all the words into a
+bag and try to learn from that. So this is a quite
+reasonable assumption. And you will believe it if
+you take a few examples. So here's New York Times. So if you trust me, I
+will just randomly permute this title for one article. So with preparations,
+[? DU, ?] hotels, rise, Ebola-- so even though I
+permuted all the words, I'm pretty sure you know what
+this article is talking about. So really, this bag of words
+assumption is quite reasonable. And this is very useful because
+then, when generating the words, we don't really need to care
+about the grammar structure. We just generate them randomly. And then the next
+assumption is we said we want to learn
+semantic structure. In particular, what
+are the topics? So what is a topic? So the second assumption
+is a definition of a topic. And the topic is defined to be
+a probabilistic distribution or probability
+distribution over words. So it says, if I know a
+word comes from a topic, then with some probability,
+this word will be something. For example, maybe there's
+a topic called food. And if I'm talking about food
+with, say, 1% probability, I will use the
+word, say, banana. That's the idea of
+the topics under these simplifying assumptions. Yes. AUDIENCE: So does
+this assume then that each word is
+independently drawn? RONG GE: Yes,
+conditioned on the topic. Yeah, if you know the
+topics of the words, they are drawn independently. And of course, arguably,
+this is not exactly true. The words will have more
+complicated correlations. But this will capture
+the first order effect. And it's really very
+useful in practice. So finally, we defined a topic. And then we want to
+define, what do I mean by a document is talking
+about a particular topic? So in this kind of
+a model, usually, document is just, again, a
+probability distribution-- distribution over topics. So this in particular
+allows a document to be talking about two
+different topics or more than two different topics. For example, maybe
+80% of the document is talking about
+politics and 20% is talking about finance
+or things like that. So this is actually a relatively
+new thing in the earlier works. Like pLSI, every document
+has only one topic. But later, people
+find out that if we allow each document to
+talk about a probability distribution of
+topics, it can fit the empirical data much better. So that's why people switched
+into this definition. So under these assumptions,
+we can try to-- so first, the most
+important part of the parameters
+for topic models is this distribution
+of topic and words. And they are usually
+summarized into a topic matrix. This matrix will
+be very important in the rest of the lecture. So let's take a closer look. So a topic matrix will be a
+matrix that looks like this. Let's say it's an n by k matrix. So this side is n. And n is actually the
+size of the vocabulary. So it could be thousands or tens
+of thousands or even larger. So this side are all the words
+that are in the dictionary. And this side, we have k,
+which is the number of topics. And this number is
+often much smaller. You should think of k as
+something like 100 or 200, something like that. So then every column in
+this matrix will be a topic. So column are topics. And for example-- let's
+use the same example. There might be a
+topic called food. Of course, these names cannot
+be automatically generated. But if there is a
+topic called food, maybe there is a
+word banana here. And maybe then this entry is 1%. And this means, when a word
+comes from this topic food, then with 1% probability,
+this word will be banana. And all the entries in this
+matrix have the same meaning. And because every column
+should specify a probability distribution over words, we know
+entries of this topic matrix should be non-negative. And also, columns
+should sum up to 1 just to make sure that this column
+represents a probability distribution. So then using this
+topic matrix, we can try to generate documents. So in all these
+topic models, there's a general recipe for
+generating documents. So how do you
+generate a document according to these
+simplifying assumptions? Well, the first step is you
+pick the length of the document. And the second step, you pick
+the topics for this document. So topics will be a vector of
+length k-- so w1, w2 to wk. So these are the probability
+distribution over topics. So although wi's are bigger
+than 0-- and sum i from 1 to k. wi is equal to 1. So this w specifies
+what is the probability distribution over the topics
+for this particular document. And the third step is
+to generate the word. So for each word-- so say i from 1 to the
+length of the document-- I'll first pick the topic-- ti. ti is a number in 1 to k. And it is chosen according
+to these weights, wi's. So for each word-- let's look at an example. If w1 is 0.3 to 0.7 and w2 is
+0.3 and all the others are 0, then ti will be 1
+with probability 70%. And ti will be 2 otherwise. So for each word, you
+first choose the topic. And then you pick a
+word from that topic. Pick word zi in 1 to n
+because, as we assumed, n is the size of the vocabulary. And this is according to
+the distribution that's specified by ti's
+column of A. I will write a dot ti for ti's column. So this is a way to generate
+the documents according to this topic model-- according to many
+topic models, in fact. The reason that this is
+not really a topic model is because there
+are steps that I didn't tell you what
+distribution you should be choosing from. In these steps, we know what
+is the correct distribution to choose from. But for this to
+become a topic model, we need to specify how to choose
+the length of the document. Length is not really
+that important. Length of article is like
+300 words or something like that, some integer. And really, you observe
+that from your data. So it's really not something
+that you can optimize for. So many topic models just ignore
+this lens of the document. Here, we also assume it's
+something fixed and known. So we don't worry about that. So the difference between all
+these different topic models from the earliest one and to the
+much later ones, many of them, the difference
+comes from step 2. So difference in topic models. It's mostly in step 2. For example, in the
+earliest work pLSI, this vector w will just be
+one of the basis vectors. Of course, this happens
+with probability Pi. So in these works, they are
+assuming all the documents are about a single topic. So this topic proportion vector
+is really a basis vector, meaning it's only one in
+a particular entry and 0 everywhere else. And the whole document will
+be about the single topic. In the later models, for
+example, this latent directly allocation, the vector
+w is chosen according to something called a
+Dirichlet distribution with some other parameter alpha. So the reason they
+choose this distribution has to do with simplifying
+their algorithm. But really, the
+main intuition is this is a distribution
+that do not just generate all these basis vectors. So it allows a document to
+talk about more than one topic. But at the same time,
+this distribution tend to generate sparse
+vectors, which translates into topic modeling language. It means every document is only
+talking about a few topics, which agrees with our intuition
+because we don't expect there is a document talking about,
+say, all the hundreds topics that we are going to find. And there are many later models. And they all have different ways
+of choosing the distributions. In this lecture, we will
+ignore all these differences. And we will essentially
+treat all these w's also as a part of the parameters. So they can be arbitrary
+as long as they satisfy some
+reasonable assumptions that we are going to make. And also, we are not
+going to be able to handle the most general algorithm
+for learning topic model. Instead, we will be
+focusing on an easy case. Easy case is when
+n goes to infinity. Remember, this n is the
+length of the document. So the easy case is if
+every document is really very, very long-- of course, arguably, this is
+not very reasonable in practice. But for this lecture, let's
+focus on this simple case. And if you want to look at the
+case for finite n or a small n, there are relevant
+papers about that. So it's a good thing when
+this length of the document goes to almost
+infinity, is that we can hope that every word
+appears more than just once in the document. And that allows us to estimate
+all these probabilities. So we can estimate
+the probabilities of a word zi being
+a particular word v conditioned on this word
+as chosen from this document. So to estimate this, we just
+take a look at the document. Look at how many times
+this word appeared divided by the length of the document. And if the document
+is really long, this will be a fairly good
+estimate for this probability. Of course, for it
+to be accurate, the lengths need to be
+comparable to the size of the vocabulary, which means
+this really long document. But for now, let's
+work with that. For now, suppose we
+have these estimations. We know what is the
+probability that a word appears in this document. So what does that tell us? So once we have all
+these probabilities, we can organize all these
+probabilities in a matrix. And this will be a
+document word matrix. On this side, the
+dimension is n, the number of words in vocabulary. And on this side, the lens
+is, say, we have m documents. And every column
+will be a document. It will specify this
+probability distribution. What is the probability that
+we see this word if we are in this particular document? And that's really roughly
+all the information we've got because
+we are assuming bag of words assumption. So really, the ordering of the
+words do not really matter. So how do we deal
+with this matrix? Well, we can observe that,
+according to this generating process, we have a particular
+way of generating words. So according to
+this process, what is the probability
+that we generate this word in this document? Well, according to here,
+it goes in two steps. You first choose a topic. And then you choose the
+word according to the topic. So this is equal to
+sum over all topics. Say, j is from 1 to k. The probability that
+this document generates this particular topic-- so ti is equal to j
+conditioned on the document times the probability that-- once I have this topic,
+what is the probability that I generate the
+particular word? So zi is equal to v conditioned
+on ti is equal to j. So this is just
+an equation that's true because of probability. And really, what is this? These are really just the topic
+probability distributions, these w values
+that we have here. So these are really
+the w values. And what are these values? Well, these are really what
+we have in the topic matrix. So this is really A of vj. So every entry in
+this matrix is the sum of product of these things. And we can write this equation
+much more compactly using the rule of matrix product. So this is really
+equal to the matrix A. Let's call this
+matrix M. M is really equal to the matrix
+A times a matrix W, where A is just
+our topic matrix. And a column in W will just
+be the wi's for the documents. And of course, A has
+dimension n by k. And W has dimension k by m. So if you think about is, this
+is the 3D equivalent to this formula because this particular
+entry in the matrix product is equal to the inner product
+of this row and this column. This row corresponds
+to all these values. And this column correspond
+to all these values. So this is very good because
+it relates the document word matrix, which we
+know from the data, to the topic matrix, which is
+the parameter we want to learn. So really, our problem
+becomes, given this matrix M, I want to find this
+decomposition A times W, where A and W have
+size much smaller than M. So that's an important
+structure in this matrix. And that is actually a problem
+called a non-negative matrix factorization-- factorization. That's studied independently
+of topic models. So a non-negative matrix
+factorization problem is just, given a matrix M, it's n by m. The goal is to find matrices A
+and W. Well, A is in R to the n by k. And W is in R to the k by m
+with non-negative entries. And M is equal to a times w. So the reason we want
+non-negative entries is because, of course,
+as we explained, this matrix A is
+the topic matrix. The entries are probabilities. So it must be non-negative. Similar things works for W. There's also the
+normalization constraint. But actually, that's
+without loss of generality. As long as M satisfies
+the normalization, we can always, without
+loss of generality, make A and W satisfy
+the same normalization. So that's not a big problem. The big problem is really this
+non-negativity constraint. If we don't have
+this constraint, just we want to
+factorize a matrix M into two smaller matrices,
+that's a very common problem. That's just rank decomposition. We can just pick k to be the-- this k looks strange. We can just pick k to be
+the rank of the matrix. And there's always
+such a factorization. And usually, we can find
+such a factorization by doing singular
+value decomposition. But really, those
+decompositions do not make sure that A and W
+have non-negative entries. And non-negativity is really
+important in our problems. Otherwise, we cannot
+interpret these parameters as the probabilities. So really, we want
+the non-negativity. But unfortunately,
+like many times we see in machine
+learning, this problem is known to be NP-hard,
+as shown by our basis. So now, we have
+an NP-hard problem that we just talked
+about several ways of getting around NP-hardness. So here, in particular,
+we are already in the average
+case in some sense because we came to this
+problem from topic modeling. So we also don't want to do
+any approximation in this case. So in this case, we
+can actually identify some natural assumptions. In particular, this matrix A is
+the matrix of topics and words. So we would think that we
+know enough about topics to have some special properties. It turns out, one
+of the properties that people defined
+in different contexts, called separability, as defined
+in a work by Donoho and Stodden, is very relevant in the
+topic modeling case. Let's first see the definition. So the definition
+of separability says matrix A, A as in
+R n by k, is separable if, for any column i in 1
+to k, there is a row say ai in the set of
+rows such that-- first, the intersection of
+this row and this column is bigger than 0. The other entries in this
+row are all zeros for all j not equal to i. So this is quite abstract. Let me draw a
+picture to explain. So what is this
+definition saying? It says this matrix A is
+separable if for every column-- for every column i,
+there should be a row, say it's this row,
+that's called a sub i. And what property
+does this row have? Well, at first, this particular
+entry should be non-zero. And then all the other entries
+in this row should be 0. So it should look like this. Similarly, for another column,
+there is a different row. And this particular entry is
+non-negative or is positive. And all the other
+entries are zeros. So in other words,
+actually, if we permute the rows to make all
+these rows up in the front, this matrix actually
+looks like-- there is a diagonal
+matrix on top that's formed by all these rows. And you can have
+anything at the bottom. It doesn't matter. So this is what separability
+means for a matrix. And what does it mean
+if we assume the topic matrix to be separable? So we can translate
+this assumption in the context of
+topic modeling. So it says for any column. But a column is a topic. So it says for any topic. And then there
+should exist a row. But a row is a word. So there is a word that we
+will call uncovered later. And what property
+should this word have? Well, it should have
+a non-zero entry here, which means it has a non-zero
+probability of appearing in this particular topic. And then all the
+other entries are zeros, which means
+this word just does not appear in any other topic. So this word should only
+appear in this topic. For example, if we are talking
+about whether maybe, say, a word like snow will have some
+large probability in weather but quite unlikely
+in other topics. Or if you think snow
+is not specific enough, there are polar vortex
+or some things like that are really specific to weather. So hopefully, these anchor
+words exist for all the topics. And that is our assumption
+on the topic matrix. So is there any questions? So intuitively, this
+assumption should help in learning a
+topic model because-- so first, notice that it doesn't
+mean if a word has a topic, the anchor word has to appear
+because maybe the document is short. And it just didn't
+mention the anchor word. But what we can
+really say is if we see the anchor words in
+a particular document, then that document, at least
+some fraction of the document, must be talking about
+this particular topic. And that could be
+something very useful. And here, let's look
+at that picture again. We have this matrix M
+is equal to a times w. So what happens if we have
+a matrix A that's separable? Again, let me draw
+this picture here. So M is equal to a times w. But now, we are
+assuming A is separable. So in particular,
+there are these rows. There are these
+rows that say there is one row where only the
+first entry is non-negative. So then what is the product
+of this row and this matrix? Well, the product is really
+just a row in this M matrix. And this row in the
+M matrix is really very similar to this
+first row in the W matrix. So basically, the observations-- a ith row of M-- this means the a
+ith row as a vector is equal to, well, the
+corresponding entry A ai, i times the ith row of W. So in words, the rows of W are
+really appearing in rows of M up to scaling. So that's got to be
+very helpful because we want to this product, A and W.
+But W is actually hiding in M. Another observation is even if
+I have a row that's not really a row corresponding to an anchor
+word, it has many entries, still I can write Mj, this
+row in M, as a combination. So it's equal to some
+i from one to k-- Aji, Wi. So even for rows that do
+not correspond to rows in W, they are still non-negative
+linear combinations of rows in W. And actually, without
+loss of generality, we can rescale M so that rows
+of M, A, W all sum up to 1. So we can really
+rescale the rows of M to make sure they sum up to 1. And then there's a
+scaling of A and W so that their rows
+also sum up to 1. In that case, this guy, because
+it's the only non-zero entry, will be really 1. So Ma is really equal to
+W. And this, instead of just a non-negative combination,
+will be a convex combination. So really, the rows of M are
+either really the rows of W or they are in the convex
+hull of the rows of W. So in this way, we have
+reduced the problem into a geometric problem. So what is the
+geometric problem? Well, in this problem,
+we are given n points-- v1, v2, vn in R to the n-- that are in the convex
+hull of va1, va2-- remember, these are just
+the same as the rows in W-- to vak, where a1 to aK are in n. But they are unknown. We want to find a1 to aK. Or just the corresponding
+rows is good enough. We want to find va1 to vak. So in particular,
+it is equal to-- it is this kind of problem. We are given this
+bunch of points that are really in the
+convex hull in this triangle. And the points we are given
+include all these three vertices of the triangle. And our goal is to really
+find all these vertices. So this problem is really
+equivalent to finding the non-negative matrix
+factorization, which was here. It's equivalent to the
+non-negative matrix factorization problem
+when we assume the separability assumption. Now, this problem
+becomes much easier. In the last five minutes,
+I'm going to give you an algorithm for this problem. So first, notice
+that it is possible that the rows of W, which
+correspond to these vertices, it could be that there
+is a row of W that's lying inside the convex hull
+without any further assumption. But that's really
+a degenerate case. Because in that case, I can
+have the same factorization but removing this
+particular row in W. And that will result in
+a smaller factorization. So in some sense, that's
+a degenerate case. And it's like the
+matrix has rank R. But I factorize it into a
+matrix with R plus 1 columns. And that's not something
+that we want to do. So we will just assume
+that the rows of W are not inside the convex hull. They are all vertices
+of the convex hull. So how do we find the vertices? Well, the algorithm
+is just to check whether a point is in the convex
+hull of v1 to vi minus 1-- so all the other points. So of course, we first
+remove the duplicate points. So the claim is
+if vi is a vertex, then vi is not in
+the convex hull. And if vi is not a vertex, then
+vi must be in this convex hull. Well, this is kind of clear. The proof is very easy. If I have a point here that's
+not in the convex hull, I remove all the duplications,
+which doesn't do anything here. It's still in the convex
+hull of these three points. But if I remove this
+one, then, of course, the convex hull looks like this. And it's not in the
+convex hull anymore. And how can we check
+whether a point is in the convex hull
+of some other points? So this can easily be done
+using a linear program. Basically, what does it mean
+for vi to be in the convex hull? It means vi can be written as
+sum j0 equal to i alpha j vj. And these alpha j's are
+convex combinations. So alpha j's are non-zero
+and sum j0 equal to i. Alpha j should be equal to 1. So this is a linear program. If this linear
+program is feasible, it means vi is in the convex
+hull of all the other points. And therefore, it must be
+something that's inside. If this linear program
+is not feasible, then it means vi cannot be
+represented by the convex combination of other points. And that means it must
+be at this point here, one of the vertices. So that's a very
+simple algorithm. But in order to apply it
+to the topic modeling, there are some more complicated
+things that we need to worry. So first is we cannot really
+estimate all these probabilities accurately. In fact, it's very
+far from accurate. But even if it's a
+small perturbation, if these points can
+move, especially they can move in a higher
+dimensional space, meaning they can move
+outside the board, then it's no longer
+true that something can be in the convex
+hull of all these points. They might not really be in a
+lower dimensional space anymore. So in that case, we need a
+slightly different algorithm. In particular, we need to
+check whether the point is close to the convex
+hull of other points. That's still a linear
+program but slightly harder. And finally, we cannot really
+estimate M well enough. Instead, we'll
+actually estimate what is the probability
+that two words appear in the same document. And that's something
+that we can actually estimate as accurate
+as we want once we have enough number of documents. Yeah. So this is an idea of
+how we design algorithms for learning topic models. What are some
+difficult problems? And how can we use these
+kind of natural assumptions to get around the
+NP-hardness result? And it turns out
+this algorithm-- not this particular algorithm
+but the improved version can actually be implemented. It's pretty fast. And it works for, say, a New
+York Times article corpus. And it has results
+that's comparable to all the previous
+heuristic algorithms. And it's even faster. So if you want to more about
+it, I have a few papers on this. And you can email me. Or I can tell Jelani
+where are the papers. So that's it for today's class. Thanks for coming. [APPLAUSE]

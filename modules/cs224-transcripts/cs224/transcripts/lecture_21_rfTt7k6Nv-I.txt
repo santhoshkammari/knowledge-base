@@ -1,0 +1,810 @@
+Okay.
+Okay. I guess I'll get started.
+So to date we're gonna see faster flow algorithms, faster max flow algorithms.
+Okay, so we're gonna see uh scaling
+Blocking flows.
+Blocking flows.
+Which you can speed up using link cut trees.
+Okay.
+So let's just remember where we left off last time. I assume that people, you know, either had seen some flow or we'll just look up details on what I said last time. But the basic idea of last time was um
+We have a capacitated
+Directed graph.
+G which is V E and each edge.
+E in capital E has some capacity.
+C E which I'm imagining is in the range from uh it's an integer in the range from one up to U.
+Okay. And uh we'd like
+To find S T flow
+Of max value.
+Okay, so remember that a flow for us um has to obey the capacity constraints. First of all, a flow is just a vector defined on the edges. Okay.
+It should obey the capacity constraints. We shouldn't push more flow than an edge has capacity for. And the value of a flow is just the amount of uh flow coming out of S.
+Right? So we said that the amount of flow going out of S has to equal the amount coming into T, and for every other vertex, flow in equals flow out. Total flow equals total flow out.
+Okay, so what I said la so uh what I said last time was
+Um repeatedly find
+Um
+Augmenting paths.
+In residual graphs.
+Right. So remember we have if we have some current flow F you
+can define it you can define what's called a residual graph where the new capacity in the residual graph is the old capacity minus the flow on the on that edge.
+Right? So the residual capacity is just how much more capacity is left over given the amount of flow we've already sent. Yeah. Oh. Okay.
+Okay, no question. Sorry.
+Um
+So you can show that uh this algorithm is correct. The algorithm of uh repeat like find an augmenting path, in other words, find some flow, define then define the residual graph, find an augmenting path there, define a new residual graph, etc. Keep iterating until there is no augmenting path. Um that is a correct algorithm. Okay.
+Okay. So
+Um
+Ford Fulkerson
+You just repeatedly
+Find augmenting paths.
+Um each
+New path.
+Pushes
+at least
+One more unit of flow.
+And you know, time to find one augmenting path.
+Is just linear in the number of edges. Why is that? How do you do that?
+Just say three letters or one word or something.
+Yeah, yeah, DFS. Deaf for search. DFS, BFS, basically just find any path from S to T the residual graph and push one unit to flow there. So this implies
+the time O of M times F star, where F star is the value of the optimal, is the max flow that's achievable.
+Okay.
+Okay, so today we're going to talk about basically other algorithms that get faster than this.
+pretty terrible. I mean F star could be as big as um for example n times u, right?
+The amount of capacity coming into T is as big as n times U or N minus1 times U. It's not even polynomial, right? Because when we talk about polynomial time, we want polynomial in the representation of the problem. And to write down a capacity which is up to you takes log U bits. Whereas we're spending we would we could spend up to U time, right? So that's exponential time.
+Okay.
+So
+Um gotcha.
+So uh
+So time terminology. So we say it the algorithm is weakly polynomial.
+That means uh the time is poly m and log of u. So I mean it is polynomial time in the representation of the problem, but we say it's strongly polynomial.
+If uh the time is simply poly M, the running time doesn't depend on the capacities at all.
+I mean it implicitly does in the sense that you have to you know pretend that you can manipulate capacities in constant time. You can you can take mins of those numbers and add them and stuff.
+constant time. But the number of steps of your algorithm shouldn't depend on um shouldn't depend on how big the capacities are. Okay.
+And the last thing, which is I guess worse than these two, is pseudo-polynomial.
+And this is poly M and U. So Ford Fulkerson is pseudo-polynomial. Today we're gonna see um we're gonna see some str a strongly polynomial algorithm and we're also gonna see a weekly polynomial algorithm.
+Okay. Questions about anything?
+And another place for example where you've seen pseudo polynomial is uh NAPSAC.
+remember the dynamic programming algorithm for NAPSAC, the running time, not the P task or FP task, but the exact algorithm. You do a dynamic program where the number of states involves the total weight of your NAPSAC.
+Right? So you have a so you're your linear your time is linear in the in the total weight of the knapsack, but that's again not actually polynomial time, right? That's again a pseudo what that's what you would call pseudo-polynomial.
+Okay. So before I um start coming to some algorithms, I want to tell you what's currently known. So best known.
+And there have been some improvements recently, despite their despite there not having made improvements for like thirty years beforehand. So from str the strongly polynomial
+Um
+The best known is O of MN time, and this is due to Orlin.
+Okay, this is in stock2013 . So that's fairly recent. In fact, today I'm gonna I'm gonna show you a lot of the steps to get almost this. I'm gonna show you Mn times log N. There's gonna be an extra log N. Okay, I I don't know if I'll get to show you the all the details of log n, but you'll see at least log squared n.
+And you know that band is from nineteen eighty-three.
+So, you know, over over the course of30 years, finally the log n was removed. Um actually there was something in between where the log n was improved to something that is never bigger than log n, but it it can be better if if the graph is very dense. I might have been like the base of the log changed to something maybe like n squared over m.
+Right, so if the graph is very dense then um
+Uh wait. Okay, I I forgot what the base of the of the log was. But basically uh thirty years of login got shaped. Okay, so from the weekly polynomial point of view
+Um we have two algorithms, neither of which is strictly better than the other. So one is uh
+O of M times the Min
+of m to the one third, n to the two thirds
+Log of
+N squared over m times log u.
+Okay. So right this is a little better, right? So this is Mn, this is like Mn to the two thirds, times some log factors.
+Uh this is due to Goldberg and Rao.
+And more recently, we have an algorithm that takes time of
+And this is uh Lee and Sidford.
+Just uh like a month ago or less than a month ago.
+So these are the same before we did the uh interior point, the faster interior point. And it's and it's it's via the interior point method.
+Um okay.
+Right. And this tilde is hiding some log factors, like some log M's, for example.
+Um good. But you know, in the worst case, if you think about it, in the worst case in a in a very dense graph, m could be as big as n squared, in which case this min could be as big as n to the two thirds. So this would be like m times n to the two thirds times some logs, whereas this would be m times root n times some logs.
+So there is a regime where this algorithm's better, but neither strictly um
+Uh
+Neither strictly dominates the other, right? If M is v if it's a very sparse graph
+If M is much less than uh
+So there's some regime where one's better than the other. And there are also some other things you can do for unit capacity graphs. Okay, so there's a a nineteen seventy five paper of Evan and Tarjan that shows that you can basically get this bound without all without these two logs or these three
+three law uh yeah these two logs in unit capacity graphs. Okay, that's evident targin. And um you can also get M to the ten sevenths in unit capacity graphs up to logs and that's due to uh Maudri uh
+in Fox2013 .
+Okay, so so this is kinda this is this this is a state of the art. Um well okay, so
+Yeah.
+M3130 is as ten.
+Is M to the one third?
+Uh oh you're saying M is at most N squared. Yeah.
+Yeah.
+Yeah, yeah, yeah, yeah, yeah. Sorry, you're you're you're very right.
+Yeah.
+Yeah, sorry.
+Okay.
+Yeah. Okay, good. Yeah. Um
+So in the strongly polynomial case you
+So you still have to include the um time to do basic operations, right? Um like
+It will take log due time to to
+Wait, actually wait, go back here. Wait, sorry, w I think if this is actually one third, but I'll come back to you. What what why did you say this or
+Okay, so I'll fix I thought I wrote down this and I thought it was this, but I could be
+wrong. So um
+Yeah, I'll fix that in the notes, whatever it is. Okay, is that what we're saying?
+Um
+It seems like the strongly like there's no reason to use the strongly final case because you still have to multiply it by watching or the number
+So I'm assuming so I'm assuming I'm I'm operating in the in the word RAM model and my words have are have at least log u in size. Okay, so I can I can do arithmetic on capacities in constant time. That's my assumption. In which case in the word RAM model, like those are the running times.
+Oh, did you find it?
+M to the two thirds? Did I really mistype it that badly? Okay, well Okay.
+Sorry for lying to you. Okay, so um
+No, but that seems really? That doesn't seem to make sense, right? Because then this would be better than this.
+So I'm just gonna put this for now and I'll fix it in the notes. Okay, so there's some powers here that I'm forgetting. Um okay, so so now let me just uh explain to you scaling and blocking flows.
+Okay. So the idea behind uh scaling algorithms for max flow is that um we're basically going to reduce
+General capacities
+general capacity case.
+uh to the unit capacity case.
+Yeah, it's weird.
+Yeah.
+Oh, it is one half and two thirds? Yeah.
+M two one half and two thirds. I see. So my two th my one third here was uh off. Okay, good.
+Okay, so so the the general idea of scaling is to reduce the general capacity case to the unicapacity case.
+Okay, and how do we do that?
+So um treat each
+Treat capacities.
+As a log base two of you uh bit integers.
+Written in binary.
+Okay. And then this is how the algorithm's gonna go.
+Start with F being the zero flow.
+And all capacities
+Zero. Okay.
+Now do we do?
+For uh K being for K, let's say
+Equals log base two of you.
+Minus one down to zero.
+Uh double each capacity.
+So for each
+Edge E double
+both the flow on E as well as the capacity of the edgy.
+Okay.
+Uh also for each IG
+I
+Uh double both
+Let me see, start with in all capacities, let's call this C prime of E to be zero.
+Okay, so there are some actual capacities in the graph C of E
+Okay, but we're gonna maintain capacities C primavy.
+Okay. Initially the edges have no capacity, so this their C prime value is zero. And basically what we're doing here is we're shifting it we're shifting in uh
+bit by bit, the next bit of the capacity of that edge. Okay, so so we imagine that um
+So like the edges have various capacities, how should I put this? So
+Let's say the edge capacities. One has capacity that's uh zero one, that's two plus four or six. This is like capacity six. Another one has some capacity um
+Uh two plus four is six plus eight is fourteen, etc.
+So initially
+Kind of initially
+All the edges have, and let's say the lead let's put leading bits of zero everywhere. Initially we we imagine a graph where each capacity edge capacity C prime is zero.
+Okay. And then what we do is we shift in the next bit of capacity.
+So now these three edges will have capacity one and this edge will have capacity zero.
+And then we'll solve a floor problem on that. I'm gonna continue writing.
+And then once we do that, we shift in the next bit of capacity.
+So now this has capacity two, three, two, zero, right? And then we do that bit by bit.
+until finally we have the entire capacity. Okay, C prime will be the entire capacity at the end. But so okay, so that's roughly what's going on here, but let me let me think
+So for each bit of the capacities, starting with the most significant bit down to the least significant bit. So we currently have some flow in the current graph defined by the C prime capacity.
+We're gonna double all those C primes, which means basically um
+Right, this used to be when we were here, this used to be the least significant bit, but then we shifted over one to include one more, which means this position got shifted over, which means the capacity doubled.
+And then we're gonna double all the flow values, right?
+So they're gonna remain feasible.
+because we doubled the capacities as well. And then we're gonna add these in. So for each IGE, add in
+The case bit
+Of C E to C prime E.
+And now
+Um
+augment, you know
+Keep augmenting.
+F until
+It's a max floor.
+Okay.
+So the invariant we're gonna maintain is that
+Every time we enter the start of this loop, the flow we have is a max flow for the current capacity C prime that we have.
+Okay.
+So how about correctness?
+So we maintain the invariant
+That F is always
+A max flow.
+For the C prime capacities.
+at beginning of loop.
+Which is definitely true in the beginning when the capacities are zero.
+Okay. And why is it true from iteration to iteration? Well, I think I guess I already said this, but the point is when we double the capacities, right? So to be a max flow, we know max flow equals min cut, and we know a max flow in particular saturates a min cut.
+Okay. For a flow-to be maximum, there must be some ST cut that has zero residual capacity across it.
+So look at that cut after this step.
+We've doubled the capacity of that cut, but we've also doubled the flow across that cut. So even afterwards, it's still a max cut.
+I mean it's still a max flow. Okay. And then we added in this extra bit of capacity potentially to some of the edges.
+Right? So but we still have a feasible flow.
+It's not a maximum, but it's still feasible. But we know that if we have a feasible flow that's not maximum, we can keep finding augmenting paths to make make it maximum.
+Right, so this this will find us the new max flow.
+Okay. Okay. So how about running time?
+The running time is basically the number of iterations.
+Times the time for iteration.
+So
+The number of iterations is pretty clear. It's written explicitly.
+This is just log you.
+How about the time for iteration?
+Yeah. So what is the time to do the unit capacity case, which I've written here, I guess.
+So but here what's up star
+I'm sorry?
+M M. Y M. Yes.
+So I mean okay, so the thing is when we shifted in this new bit of capacity, right? When we shifted in this new bit of capacity, there might have been some unsaturated edges.
+Those got doubled, and then we added this new bit, right?
+So it's true that there are most M edges, but um they're not all going to be unique.
+Right, do you see what I mean?
+Right, so so it's not it's not simply that it's it's not simply that we're in the unicapacity case. I shouldn't have said that.
+Okay. But we want to argue that some f we want to argue that this value F star is small.
+Right.
+So right, we're not in the unicapacity case, but we want to say F star is small so that Ford Fulkerson is pretty quick.
+So if you look at
+Yeah.
+Yeah.
+Yeah, exactly. So so that's the point. So
+Let's look at ourselves right here.
+We've doubled the capacities, but we haven't shifted in the new bit yet. Okay.
+This flow F is a max flow for the current capacities, right?
+Which means that there's a cut that's saturated. So that cut has zero capacity across it.
+And then we added in the next bit of capacity to some subset of the edges.
+The worst case is that, you know, any cut is always an upper bound on the max flow.
+So let's look at this cut. It has uh there are most M edges involved in this cut. It had capacity zero. We've added at most M capacity, at most one capacity per edge to this cut.
+So this cut now has capacity at most M, which means the max flow value is at most M.
+Right, so
+This it so this is O of M times F star, which is O of M times the min cut.
+In S T cut.
+Right, and the point is
+Before
+Adding in the next bit
+Of capacity
+Some cut
+was saturated.
+Was saturated by F.
+And has zero residual capacity.
+Let's call this cut C. Some cut C. Do I have a scribe for today? Oh you're scribing.
+Right? So some cut C has uh zero residual capacity and C has certainly at most M edges
+Implies after shifting in
+The next bit
+of capacity
+The residual capacity of C is at most M, which implies that the min cut.
+Is at most app. Right. So overall, this thing we're saying is O of m squared.
+So this thing is O of m squared log u.
+Okay.
+Okay, so that's scaling.
+And we're gonna see scaling again soon, but before that
+I want to now move to blocking flows. It turns out you can combine them. You can you can use scaling on top of blocking flows. We're gonna see that. Um right I mean basically you can use scaling in combination with lots of different algorithms, right? Because scaling
+Scaling just says you're reduced to having to do this over and over again.
+Right? So you could imagine instead of doing Ford Fulkerson here, you'll do some other algorithm, for example blocking flows, which we're gonna see now.
+Okay. So
+So blocking flows
+How's that going to work? So
+In a residual graph
+G F
+We say
+The level
+L of V is the shortest
+Path
+Distance
+Uh from
+From S to V
+Okay. And by the way, before I get more into blocking flows, I just want to say that if you do right, so Ford Fulkerson doesn't really specify how to find the augmenting path.
+You can do dev for a search. You could also do meth for a search.
+You could also do what's gonna be what's uh problem one on the current P set, which is
+augment along the path that has the largest minimum capacity. Okay.
+And depending on how you find augmenting paths, you can get different running time bounds. So what we're gonna see on the P set is that um you can do a lot better than vanilla Ford Fulkerson if you augment along such a path with the large minimum capacity.
+If instead or another thing you can do is instead of brut instead of depth first search, do breath first search.
+And you can show that you'll get a bound of m squared times n if you do that. Okay, so that's Edmund Cart. What I'm gonna show you now is that m squared n, you can actually get m times n squared using a different technique via blocking flows.
+But I wanted to find uh let me go through exactly how that technique works.
+Okay.
+So actually. Um
+So it wouldn't work if you had any fractional capacitors, right?
+Yeah, so I'll I'm always assuming that the capacities are integral because you can always clear denominators.
+Yeah.
+Yeah, I mean otherwise, right, otherwise kind of log U doesn't really make sense as a bound if they can be fractions because you know you could say well I mean what does U then? I guess U then would be the ratio of the largest to the smallest, maybe something like that.
+But I mean if if you um the size after
+Right, yeah. So that's if they're integers, right? But if you say they're fractions, then okay, why can't I just take all the capacities and normalize by the largest one? That doesn't change the flow problem at all, but that changes the largest capacity, right? So something about that is off. So you need some kind of normalization for it to make sense.
+All right.
+Yeah, so I'm uh I'm assuming all the denominators are cleared out.
+Okay, so let me let me move on to blocking floats.
+Okay. So let me make a definition. So the level
+of a vertex and a residual graph is the shortest path distance from S to V.
+And
+An edge
+UV is admissible.
+If uh basically the level of V is the level of U plus one
+So we're only allowing edges that are along the shortest path basically from
+Um
+Although I only read the last thing, a path
+A path is admissible.
+If um all its edges
+Armissible.
+Okay. And a blocking flow
+Um by the way, I believe I wanna I wanna give the citation for blocking flows. Uh didn't write it down, but I believe it's Denitz. Uh sometime in the seventies. Okay.
+So a blocking flow
+Is a uh
+Is it admissible flow?
+I.e., it decomposes
+Into admissi uh augmenting admissible paths.
+Such that
+Every
+Admissible
+Is there missile flow? Let's call it F
+Such that every admissible uh path
+S T path
+has at least
+One edge
+Saturated
+By F
+Okay.
+So
+This is a toy example. Let's pretend that this is our current residual graph.
+Okay.
+And all let's say all these edges have unit capacity.
+Okay. So which of these edges are admissible and which edges are not admissible?
+Yeah.
+Yeah, so this this edge here
+Is not admissible.
+Okay, and you know one example of a blocking flow
+Is well certainly this max flow is a block certainly a max flow is a blocking flow. So one example of a blocking flow
+Is the flow is that green flow? This is a blocking flow.
+So okay, so question for you.
+Do you believe that the claim that
+Kind of blocking I mean a blocking flow is just a specific kind of
+I mean so a max flow is definitely a blocking flow. Maybe a blocking flow is always a max flow. So really finding finding uh a blocking flow is the same as finding a max flow. Do you believe that uh claim?
+No. You don't believe it? Okay, so anyone have an example in mind? I mean I guess maybe it'll be a little tough to come up with this on you know right on the spot, but
+Of of why a blocking flow might not be a max flow. Yeah.
+U U V and V Tavacity two S U V V two and B T
+They all have capacity to but then UV is not admissible.
+So a blocking flow for me should uh decompose into augmenting admissible paths.
+Right, so it should only use admissible edges.
+If you use the IG V it uh it uh
+If you have the same blocking flow, but now that
+No with capacity way we change the capacity to these edges. Oh you you want to use this graph? Yeah with
+Okay, so what what do you want the capacities to be?
+You want what?
+S U to be two.
+EV to be one.
+VT to B2 ? And the others are still one?
+Uh-huh. Okay. So so the point so this green flow I guess only has room to put one on it, right?
+Okay, so is this a blocking flow? Um yes, it seems that it is a blocking flow. And is it a max flow?
+Oh yes. Yes, that's true. Yeah.
+Yeah, and you can even come up with examples you can even come up with examples where all the edges are unit capacity. So if I just change the graph slightly, um
+Uh
+Right, so let's make all these unit capacities.
+Then this this flow is a blocking flow.
+Right.
+Um and it's certainly not a max flow. The max flow would send one along this way, one along that way. But kind of this this uh
+This flow kind of blocks both both possibilities. Okay.
+I mean the only augmenting paths I guess are this one, this one, and this one.
+And they're all saturated all of them have at least one edge saturated. But yeah, that's also that's a good point. That's another one as well. So questions about what a blocking flow is.
+Okay, so
+So first
+Let's analyze
+When um
+All edges.
+Have unit capacity.
+Oh actually before we do that, um
+Uh
+Yeah, before I do that, let me let me write down a claim.
+Uh after
+Augmenting
+And this claim is really the the point of finding blocking flows. Okay.
+So after augmenting along the blocking flow
+The shortest path distance from S to T
+in the new residual graph
+Or in the new
+Uh the new level graph.
+I eat the graph.
+Containing
+Admissible
+Edges strictly increases.
+So this one edges here now have to have residual capacity. Yeah, these are these are edges that have residual capacity. If they have zero capacity, we ignore them. These are edges that have residual capacity.
+and they have to um increase the uh
+Right.
+Closer to S to a vertex that's one farther.
+So okay, before we prove this claim
+You know, why
+How would you use this claim as part of an algorithm?
+Well let me oh yeah.
+Because it is a flash page or must be better.
+You increase the distance by
+By one, yeah, but at least one.
+Yeah, more you can't do it more than end times, right? So yeah, that's the point. So
+So the point is, uh right, these are these are when I say distance, this is an unweighted graph, right?
+Uh so the distance between S and T certainly can't be more than N if there's an augmenting path at all. But if it's more than N, that means it's infinity. That means there's no path.
+In which case we're done. We've found we've done we're done augmenting.
+Um so
+So consider the following algorithm. Find a blocking flow and augment along it. Now form the residual graph. Find a blocking flow there, augment along it. And just repeatedly find blocking flows in the residual graph and augment.
+The number oh yeah. So
+Um if we chose that blocking flow there.
+Yeah.
+X augmenting path would have to go back.
+Yeah, that's fine. Yeah. Yeah.
+Are they still admissible? Are the reversed edges admissible?
+Oh, so the definition of admissible is that this happens in the current residual graph. So you look at the distance from so the residual graph changes in every step.
+So the defin so what's admissible and what isn't is is a function of the current residual graph.
+Yeah, but in the new residual graph
+Yeah.
+won't be I mean it's disconnected right unless you include those backward touches which are um maybe I'm so
+Okay, so uh
+Okay, hold on. So you want to take this graph and you want to form its residual, right? Right. So
+Um
+Uh uh uh
+So let's let me pause for a second and let me just draw that graph here. So let me one, two, three, five.
+So now what are the residual capacities or residual edges? So you have um so we had before so this stays this this goes this way.
+This goes this way.
+This goes that way.
+This goes that way, this way.
+This way. And here you go. This goes reversed.
+Right.
+This is the residual graph. This is this is G F, where this is my f this is my flow F.
+Right.
+Zero capacity now, right? Well remember the definition of residual capacity, right? It's the old capacity it's the capacity minus the flow value. So if you had capacity zero and remember I'm in that definition from we were talking last time I said if um if I have flow pushed the other way, I view that for the purposes of forming the residual graph, I view that as kind of minus flow in this in on this edge.
+Right? So zero minus negative one is one. So now I imagine that this has um there's a capacity one edge this way, there's a capacity one edge this way, there's a capacity one edge.
+Right. And then now um the shortest path distance from S to T
+I think is one, two, three, four, five, length five. Actually I think that this is the only ST path.
+Right. So the the level graph
+Uh let me define this as let me label some vertices as A B uh C D T. So the level graph would actually just be a path. It would have S, A, B
+B well S A B C D T. So S A B C
+D D T. That would be that would be the the level graph.
+corresponding to that blocking flow.
+And then there's only one uh there's only one augmenting path here anyway. So you would
+Just find it.
+Questions?
+Okay, so right the point was, as you said, um
+This
+The number of iterations, so if we have this algorithm that does the following, find a blocking flow augment, find another blocking flow augment, etc. The number of iterations can be at most n.
+Right, because the distance keeps increasing between S and T.
+So the running time, so this claim would imply
+that the running time
+is at most n o of n times the time to find a blocking flow.
+Okay.
+And we're gonna show that you can do this in unit capacity graphs in time in linear time basically in time M by basically a modified depth for search.
+You can also do this in uh we're gonna show that you can do it also pretty simply in c general capacitated graphs in time Mn, in which case you'd get a time of Mn squared.
+Using a using a fancy data structure, namely link cut trees, by Slater and Targin, I'll show you a little bit about that. You can actually do this in M log N for a capacitated graph.
+In which case you'd get a time of MN log N, which is not too far off from what I told you, the MN time just last year's stock. Okay.
+So really, we just need to prove this claim and then we need to understand the time to find a blocking flow.
+So what uh what did the stock paper use to the do?
+Oh. I think that paper is pretty complicated and actually I haven't even I haven't read it, so yeah, I'm not sure.
+I'm not sure.
+Um
+Since uh
+So
+Yeah, I'm not totally sure what that what Orlan's algorithm is doing.
+Okay.
+So
+Let's prove prove the claim.
+It's actually a pretty simple
+It's a pretty simple claim.
+So let's look at the level graph.
+Before augmentation
+is L and the level graph after augmentation
+is let's call that L prime.
+Okay. The level graph remember is the graph containing the admissible edges.
+So
+What does L look like?
+Well here's S
+And basically you can organize it right into the distance from S to T. So there's some at distance one, there's some at distance two.
+And there's T over here. There's some edges.
+And then there's some there's only l there's only edges in between adjacent layers.
+Right.
+And what is a blocking flow? A blocking flow just d is some flow that decomposes into a bunch of ST paths here.
+Okay. And so
+Let's say let me also draw some other edges. Question. So this is this is the these this is a subset of the edges in the relationship.
+residual graph, right? The ones that go from one level to the next. Is it possible for me to have this edge? So some not all the edges are drawn here. Is it possible for me to have an edge that looks like this?
+Okay.
+Or you know, an edge. Basically edges that skip layers? No, right? Because that's the definition of shortest path. This means that there's actually a shorter well, this is okay, this is an adjacent level, but
+This is this is not okay. Right? Otherwise this would have had a shorter path to it and it wouldn't have been in this level.
+So I can't have those kinds of edges.
+What I can have is I can have edges going backward and possibly jumping like pass possibly jumping levels too. I could have an edge that goes all the way back here.
+For example, that's possible.
+So if you think about what kinds of edges are possible in L prime
+In L prime, the only edges
+Allowed
+The only edges that appear
+Or
+Either
+from L. Okay, so certain edges from L might appear. I'm not gonna rule them out.
+We might also have some edges show up from the reverse of L, namely a reverse of one of these edges, right? Because after we augment along paths here, some of these edges might get reversed, just like what you saw in that example.
+From L or Rev L
+Or yellow edges.
+Or yellow edges going backward.
+Right.
+They're not an L because they don't go from one level to the next level. But they might be in GF in the resid in the residual graph.
+Yeah, the cost.
+Oh yeah, yeah, that's you could have that. You could have edges in the same level, that's true.
+So what does this imply? This implies that the shortest path distance in L prime between S and T
+is at least the shortest passes in L from S to T.
+Right? If you imagine looking at this graph and you're trying to get from S to T as fast as possible, it doesn't ever help you to take a yellow edge or to take a reverse of a of what
+of these white edges, right?
+Okay.
+So okay, good. So the question is
+Can
+Can uh DL prime S T equal?
+D S T
+Okay. And the answer is no.
+Why is it no?
+Yeah.
+Right, yeah. If if if the if if the shortest path distance in L prime were the same as an L, that means all the edges in that shortest path would be L edges.
+Right? That means we have a we have a a path of that means that there's a path in L prime which also exists in L.
+But by definition of blocking flow, at least one of the one of the edges on that path has to have been saturated.
+Right? So that entire path could not possibly be in the new residual graph. So it wouldn't be in L prime.
+Right, so if
+If um
+There is a length
+D L S T path.
+And now prime.
+Then all
+Those edges.
+Our L edges.
+Implies at least one is saturated.
+by our blocking flow.
+So this is a contradiction.
+The L I just by definition
+Missable was that was that
+Um
+Right, so
+Right, so the the claim is that
+Um
+Right, so if you if you didn't use only L edges, if you used some yellow edges or some reverse edges, then uh that would only increase your distance. That would only increase the length of the path.
+Right, so if you're telling me that your path length is exactly the shortest path length, then you have to be using el edges.
+Okay. So that's that.
+Yeah.
+So how do we find a blocking flow?
+Yeah.
+So finding a blocking flow.
+So let's first look at the case of uh some special case.
+It's like a unit capacity.
+Okay.
+Okay.
+So we're basically gonna do some kind of modified
+Dub for search.
+from S, a repeated depth for searches.
+So I'm gonna have three types of operations, which I'm gonna call advance.
+Retreat
+And augment
+So this is defined right this is
+This is gonna be on on the level graph. Remember I'm trying to find a blocking flow that uses admissible edges. Okay so
+So this procedure I'm gonna be I'm gonna run it on the level graph.
+Yeah.
+So let me have a loop here. So let's say while true.
+So um
+Uh
+Let me think about how I want to say this.
+So I'm gonna say V is at V is gonna get sent to S our current vertex.
+Yeah.
+And I'll say um
+While true
+Uh
+advance so
+Well V has
+Some outgoing edge.
+Let's say V U
+Um I'll advance.
+And by that I just mean that V goes to U. So we we move to we move to uh vertex U.
+Yeah.
+Uh
+Hash actually let me let me uh sorry. I shouldn't have written it this way. So let me say this. So
+We'll all so we'll be we'll always
+Always have our finger.
+On some Vertex V
+That we got to
+By DFSing
+Starting from S
+Okay.
+If s is equal to T, I mean if V is equal to T, so if we've managed to reach T, then augment
+Along the ST path we found.
+Then delete
+the zero capacity edges.
+Okay, so the al I'm gonna describe the algorithm in the general capacity case. Okay, but of course if we're in the unit capacity case, then after augmentation all of those edges have zero capacity now.
+just delete all of them. Okay. So if equals t, augmented along S T path we found, then we put our finger back on F, put finger back on S.
+Otherwise if if V is not equal to T
+Advance
+Just um add you
+Such so some vertex U such that V U is in is in our is an edge.
+Okay.
+Yeah.
+Of course there might not be such a you, we might be at a dead end.
+If no such hue exists
+Then retreat.
+Back to previous vertex.
+W before V
+And
+Delete the edge.
+From W to V.
+All right.
+Okay.
+Unless V is S, in which case we terminate.
+Okay. So basically we DFS, you know, imagine writing a recursive implementation of DFS.
+Okay, where you started us.
+And imagine that in your DFS implementation, whenever you whenever you uh finish a recursive call and then go back up to the parent function call.
+that called it, that corresponds to going back on an edge in the DFS, right? And when I do that, I'll just delete the edge.
+Okay. And then when I make a call to a chot to a to an adjacent vertex in the DFS, that's my advanced step.
+And when I reached T, well I reached T via some uh sequence of function calls on my stack that started at S and ended in T. All of those corresponded to following edges.
+And I'm just going to augment along that path.
+Yeah. What did you do there?
+I'm sorry? Are you going to invest
+So
+I I d I don't mean delete it from like from uh I mean delete like so so I mean all all of this which edges are alive and which have been deleted is all just maintained within the algorithm that computes a blocking flow.
+I'm not deleting it from the graph or something.
+I'm just removing it from consideration from this algorithm.
+Because it so that you don't want much
+No, it's it's a dead end, right? So I mean in fact if I'm at some vertex V and it's
+It's a dead end. I can basically delete all the edges that go into V now because I know V is worthless. V cannot take V cannot be part of an augmenting path from now on.
+Right.
+Is that true even after you broke?
+Right, so I'm not
+Uh oh okay, so so I shouldn't say augment, okay. So uh if V equals T, so uh what this thing is going to do is it's gonna output a flow.
+Okay. So
+So uh we w we want a blocking
+flow F. So this thing is going to output the flow F. So what I really mean is a V equals T
+Add to F um
+All edges.
+Add to F all the edges along the ST path we found.
+With the minimum capacity, that's right. With the minimum capacity. And then subtract that capacity from everyone on that on that path and then delete all the zero capacity edges.
+No, so we're not we're always gonna operate in the same graph L
+Okay. So this is just finding a blocking flow in the current residual graph.
+As we run through iterations of this, we are not changing the residual graph. We are not ac so we are not actually augmenting the flow yet.
+We're just finding the flow.
+So once you delete your once you augment the flow by the path you've done.
+You then return to S and start over? Yes. You keep trying to DFS from S.
+Is it always true that if you found a dead end earlier and
+Then you've deleted a path and that will still be a dead end.
+Right, because we're not we're not actually changing the residual graph, right? We're not actually subtracting this flow from the capacities to define a new residual graph.
+This is all still happening in the current residual graph. So if something is a dead end, there is no extra capacity that's ever going to leave leave from it, right? Because we're not reversing anything after it.
+Like the number over the various iterations of this, finding paths over and over again.
+The capacities are only ever going down.
+Edges are only disappearing.
+So if there wasn't a path from V to T now, there won't be one in a later iteration.
+Couldn't something be a dead end because
+uh all of the out
+going neighbors have already been touched in MDFS. But aren't right like well
+So I mean just think of just think of DFS as uh
+As uh
+How should I put this? Right, but
+Okay, so the the point is if
+If um T is actually reachable, right?
+If T is actually reachable, we will find a path that goes to T.
+Okay. And then we will saturate, I mean here we're in a unicapacity case, we will saturate those edges.
+Um
+And then all these other edges are now blocked. So
+I don't know. I don't know if I'm answering your maybe I'm just
+getting confused but um what does it mean for something to be a dead end? I thought it means in some cases well it could mean that there's just no outgoing edge, but it could also mean that there are outgoing edges but
+the vertices at the end
+of those edges have already been touched in the search.
+Right? Which means edges only go to fr to the to one level in the future. There are no cycles in L.
+Oh does it maybe that answers your question?
+Right? L has no cycles. What you're saying couldn't happen.
+Not only
+Like no food is going to be better than
+any other path, right? You can't uh the distances along all paths are the same to the same rottens, right?
+That's right.
+But the thing you were saying before where you said like um I'm at I'm at V, and then maybe there are edges leaving V, but they are going to vertices that I already used to get to V.
+Right? No.
+Is isn't that what you're saying? Like that can't happen because uh
+Um I'm only looking at edges in the level graph.
+So this level graph is a dag.
+Okay.
+I I think I can't.
+I'm sorry?
+Okay. Well anyway, so do you both understand? Okay, so let's discontinue because we're running out of time here. Okay. So okay, so uh rather than spend time understanding how the misunderstanding happened, let's just uh now people understand, so let's continue.
+Okay, so so good. So any okay, so question. So the runtime
+So in the unicapacity case
+What's the running time?
+Okay.
+Okay.
+Right? Each edge is looked at a constant number of times.
+Right, because you're gonna maybe advance on it on some point. That's looking at it once.
+If you retreat on it, then that's looking at it a second time, but now it's you deleted it, so it's gone forever. If you didn't retreat on it, it means that eventually you reached T.
+Which means that you augmented it along it, or you you added to flow, so it's a F along it, and then you deleted it. Right? So um you only look at each edge a constant number of times, which means O of M total time. So this implies
+Uh all of a man
+In
+In a unit capacity.
+There's another
+There's another analysis you could do.
+Yes, that's right. So rent time uniclassing KSON per per blocking flow.
+So OMAD capacity for Maxfla.
+There's another analysis you could do is you could say, look, so
+After D iterations
+The distance
+From S to T in the level graph.
+Is at least D, right?
+Because the distance increases in every step.
+Okay.
+Which implies
+If we decompose
+Any max flow
+Uh
+Each into paths.
+Each path
+Has length.
+At least D, which implies that there are most M over D paths.
+Yeah.
+Which implies
+The max flow
+In the residual graph
+Is at most M over D.
+Right.
+So this implies that for all D, the number of iterations so forget about the t you know, this is pretty good. Linear time to find a blocking float is pretty good. But let's attack this other business of the number of iterations. Uh what did I write it?
+The number of iterations it takes to find a blocking flow. The number of iterations of blocking flow we need. How many blocking flows do we need to find?
+So this implies that the number of iterations of finding blocking flows is at most D and then plus M over D. So once we've had D iterations, we'll only have M over D more iterations.
+Right.
+And this is minimized when D is about root M.
+And this is at most root M
+for uh D being Rudam
+Right.
+Which implies
+M time per blocking flow, root m iterations, so this implies
+O of m to the three halves max flow.
+Or you could view it as M times the min of root m and n.
+Um
+In fact, I'm not gonna show you here, but it's even possible maybe I'll put on a pizza or something.
+It's even possible to to say that.
+Okay.
+Okay. So how about
+Okay, one other thing
+Uh unit graph
+Is one where
+Other than
+S T every other
+Um
+Well, let me not let me just say another thing. So
+If you look at, for example, graphs like the following
+So imagine a graph that has S and T as follows, and then it has two layers in the middle.
+All the edges go from this layer to the next. And all these capacities are one. When where do you see graphs that look like this?
+I claim if well if you've taken one twenty four, I claim that there's a problem we reduced to flow to ST4 Yeah, max matching in bipartite graphs.
+Okay. So I claim here you can show that in graphs like this, the number of iterations
+is at most this d plus n over d
+Okay.
+Which implies
+Oh of Mr.
+Max one.
+So in particular you can find max matching in bipartite graphs and time m root n.
+So if you just used Ford Fulkerson, you would get I guess uh
+Um F star is as big as N, right? So you get Mn, but you can actually use
+get Mr using blocking flows.
+But how about general capacities?
+Just
+Okay, so here the point is there are um
+at most M
+So remember we had we still have augment
+retreat and advance
+There are at most M augments.
+By augment, remember I don't mean actually changing the residual graphic.
+I just mean adding the minimum capacity of that of that path to the current flow we're building, to the current blocking flow.
+Why there aren't most Mogmans?
+Yeah.
+Yeah, every augment has a saturated edge and that edge will be deleted. So every every time we do one, we delete the number of edges. There are most M edges. How long does it take to perform the actual augment?
+What's the worst case?
+M
+I claim so when I say perform the augment I mean we've built up the path n, right? We've built up this path and now we're adding flow values along that path. That path has length at most n.
+So implies total time
+For augments
+Is O of Mn
+How many retreats can there be?
+M, right? Because when we do a retreat we delete the edge.
+So that implies that the total time for retreats
+Is O of M? A retreat is just a constant time thing, you delete the edge.
+So now how about the total time?
+For advances
+So the number
+I want to say less than something advances.
+And this one is a little trickier, I'll just tell you, because we're running out of time. The point is after every
+Um
+After every N advances, right? After every N advances, there will either be a retreat
+Or there will be an augment.
+Right. You can't go you can't advance end times without either reaching T or going backwards once.
+Right? And if there's an o if there's either a retreat or an augment, one edge is gonna get deleted.
+So after every N advanced steps, definitely at least one edge is gonna be deleted.
+either a retreat or augment.
+Which means there are at most M times N advances.
+Right, so after
+every at most N advances
+Some edge.
+Is deleted
+Via retreat.
+or augment.
+So this
+This implies uh so this this is gonna be over mn
+So
+In general capacities
+We have the again the number of iterations.
+Times time per blocking flow.
+This is at most and we said this is at most O of Mn. So this is O of m n squared.
+Uh time
+For Maxflow.
+And the thing that I will tell you about a little bit next time is that this this algorithm for finding a single blogging flow
+is kind of wasteful, right? Because
+We started exploring quite a bit. Um kind of how should I how should I put it?
+Okay, so I'll I'll say more next time. I don't want to try and rush and and say things that don't make sense, but the point is using a a a nice data structure uh due to Slater in Targin called link cut trees, it's from eighty three.
+You can find a blocking flow not in time Mn, but in time M times log N.
+Um
+You can do
+O of M and log N
+via Linka trees. We'll see that next time.
+That's due to Slater and Targin. Okay.
+So Slater
+And target in83 .
+So I think that's enough for today. Questions before we depart?
+Oh my god.
+Okay, that's it. Thanks.

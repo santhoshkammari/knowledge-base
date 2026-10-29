@@ -1,0 +1,760 @@
+Okay, I'm going to end the head.
+Oh, okay, I'm gonna get started. Uh let me wait so that the camera's not the box.
+Okay, good. So last time
+So okay, so today, what do I say today? We're gonna finish simplex
+And then and then I'm gonna say things about uh strong duality.
+And uh complementary slackness, you'll see what I mean what that means.
+Uh
+I'm gonna sort of tell so the simplex algorithm, unfortunately, there are no known polynomial time implementations of it. They all take exponential time.
+Um so the first polynomial time algorithm for linear programming is the ellipsoid algorithm.
+Um but I don't want to get into I think to properly cover all details of ellipsoid would take me
+Maybe a lecture and I I don't really want to spend too much time on ellipsoid. I think it's not used that much in practice anyway, 'cause it's not it's kind of slow. Okay, but um I'll just, you know, say some words I guess about it. Roughly what it does. And then
+And in the notes I'll add a link to if you
+to something that says more if you really want to know about it. And then either at the end of this lecture or next lecture, uh we'll start uh interior point. So path following interior point methods.
+Okay, so um this is a linear this is also a a polynomial time algorithm for solving linear programs. Uh and it's more it's faster in practice than ellipsoid. Okay.
+I mean it's already fast and in practice it's even faster than what people prove about it.
+Um even with Pathfall and Interior Point, I won't cover every single detail because there are many details to make it cover all cases, but I think I'll tell you enough that you'll understand what's going on.
+Um
+So my understanding is they u both Simplex and Interior Point are used
+in real life and I think ellipsoid is not used in real life.
+And uh sometimes just use
+Because it's easier to implement or do you have cheaper dates faster than the other thing? Oh I I think it's not just about ease of implementation. I mean it is e it is easy to implement, but I think also it's just these pathological cases that these cases that make you take a lot of time are pathological.
+So in practice you you know you run it for some number of iterations and it finds opt and
+Yeah.
+But yeah. But that's at least what I hear.
+Okay, so let's let's finish up with Simplex. So Simplex
+Remember the basic idea was
+uh vertices, okay, so
+We saw that of well we gave one definition of vertex and we saw it was equivalent to another one. So um we want to minimize C
+Transpose X such that AX is equal to B and X is at least zero, coordinate wise.
+Okay.
+And we can define this polytope P, which is the set of all points X that are feasible. So X such that uh AX is equal to B and X is
+is bigger than equal to zero.
+Right.
+We said that uh a vertex
+X and P
+Okay.
+Is a point
+such that AX the the submatrix AX, I'll say what this means. AX uh has full column rank. So it has linearly independent columns.
+And we said that AX
+Is A is submatrix of A
+Specified
+By the indices
+J such that uh X J is not zero, it's strictly positive.
+Okay.
+And remember that we're in this situation where uh
+A is m by n
+And C B are n-dimensional vectors.
+Okay. So this already tells us that, and let me call this thing here, let me define this to be B sub X.
+the basis for x, that's what we called it last time. This implies that uh B sub x has size at most m
+Right.
+Because column rank equals row rank, and the row rank is definitely at most M.
+Okay. So
+The basic idea of simplex was then um
+So for each
+Vertex X
+Assign a basis
+B of x, which is a subset of one to n, such that the size of BX is exactly m. Okay, so uh maybe I I called this let me call this B prime of X to distinguish.
+So this is the set of indices that are strictly positive, and then I'm gonna extend it, possibly extend it to a set that has size exactly M, because it might be the case that the set has size at most M.
+Okay.
+Columns are indexed by B of X.
+has rank exactly M
+So the point is that if B prime X had size less than M, that means I can augment it by adding more columns to make it have full rank.
+Okay. I'm assuming that A has full row rank. Because there's no point in having redundant rows in in A. This would be redundant constraints.
+And you can filter that out in pre-processing. Okay. Either redundant constraints or obvious and feasibility.
+Okay, so good.
+Um other questions at this point? So A B is a square M by M matrix, it's invertible. Okay.
+And what we said last time was
+So now we'll always
+We start
+At some vertex
+Let's call it X0 is the initial point. I mentioned how to get an initial point to start with Simplex last lecture by basically running Simplex on another LP.
+Okay. So we started some initial vertex X0 and greedily
+move to subsequent vertices.
+Until some halting condition.
+Which I said last time and I'll write it again.
+So
+At any time
+We uh represent
+Our current vertex
+By some basis.
+And we also defined n to be the set one to n without b, the uh the complement. Okay.
+But
+So with simplex, at every step we write our LP.
+We say, look, so C transpose is the same thing. So this is our LP here, right? This is our LP. I'm gonna rewrite it as minimize C tran C B transpose um XB plus Cn transpose Xn subject to the constraints that A B XB is
+is equal to uh plus an X N is
+equal to B and X B X N are bigger than or equal to zero. When I put a subscript when I put a set as a subscript I just mean can
+projected to those coordinates. And what we did last time was we multiply both sides of this equality by A B inverse.
+And that let us write XB in terms of Xn.
+And then we substituted XB in in this expression here, right? And
+Right, so uh this implies that x b is equal to something, right? Which implies that what we're really doing is minimizing some other uh cost function. Let me write it down again.
+Mm-hmm.
+You can write this thing as C B transpose A B inverse B um
+Plus C N
+Minus, I believe, AN transpose or AN AN transpose.
+A B inverse transpose.
+C B transpose uh C uh XN
+This is this is what you get after you substitute X this expression for XB in here.
+and then subject to those same constraints.
+Okay. And this thing here
+is some new cost vector. So this is a constant, right? This doesn't depend on the variables at all.
+So the only thing that depends on the variables is this thing, which I'm gonna call Cn tilde is uh the reduced cost.
+Okay.
+And now
+At fur you know, at first uh first pass
+Assume that
+X B uh so let's say the current vertex let's say is V.
+Assume that V B is uh strictly positive.
+Okay. Meaning that B prime and B were the same, right? We didn't have to actually add more columns to make it fully.
+So in this case, what can we do? Well
+If any of these if any of the entries in so
+If there exists a J in capital N such that C tilde J is strictly negative.
+Questions? Any questions?
+And I've been writing a lot of symbols.
+So the point is that if any of the reduced cost entries are strictly negative in capital N, then what I can do is I can take this vertex and start incrementing the J coordinate.
+Okay. Notice though that
+Right, if if I actually wrote this out
+Well let me let me actually write it. So XB XB is equal to
+A B inverse applied to B minus A N X N.
+Right. So the point is the variables in B actually depend on the variables in uh in
+N in capital N. Okay. So if I take this vertex and I start incrementing the J th coordinate and J is in capital N, what that means is I'm implicitly adjusting some of the variables that are also in in B.
+Okay. And so some of them are gonna start maybe decreasing.
+Right, and I can only I can only increment this j th coordinate a certain amount before one of them becomes zero. And then I can't increase the jath coordinate anymore.
+Right.
+to maintain feasibility. And then what I have is a new vertex. Right? I've incremented one guy to be he used to be zero, right? This was this is capital n. This is a set of zero coordinates. So the j th coordinate of V used to be zero, now it's positive, but then I've made something else zero. So I've moved to another vertex. So simplex basically moves from vertex to vertex by doing this.
+Okay.
+And the point is if if VB is strictly positive, that means I can move I can move some amount. So if there exists a so then
+Increment
+Increment uh VJ until
+Some I and B
+as XI equals zero. And the point is the amount of increment I can do before this happens is positive.
+Right? Because they all started strictly positive.
+Right, and they move they move continuously when I increment this coordinate.
+But
+Uh so V is my current vertex.
+So yeah, so I just wanted to differentiate between this is like the LP. So um and and then V is the point that I'm currently
+Okay, so okay, good.
+Otherwise
+If C J tilde is greater than or equal to zero for all uh
+For all J
+Then halt
+And declare optimality.
+Okay. And why can I do that?
+I can do that because look at my objective. There's a constant term, plus there's the reduced cost transpose Xn. Now Xn, remember there's this constraint. Xn is a non-negative vector. So if Xn is non-negative, right? This is true in the in the entire polytopee. So if Xn is non-negative and this reduced cost is also non-negative, then this can only go up.
+Right? At the current vertex this is zero. This whole thing is zero at the current vertex. But this can only go up for any other point. Which means that this current vertex is better than everyone else.
+Okay.
+But there's uh okay, so this is this is uh the first pass, right? Assuming that V is assuming that V B is strictly positive.
+In reality, because of this augmentation, some entry in in VB can actually be zero.
+In which case, there's a problem here, right?
+which is that even if there is a C tilde J which is negative
+We might not be able to increment the J th coordinate at all because it might instantly saturate uh a non-negativity constraint.
+Okay, so I don't I'm not gonna give the details on that, but I will tell you
+basically how it's fixed.
+So if V B
+So your doesn't hold
+Well, if that doesn't hold, this case is still fine, right? If the reduced cost is not negative, we know we're still done.
+The problem is what do we do if the reduced cost has a negative entry?
+If it doesn't hold
+And there exists a J such a Jn N
+such that um C tilde J is negative
+Then
+We need
+To or w we will
+Add J to B
+And kick out
+K from B
+Right? But the question is which J do you add to B and which K do you pick out?
+Right?
+Um and if you're not careful about this, you might get into as I mentioned before, you might get into an
+infinite loop where you keep replacing the same variables with each other and never actually make any progress. Okay?
+But it turns out that um there is a way to to to decide which J to put in because there might be multiple J's which have a negative cost.
+reduced cost. And there might be multiple Ks which are already zero.
+where XK is where VK is already zero. So it turns out that there is a way to do this, which probably never has an infinite loop. I'll tell you what the rule is, uh and then I'll put a link in the notes to a proof. I don't want to get into the proof.
+But so this thing is called Bland's rule.
+So multiple pivoting rules.
+Rules for choosing J and K exist. Uh some don't terminate if you're not careful.
+But Bland's rule
+Terminates? So what is Bland's rule?
+Okay.
+Pick J to minimize
+C tilde j less than zero. If multiples such j exist
+So
+Then you take the the first one.
+Okay, now what do you do about what do you do about choosing K? Well
+So define this vector R
+Where um R B is zero and R N is basically the
+Reduced cost.
+And define
+Define A prime to be A B inverse of
+A and B prime to be A B inverse of B.
+Okay.
+and define Q
+To be the min overall I
+Of
+B prime I over A prime I J
+Such that A prime IJ is positive.
+And then what you do is
+You pick well, let me write this as I said K before, let me write this as K.
+You pick K to minimize Q.
+If there's a tie
+You pick the first Q, the first K, minimizing Q.
+Okay. And it's possible to prove that this thing actually doesn't terminate. I'm not gonna do it. Um uh sorry, that it does terminate.
+Doesn't yeah, that it terminates. Um and when it terminates, you will be in this case where the reduced cost will be uh non-negative.
+Okay.
+So okay, good.
+Yeah, so there are the there's this, you know, annoying case you have to handle where
+bases don't have size exactly M
+And unfortunately with other algorithms like uh ellipsoid and interior point, there are also these degeneracies you have to handle, which yeah, so basically I'm I don't want to handle any of these in this class. Okay, so uh otherwise it'll just be too pedantic. Okay.
+Uh so
+Good. So now what do I wanna say? Well, I guess if I just assume that Landsrill works then there's nothing more to say. That's
+That's the end of simplex. Okay, so are there questions about the simplex algorithm?
+Before I s before I prove strong duality. Yeah.
+Oh, um
+Uh right, so what would you do? I guess you would do um
+You could add the constraints one by one, right? And if the rank doesn't increase
+Then you know that the thing you just added was already in the span of the previous things and then you just drop it.
+Oh how do you compute the rank? Um I mean you could do um
+Uh one thing is you could just do uh
+I this is probably not the most efficient. You could do the determinative A transpose A and make sure that it's not zero. But um actually there is a there is a paper that talks about how to compute rank in input sparsity time. So like the number of non zero entries in the matrix times some log factor. Yeah, you can compute rank in that time. Um and that's due to one of the authors was Lap Chi Lao. I don't remember all of them, but that was I think in two thousand
+Ten maybe or something. Yeah. Maybe I'll I don't remember off the top of my head. Yeah. Uh but you asked me how do they do it in practice, like in real life. So that I'm not so sure, but I'm this is just me
+saying things off the top of my head. But yeah, d okay, it's definitely in P. So
+Sorry.
+Okay. Um good. So strong duality.
+So yes. So um there are a couple of ways of proving strong duality.
+One is non-algorithmic, and the other is to sort of get it out of the simplex algorithm.
+Okay. So to get it out of the simplex algorithm, I want to define what's called the shadow price vector.
+Uh let me call and that's why, which is
+Uh yeah. A B inverse transpose C B. Okay. So as I iterate in simplex B it changes and the shadow price vector changes.
+And first of all, the
+Oh first of all, okay, let's what is the duel? Forget before we before I say this, what is the duel? So
+Dual of of LP
+You know, min C transpose X.
+Such that AX equals B X greater equals zero is uh are people any any takers? Have people become fluent in duels?
+Okay, so first I'm not gonna mint, I'm gonna max. What am I gonna max?
+Yeah, okay, yeah. So y transpose B. Right? So the right hand side becomes the objective. And such that uh A transpose y is at most C.
+Okay, so that's the duel.
+Sorry, say it again?
+Uh you don't because this is because you have equality constraints. Yeah.
+When you have equality constraints, the dual variable is corresponding dual variable is unrestricted.
+Um very good. So the first claim
+Is that
+Uh
+C transpose so currently we have some iterate C B and we have some uh some vertex V B I said. Is that C transpose V B is equal
+to B transpose Y.
+Okay. So VB is the vertex we're currently at.
+So this already looks like strong duality, except for one thing, right? What's
+What would we need to do to prove strong duality?
+Why is this alone not sufficient?
+Yeah. Well V B is definitely feasible. It's a vertex in the primal but yeah, why? Why might not be feasible, right? In fact it's not gonna be feasible until
+very end. So um so proof of this
+So remember we have
+We have that uh A B V B equals B, which implies that V B is equal to A B inverse B.
+So this implies that C transpose VB equals um C transpose
+A B inverse B.
+Uh what's V NY trans?
+There's a C V
+Oh well well first of all this
+Let me write C transpose V B is equal to C B transpose V B
+Um
+And this is the same thing as B transpose uh AB inverse transpose C B, which is B transpose Y.
+Okay.
+So what does it mean to be feasible? We want Y to be dual feasible.
+So define the dual slack vector.
+Which is R equals um
+C minus A transpose y
+Right, I just subtracted A transpose y from both sides.
+And so we want
+R to be non-negative.
+Okay.
+And
+The definition of y implies that RB is equal to zero and Rn is equal
+Um something very convenient. Okay? If you do the calculation, it's equal to C tilde N.
+Okay.
+Okay.
+And uh
+We halt.
+When C tilde n is bigger than or equal to zero, which implies
+uh dual feasibility.
+Okay.
+So
+Yeah, I mean I guess I swept under the rug some of the complication of proving strong to
+because I didn't actually prove Bland's rule. Okay. But that takes some amount of effort. Often what you'll see in other uh Grad Algham's courses is that people
+won't they won't prove it their simplex. They'll give like a non
+algorithmic uh proof of strong duality using more convex geometry. Okay, but um I think it's
+On the one hand, I didn't give all the details of the proof because I didn't prove Bland's rule, but I think uh it's a nice thing to know that it's basically a corollary of the fact that Simplex works.
+Okay. Questions?
+Yeah.
+So I wanted to say something about this complimentary slackness.
+So
+We can define
+The uh complementarity gap
+As basically uh X transpose R, or this is the dual slack.
+And notice that's just um X transpose C minus A transpose Y. Where did I put? The dual slack is C minus A transpose y.
+Which is uh C transpose X minus uh
+Uh AX Transpose Y
+And AX is equal to B if X is uh feasible for the primal.
+And this is just uh
+C transpose X minus B transpose Y.
+Okay.
+Right. So at optimality we know that this is zero.
+So we have uh a theorem. This is called complementary slackness.
+And if you remember earlier in the course when we were doing online algorithms, I called something approximate complementary slackness.
+Which basically said that if you're not quite at opt, but you have some bounds on how like how you almost uh satisfy complimentary slackness, which I'm gonna say in a second, then um you can say something about the the goodness of your primal solution.
+Okay, so complementary slackness says uh if X star and Y star are optimal
+For the primal and dual respectively.
+Then uh the sum over I from one, then uh for all I either
+X I is equal to zero or
+Um
+CI
+minus a or C minus A transpose y, C minus A transpose y I is equal to zero. So either the dual slack is zero or the primal variable is zero.
+And the proof of that is basically already written down.
+Right. At optimality
+By strong duality, there is no gap between
+the primal in the dual. So we have that um C transpose X minus B transpose Y is zero at optimality. But we know that C transpose X minus B transpose Y is just equal to the sum of XI RI.
+Okay. And I mean that's basically it. All these terms here are non-negative. So for them to sum to zero, each sum end has to have either XI being zero or RI being zero.
+Okay. So
+That's pretty much everything I wanted to say about these two things.
+Which means now I'm going to move into the second pair of things. So before I switch topics, do people have questions?
+Yeah.
+Okay. Let me so let me make sure I write down this uh reference properly.
+Oh actually I did I did want to say a few more things about Simplex. So uh so what's the runtime?
+Well, in each iteration, to move from vertex to vertex it's polynomial time.
+And how many vertices are there?
+So each iteration
+It's poly time.
+Number of iterations
+is that most number of vertices
+Is that most what? What's the most nice the crudest bound you can think of?
+Yeah, there's a most N cho Z.
+Right, because vertices are represented by these bases which are subsets of size M.
+Okay, so this is exponential. Um in fact
+It's possible
+to prove
+That the number of vertices
+Is at most n minus m over two choose m over two.
+Okay. Uh and um the reason you could hope for any better bound at all is that not all choice not all choices of bases, like when you so what's uh let me right, let me go back for a second.
+Where'd I put that thing?
+Uh
+Well
+Ah here. So once you have a basis, how do you actually get the the vertex corresponding to that basis? You do A B inverse times B.
+Right. And the point is
+A B inverse times B might not actually be a non-negative vector.
+Right. And if it's not a non-negative vector, then it's not in your polytope, it's not feasible.
+So um if you're careful with that it turns out that uh it's actually possible to get a better bound. And I think more than careful, I think this is actually my understanding is that this is actually kind of hard to prove.
+So this this follows
+So I asked uh
+asked uh someone uh Michelle Gommans who's an expert in this about it and he said this follows from the uh something called the upper bound theorem
+Uh by a that that's an interesting name for an upper bound. I mean people prove upper bounds all the time. I don't know why this is the upper bound theorem, but
+This follows by by uh McMullen.
+And when I Googled to find out more, uh it seemed like it was a major open problem for a long time and then he solved it. So I I I'm not sure that this is actually something very easy to prove. Okay.
+Yeah, we need to
+In any case, that that's still uh a big number, okay?
+So
+Another thing I want to say about Simplex is
+You know, you could ask yourself, well, okay, sure. The number of vertices could be very large.
+But um
+Maybe we still can prove that uh there is some way of navigating this graph quickly, right? So at the end of the day, there's a graph here where the vertices of the polytope are the vertices in the graph and the edges are neighboring vertices in the polytope.
+And you could say, well, maybe there's hope that uh any polytope given by M constraints, by M hyperplanes in n dimensions, doesn't have that big of a diameter. Like the graph uh the graph that this polytope represents doesn't have large diameter.
+Okay, that would be a necessary step.
+to show that Simplex could hope to take less than exponential time.
+Okay. It's not a sufficient step because simplex doesn't necessarily find the shortest path. But um right, so
+So uh one necessary step and when I say an implementation of simplex it all comes down to the pivoting rule.
+Okay, so there might be many choices of J uh with a with a negative reduced cost, which one do you actually start incrementing? So that that's a pivoting rule. And then if there's some zero coordinate in B, which one do you kick out? Okay.
+So one necessary uh
+When necessary uh
+Condition
+To allow
+The existence
+Of poly time.
+Simplex
+Is to show
+That uh
+Any polytope polytope
+In let's say D dimensions
+defined by M hyperplanes
+Uh has diameter I mean I when I say diameter I mean of the graph has graph diameter
+You know, say poly of uh M D
+And there was a conjecture.
+Uh who's heard of this by the way? I'm just kind of curiosity. Has anyone heard of the Hirsch conjecture?
+Okay. So is that the diameter
+Is at most m minus d.
+And I forgot exactly when this conjecture was made. Did I oh yes, good. So this conjecture was made in nineteen fifty-seven.
+Oh
+Okay. And in twenty ten
+Um
+Let's see uh Santos so uh say Santos
+And the annals of math.
+In twenty eleven
+disproved the Hirsch conjecture.
+And he came up with an explicit polytope where D was uh forty-three, M was eighty-six, and the diameter was f at least forty-four.
+So off by one. Okay, so Huh?
+What?
+And you conject your own. Uh uh, but then he also also showed
+He also showed uh
+Um
+For fixed D
+D as well as an epsilon bigger than zero, there exists an infinite family of polytopes.
+With um M going to infinity that have diameter
+At least one plus epsilon.
+Uh M.
+Okay. This is still pretty far from poly MD, right?
+I mean these are like nearly linear lower bounds in M.
+Right? I mean uh to get polynomial time for simplex if you can prove a diameter upper bound of m to the tenth, d to the fifth, that's perfectly fine.
+Again, this is only a necessary condition.
+For hope for simplex. It's not a sufficient condition, but for all we know, there is an implementation of Simplex which is fast.
+We just don't know one. I think we don't know any that yeah, I think yeah, we don't know one. That's right.
+Okay. Um
+The last thing I want to say about Simplex is
+So Simplex works well in practice, right? So we were asking about this.
+So, you know, as a theoretician, you want to give some theoretical justification why is Simplex faster than this exponential boundary?
+that we can prove. Um and there was some nice work on that by Spielman and Tang.
+So I mean this I'm not gonna claim that this is exactly what's happening in practice, but at least it uh it it should
+shows why simplex isn't as hard as it may s as we as it seems. So why is simple
+Not so slow in practice.
+So um Speelman and Tang
+And uh well this is the journal version, but the actual the paper came out earlier, so Spiel and Tang. They define something called smooth analysis, which is which has been applied to other areas as well.
+Yeah, and when I go off on these tangents, you know, without actually proving anything and just telling you his
+Okay, so smooth analysis, the basic idea
+Is
+Okay, so there's worst case analysis. That's what we're all familiar with in
+you know, this class and CS124 , right? Want to say that no matter what the input is, uh your algorithm will be fast.
+There is average case analysis, which assumes an input distribution.
+And you want to say that your algorithm has an expected running time, which is fast, if the input is drawn from this distribution.
+Okay, but then you have to make an assumption on what the distribution on inputs is, right?
+Which might not be realistic. You might have no idea. So smooth analysis is something in the middle. The basic idea between behind smooth analysis is
+Okay, so my algorithm has to be fast, you know, the expected running time has to be fast on the following kind of input. You give me a worst case input, like a worst case LP, for example, and what I'll do is for every input variable, for every entry in that constraint matrix A and for every entry in the right
+right hand side vector B and in the cost function, I'm just gonna add epsilon random noise, like Gaussian noise, with very small with mean zero and very small variance.
+Okay? So it's like a randomly perturbed worst case instance.
+And then you ask, what's the expected running time on the worst case in this setup?
+And what Spielman and Tang showed was that for Simplex, with a particular pivot rule that they analyzed,
+It's polynomial time.
+Okay. So basic idea is to
+Take a worst case instance.
+Instance and add
+Uh small random noise.
+To all entries, independent noise.
+Then analyze
+Expected running time.
+So just to make sure we're all squared away on the quantifiers, it says that so we have an algorithm A
+such that for all inputs X
+The expected
+Run time.
+Uh let's say A on input X tilde is something small.
+where the expectation is over X tilde is a randomly perturbed
+Version of X
+Okay. So that's smooth analysis.
+Bounding this thing is what's called smooth analysis.
+Right, so yeah. So does that
+Result in a polynomial.
+No, so it's polynomial and one over the variance as well. Okay.
+Yeah.
+Yeah.
+Okay. Now that really is all I wanted to say about simplex. Okay.
+Uh I got questions before I do ellipsoid stuff.
+Yeah. So far.
+objecture. Um I'm not sure how we define the graph of relativity three seven two refuses have an edge if um their basis only differ by one.
+Exactly.
+Right, just to be make sure everyone heard it. So in the graph there, two two vertices have an edge between them if their bases differ by a single constraint.
+Okay, good. So
+Uh so I mentioned Simplex came out in nineteen forty seven.
+Land's rule was in the seventies.
+Okay, so uh I think before then things just people didn't care about termination, I don't know. Uh but the first time we had a polynomial time algorithm, probably polynomial time
+Algorithm for linear programming was also in the seventies, uh due to Kotchyan. Okay, so
+First poly time.
+Algorithm.
+For L P
+is elipsoid. And that's due to cochian
+And the journal was uh some a Russian journal, the claudi
+Uh I can't pronounce Russian, so I won't try.
+Okay.
+And
+I'm not going to prove basically anything about some about ellipsoid, but I will say a lot more about interior point. But I just want to tell you what the ellipsoid algorithm is, and I want to tell you some properties of it that um
+actually make it more useful than
+That make it more useful than Interior Point and other algorithms in certain situations. Okay, so we'll see this in a second. One nice thing about the ellipse wade algorithm is
+is that in some cases you can even solve exponentially sized linear programs in polynomial time.
+Okay, you might say, what are you talking about? How can you even look at the input? So really what ellipsoid needs to work is an oracle which if you give it a point that that's infeasible, it will tell you a violated constraint.
+Right? So for some problems, you can implement that Oracle without ever explicitly writing down the linear program.
+Right. Um and then actually ellipsoid makes a polynomial number of oracle calls.
+Okay.
+Is it clear what I what I mean? I mean I didn't tell you what the algorithm is, but uh the point is if you can if you can implement this Oracle, you don't actually need to write down the LP explicitly. Of course, if you write down the LP explicitly, one way to implement the oracle is to loop through all the constraints and see which one you violate.
+But if you have some more efficient way of doing that, then you could plug that into ellipsoid. Okay.
+Okay.
+Um so
+Um so given
+Uh some A in R N
+And all as well as
+A positive definite matrix.
+The ellipsoid
+E of a colon A is defined B
+The set of all X
+Such that X minus A transpose A inverse X minus A is less than or equal to one.
+Okay. So for example, a sphere of radius one, A would just be the identity matrix and
+And uh A would be the center of the sphere.
+And in general you can always view ellipsoids as unit transformations of the sphere, linear linear transformations of the sphere, sorry.
+Okay, so
+So the ellipsoid algorithm
+Is used to uh test
+Feasibility
+Of some polytope.
+Uh which is instead of all X such that let's say A X is at least B.
+Mm.
+Okay, so
+I mean I'll show you in a second. Once you can solve feasibility, it implies that you can do linear programming and optimize over over this polytope. But ellipse way just
+Let's you do this. And the basic idea is
+So one
+Start
+with some ellipsoid.
+E not
+Which is guaranteed
+To contain
+Uh to contain
+Actually
+P
+Okay.
+If P is bounded, that is.
+Okay. So if P is a bounded polytope, then remember we I think we I mentioned this very briefly last time, right? We know how to get vertices of the polytope. You do it by taking subsets of the columns and then solving a linear system, right?
+So if you know if and if you so if you know that all the um input numbers to your LP are rational, right, you can clear denominators and assume they're all integral.
+then there's some number of bits that are used to specify the input.
+And when you estimate bit complexity, right, so how many bits do I need to represent the inverse matrix of an in of a of an integer matrix and then multiply times the right hand side, I get an I get a bound on the number of bits I would need to represent any vertex.
+Right. So by that kind of bit complexity analysis, you can show that just by the bit complexity you automatically know that um
+P has to be contained in a ball of a certain size.
+Okay, if it's if it's bounded. Okay, so um getting this initial E zero is not that hard. It's just a sphere of the appropriate radius.
+Okay, so two
+Check so let's say uh
+Check if uh so let's say um
+Let a be center
+of the current ellipsoid
+Yeah.
+And then while
+Uh I guess I'll put that here.
+While A is not in P
+Okay.
+Okay, so if the center of the current ellipsoid is in P, we're done, right?
+We have our feasible point. Ellipsoid is trying to find a feasible point.
+However, the center of the current ellipsoid is not in P. What do we know? So we have this ellipsoid.
+E, right? Uh I can't draw3 D. And it's not in P, which means there's a violated constraint.
+What's a constraint? A constraint is a hyperplane.
+I'm really bad at drawing this uh3 D stuff. So we know that A
+A is the center of the ellipsoid, and you're telling me that
+Oh, uh A you're telling me that A is not feasible, which means that
+our desired polytope
+completely lies on the others on the other uh side of the hyperplane.
+Right.
+So
+So A lies on opposite side.
+Of hyperplane H
+From P
+So you create a new ellipsoid, and there's a closed form formula for how you get the new ellipse. So if you're given H and you're given the old ellipsoid, now what do you want? You want a new ellipsoid which is smaller.
+Which is which is guaranteed to contain just the other side of that hyperplane.
+Create a new ellipsoid.
+E prime which
+Uh still
+Contains
+P and
+has smaller volume.
+Right. And this is this is the place where um right ellipsoid doesn't really need to have the LP explicitly. It just needs an oracle which can tell it this hyperplane.
+Okay. In fact, because of this, um you can use a lipso the ellipsoid algorithm for an even more general class of problems of convex programming. Okay.
+So where the feasible region is not necessarily a polytop, but say a convex set.
+Okay. And there's a theorem. Um I think it's sometimes it's called the separating hyperplane theorem and sometimes it's called uh the Han Bannock theorem. Okay.
+I think hon depends on who you ask. Uh
+Which says that for any convex set and any point that's not in the convex set.
+a closed convex set, any plane that's not in it, there's always a separating hyperplane.
+Okay. So if you're able to implement the separating hyperplane Oracle, then you could run ellipsoid.
+And also depending on what your initial convex set is, you need to be able to easily say what E zero should be.
+Um and it's possible to do this.
+Such that the volume
+of
+The volume of E prime
+over the volume of E
+Is at most I think something like eat of the
+One over two N or something? Either minus one over two N.
+Okay.
+Okay.
+And finally
+Um
+If found in A and P, return A
+Else
+if if um the volume of E
+has become
+Too small, I'll see what that means in a second.
+Uh declare
+P is empty. Basically to clear that your LP is infeasible.
+Okay, so there's already one thing which should alarm you.
+About this
+Right.
+Does anyone see why this might be a problem?
+Yeah.
+Right, so exact so P I mean if you have, let's say, an equality constraint. Well here I here I said that there are all inequality constraints, but you could im you could use inequality constraints to implement equality constraints.
+You could say X is at least five and it's at most minus five or something.
+Right. So you could you could have an equality constraint which reduces the dimension of the polytope. So it's actually a smaller dimensional it's a polytope in like a subspace. So in the higher space, it has zero volume, right?
+Uh so that's um that's a problem.
+So
+What you actually would do in a pre-processing step
+Is so theorem
+Let L be the
+Bit complexity
+Of P so L is proportional to like
+Log of so where did I write this polytope?
+A X is at most B, I think.
+max over IJ of AIJ plus uh let's say the the largest entry in B
+Let's plus uh let's say M plus N
+Okay.
+Define
+some P prime to be a new polytope.
+Um um where you say P prime is instead of all X
+Such that AX is at most B
+Plus uh two to the minus L
+times the all ones vector. So this is a vector that just has ones in every entry.
+And you also add a constraint that uh for all J, minus two to the L is at most X J.
+Is that most two to the L?
+So now this polytope has some very small volume. I mean it's at least it's exponentially small in L, but it's bounded from below. It's not zero.
+Okay.
+Then
+P is empty.
+Meaning infeasible. T is infeasible.
+If and only if P prime is infeasible.
+Yeah.
+So I'm not gonna prove it. I'll put a link in the notes to where if you want to read the details. I mean this is really fudging with you know precision issues and bit complexity. I don't want to spend time on on that on the board, but it's not too hard of a proof. It comes down again to the fact that vertices are specified by a certain number of bits due to inverting when your systems, blah blah blah. Okay.
+So now now you know when the volume has become too small, right? If it's smaller than this inflated polytope, then you're done.
+There's also an issue that if you run ellipsoid on this polytope, then the thing you get might not actually be in P, right?
+It's P prime is a little bit bigger than P. But there's also a way to round it so that you get back to P.
+Okay, so I'm not gonna get into that either.
+Okay, good. But with LP as I've talked about it before, um
+Um
+We don't just want to do feasibility, we want to do we want to do actual optimization. So
+Suppose
+We want
+to solve
+min of C transpose X such that AX is at least B and or X equals B and X is at least zero.
+Okay.
+How would we do that with the ellipsoid algorithm?
+So step one
+Chuck
+If P equals
+X such that AX equals B X is greater than zero.
+Uh check if it's
+Uh feasible.
+If not
+Output
+Not feasible.
+Okay. Step two.
+You write the duel.
+Which is max B transpose y such that AX or A transpose y is at most uh C.
+Check
+that
+Uh, let's say P dual
+Is the set of all y such that A transpose y is at most C
+Check that this thing is feasible.
+If not
+If not, then what do you output?
+Huh? Yeah, unbounded. Then the primal's unbounded.
+Then output
+Unbounded
+Okay, so now we know that after steps one and two, we know that P is feasible and bounded.
+Which means by strong duality the duel is feasible and bounded and achieves the same thing.
+So step three is now just compute something inside of this polytope.
+Um
+Find
+XY, that's feasible.
+For this polytope, which is AX equals b
+X is at least zero, A transpose y is at most C, and C transpose X equals B transpose Y.
+So for this set of constraints. Right? And once you find something feasible for that set of constraints, you've found the optimal primal and dual solutions.
+Okay.
+So that's the ellipse algorithm. Or that's everything I'm gonna tell you about the ellipse algorithm.
+Um but I will actually tell you
+Stuff about interior point.
+Right? And yeah, so I guess maybe I should have said this. So this implies that this volume comparison here, this implies that if you look at the volume
+Of
+the cath ellipsoid. It's at most uh
+the volume of the original ellipsoid.
+times e to the minus k over2 n.
+Right. And you know what the original ellipsoid is, is it's some sphere.
+You can compute its volume. So as soon as this expression on the right hand side becomes too small, like smaller than smaller than the volume of this P prime here, then you can just say it's infeasible.
+Okay.
+Questions about about uh I mean I didn't give you I guess
+I didn't tell you how to update the ellipsoid and all these things, but uh I'm not gonna cover that.
+But aside from that, is are the ideas clear of roughly what ellipse wide is?
+Okay.
+Okay, good. So that's ellipsoid. Why did I erase that? Okay, so now just top following Interior Point. So I mean I only have about six, seven minutes. Um so what I'm gonna do is I'm just gonna give you a flavor of what Interior Point is all about.
+Uh and then next time I'll actually tell you details of interpoint.
+And really um
+It's gonna look, I think, pretty different from the kinds of things you have seen.
+seen so far in algorithms classes because it's really something that comes out of optimization. You're gonna see a lot of you're gonna see gradient descent, Newton's method, and um you're gonna see multivariate calculus. Okay, so um but I mean the basic idea of of the algorithm is
+something that um
+There's a c there's a clean understanding of what's the basic idea of the algorithm is, okay?
+Okay, so let me set things up. So interior point method.
+Uh but also
+gives poly time.
+Linear programming. It was introduced
+By car marker
+I think in stock nineteen eighty four the journal version was the same year.
+Combinatorica Combinatorica
+And it's really been quite influential. There are entire books written on Interior Point. You can use it to solve other convex programming problems as well. And it's sort of
+I don't I don't I don't know if opposite is the right word, but let me say opposite. It's sort of opposite of simplex. So simplex is always on the exterior of the polytope, jumping around from vertex to vertex.
+going along edges. Interior point tries to stay as far from the exterior of the polytup as possible.
+Okay? So it tries to stay inside and gradually move toward a vertex from the inside.
+Okay. So
+Gradually
+Tries
+to reach
+Optimal vertex
+While staying
+In the
+Interior
+A P. So you might say, well, wait a second, if I can you know, how do I get in the interior? That means I can test feasibility, right?
+Um and we we saw with ellipsoid with the last but right here, if you can do feasibility you can basically solve
+the prog the problem. So the very first step of interior point is you actually modify your LP. We sort of did this with simplex, right, to get it in
+vertex. You modify the LP, except we're not we're not gonna do like two interior points. We're gonna it's all gonna be one tier point, but we're gonna modify the LP so that it has a very obvious uh interior point.
+And it's also going to be the case that for this modified LP, if the origin if the original uh polytope was feasible, then
+um kind of a vertex the optimal vertex to this modified LP will correspond to a vertex of the original one.
+Okay. So really we're just we're just gonna add actually one like um
+I mean I I don't want to get into this detail at this point because there are only a few minutes, but you can basically add um one extra variable
+which easily allows you to satisfy constraints, but uh you're gonna penalize it very heavily in the objective function.
+Okay, so for example, you know that numbers never get bigger than say two to the L in your LP. So you're gonna put a weight on this variable that's like, you know, ten to the L or something. So that if your actual thing was feasible, you would never use this variable.
+Okay. But now that you have it, you can easily come up with an interior point.
+And then now you try and run the interior point method to eventually get down to a vertex. You look a little troubled. Or no?
+Yeah, so it's gonna be um
+Right, so the number of iterations of interior point is gonna be at least L.
+In fact, the best known implementations of Interior Point, well, before this year, or before last year, uh the best known uh the best known uh implementations of Interior Point, the number of iterations was like L times square root of M, where M is the number of constraints.
+Uh now you can uh there was a paper just this year with
+Which showed that the square of M term can be improved to square root of the rank of the constraint matrix. But yeah, L you need at least L iterations.
+Yeah. Even the running time of ellipsoid depends on L
+Um in fact there are no strongly polynomial time algorithms for
+Or um
+for linear programming that we know of.
+Okay, and so we're gonna look at so we're look gonna look at things of the form uh men of C Transpose X
+such that AX is at least B
+Okay. And
+We're gonna turn this into
+An unconstrained uh optimization problem.
+Uh define define the slacks.
+Define the slack vector SX to be uh AX minus b.
+So for any feasible X, this thing is non-negative.
+Okay.
+We'll try to optimize
+To compute
+the minimum over all x and rn, an unconstrained optimization problem of lambda times C transpose X plus
+Uh the sum
+I going from one to m
+of some barrier function.
+P of well actually let me write it like this of P
+Um
+Of S of X.
+Where
+P is a barrier function.
+Such that P of Z goes to infinity if ZI goes to zero.
+For any eye.
+Okay. And we'll use the log barrier.
+Which is P of Z is gonna be negative sum I from one to M of line of ZI.
+Okay. So on the one hand if you set lambda to be zero and you try and minimize this function, all you care about is this barrier function, which really is trying to keep you as far so you just don't want any of these constraints to be tight or even near tight. You will you want to be well in the interior of the polytope.
+Right? Which is obtained by minimizing this barrier function. And the point minimizing this barrier function is usually called in literature the the analytic center. Okay, so in lambda is zero you find the analytic center.
+And then what you do is you start off with lambda small. So you'll actually start interior point off with lambda being one over two to the L or one over exponential in L.
+Okay. And you'll approximately solve there's there'll be a way to get an initial point for the in for the various
+Small lambda.
+And then once you have a solution or a near solution for Lambda, you're gonna increment Lambda by a little bit to get a new Lambda prime. And you're gonna take your old solution for Lambda and do an iterative algorithm like Newton's method.
+to improve it for the for the lambda prime problem. And now you'll have a good solution for the Lambda Prime problem. Now you'll take Lambda Prime and increment it just a little bit to Lambda double prime. Now you'll take the Lambda Prime solution, run Newton on a few steps.
+and get a good solution to the lambda double prime problem. And you keep doing this, you keep alternating, incrementing lambda by a little bit, running Newton's method to make the old solution good for the new Lambda, until Lambda is big enough. Okay?
+And big enough is gonna turn out to be something like, well I mean we'll you'll see the details next time. Once lambda is something like m times two to the L, you can show that uh a good solution for that problem basically is almost optimal.
+Then you can just round it to a vertex. Okay. So in a nutshell at the very highest level without giving you any details, that's how Interior Point works. And we'll see details on that uh
+uh Tuesday. Questions?
+All right.

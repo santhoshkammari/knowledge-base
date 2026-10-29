@@ -1,0 +1,868 @@
+JELANI NELSON: This is going
+to be the last day that's exclusively on hashing. I just want to correct
+a lemma that I stated, I guess, at the end of class
+or at some point in class last time. It was related to
+cuckoo hashing. Well, before I do that,
+let me-- so today, what are we going
+to talk about today? So we're going to
+finish linear probing, and I'm going to show you how
+you would argue about it with 5-wise independence. It's almost the same
+proof as 7-wise. There's just one trick
+that you have to observe. I'm going to talk about
+approximate membership. So this is bloom filters. I'm going to talk about cuckoo
+hashing, bloomier filters, which solve a different problem
+than bloom filters. Well, generalization. I'll say a little bit about
+the power of two choices. And six is-- well, I might
+say some other stuff. OK, so before we
+start with the 5-wise, I just want to very quickly
+recap the 7-wise and tell you what the lemma was that
+I should have said. So the lemma that
+I should have said. So let's recap. This is for linear probing, OK? We have an array. So we hash to an
+array of size m. And I think I assumed that m
+was at least, let's say, 2n, OK? And we said LI-- so let's say I is an
+interval of array locations. And then I said LI
+is the number of j in the set S. S is
+the set of things that live in-- the keys that
+live in our data structure, such that h of j is in i. It's the size of that set, OK? And I gave a definition. I said that I is full if l of
+I is at least the size of I. So then I stated some lemma
+about the number of probes-- relating the number
+of probes that we do in inserting x
+to full intervals. Here's a lemma that
+I should have stated, which I sent by email. By the way, is everyone here
+on the class mailing list? Please raise your hand if you
+did not receive an email about-- well, about class
+related things. Raise your hand. So I guess everybody's on it. OK, so if someone is too
+shy to raise their hand, you can go to the class
+website, and there's a link to sign yourself up. OK, so the lemma that
+I should have said is if inserting
+x takes k probes, then h of x is
+contained in at least k full intervals, each
+of length at least k. And the proof of that
+is you draw the array. H of x goes somewhere. OK? And some window about this is
+taken, is occupied by items. Well, I'm using-- some
+window is taken up by items. And then there's a free spot. And then also going
+backwards, some window is taken up by items, OK? And the point is that-- and this is empty. And the point is
+that this interval here, this interval
+here, it lands somewhere. So h of x will
+eventually go there. This interval here,
+including the item x itself, is a full interval, OK? So if you just take-- so any prefix
+interval is also full. So if you just take the k
+different prefix intervals that start with here, so take
+this one, take that one, take that one, et cetera,
+those are all full intervals. Yeah. AUDIENCE: What may be
+of length less than k if the interval starts
+with only one [INAUDIBLE]? JELANI NELSON:
+Well, the thing is you know that this here
+has length k because we're making k probes. So what you can do is start
+here and go k the right. Or I mean, well, start-- AUDIENCE: You don't
+need [INAUDIBLE]. JELANI NELSON: It doesn't--
+oh, yeah, sorry, sorry. This interval doesn't
+have to be size exactly k. It can be size larger than K.
+So start from the beginning, and just go all the way
+to h of x, and then more if you need to to
+make it length k. Do you have a question? AUDIENCE: I think
+in [INAUDIBLE], you don't need the length
+of this k [INAUDIBLE]. Otherwise, it's-- AUDIENCE: Yeah. I learned [INAUDIBLE]. JELANI NELSON: Why is it false? AUDIENCE: Everything
+hashes to h of x. JELANI NELSON:
+Everything hashes here? AUDIENCE: Yeah. [INTERPOSING VOICES] JELANI NELSON: No,
+but then this interval would be of length-- this
+interval would be full. Oh, I see what you mean. Oh, yeah, OK, fine. OK, yeah. OK, good. So this lemma is really
+causing me a lot of problems. OK, I see. OK, so what was the
+purpose of this lemma? The purpose of this
+lemma was we wanted to say that the number
+of probes to insert x is at most the number of full
+intervals containing x, OK? So this inequality was the
+whole point of that lemma. And the reason this is
+true is, in particular, the k different full intervals
+that appear in this lemma are a subset of all the
+full intervals containing x, containing h of x. And then we carried
+on from there. And then we said,
+this thing here is at most the sum over all k. Well, it's equal to the
+sum over all k from 1 to infinity, the sum over
+all intervals of size k, such that h of x is in I of
+the probability that I is full. And this is at
+most the sum over k the sum over the
+same kind of I h of x that's contained
+in I of the probability that l of I minus the
+expectation of l of I is at least the expectation
+of l of I right? Because the expectation of l
+of I is the size of I over 2, whereas if it's full, we
+know that at least I things landed there. So it's at least I over 2
+bigger than its expectation. And then we use
+the moment method. We can raise both
+sides to some power. We raise it to the sixth power. Yeah. AUDIENCE: So how can you say in
+the summation that model is k? JELANI NELSON: I'm
+sorry, say it again. AUDIENCE: Why are you counting
+only intervals of length k? JELANI NELSON: I'm
+counting all intervals. K is a parameter. AUDIENCE: Oh, right, right. Sorry. JELANI NELSON: I'm
+counting all intervals. Yeah. And then this thing, this
+thing is at most sum over k. There are k intervals of length
+that contain h of x, so k times 1 over-- so this is I over 2-- so this is k over 2
+to the sixth times the expectation of this thing,
+LI minus expectation of LI to the sixth. OK? So I don't want to say much
+about how to bound this thing. I mean, well, I want
+to say something, but I'm not going to
+actually do the computation. But I'll give you, I
+guess, a useful trick that lets you easily
+compute those things, and then I'll leave it to you to
+execute the trick if you really want to see the final value. So what is this
+random variable LI? So we can define some
+indicator random variables. So define x1 up to xn, where
+xi is equal to 1 if h of i is contained in this
+capital I and 0 otherwise. OK, then that
+implies that L of I is just the sum
+I in S of x of i. So now, we're looking at a
+deviation from the expectation. So we want to bound the
+expectation of sum-- we want to bound the
+expectation of Xi minus sum over i Xi, expectation
+sum over i Xi, to the sixth. That's what's over there. OK, so I want to
+show you a trick to show you how to make this
+thing somewhat easier to manage. So trick for such situations is
+what I'll call symmetrization. So what's that trick? So I'm going to make a claim,
+which I'm not going to justify. You can look it up if you want. So fact, this is known as
+Minkowski's inequality, is that if you look at define
+for a random variable-- so x is a random variable. Define for a random
+variable x, the p norm of x is the expectation
+of the absolute value of x to the p to the 1 over p. OK? This is a norm. It obeys the things
+you usually expect, like the norm of
+a scalar times x is the scalar times
+the norm of x, it satisfies triangle
+inequality, et cetera. So we really want to bound-- oh, and then one other
+fact that I want to state is called Jensen's inequality. And it says if a
+function is convex, then f of the expectation of x is at
+most the expectation of f of x. Oh, this is a norm, I should
+say, for p at least one. So the trick that
+makes computing things like this a little
+bit easier is-- well, this is the
+same thing as the six norm raised to the sixth power. So let's just
+bound the six norm, and then whatever answer
+you get at the end, you'll raise it to
+the sixth power. So you'll say, look,
+so I have the sum over i xi minus the
+expectation of sum over i xi. And you might as well imagine
+that-- so this is just a number. This expectation
+is just a number. So you might as well imagine
+that these xi's inside this expectation are independent
+copies of the actual xi's. So xi prime is a random variable
+that's independent of xi, but is distributed
+exactly the same way. So you get the same thing. This is the same number. And then you could-- let's
+write this suggestively as-- I'm just rewriting
+where the x is. So this is the expectation over
+the x primes now of sum over i xi minus xi prime. And raising something to
+the sixth power is a convex function, or in general,
+taking the absolute value and raising to the p for p at
+least one is a convex function. So I can pull this
+expectation outside. So this is the six norm
+over this random variable. But this is at most the six
+norm over both random variables. OK? So if this isn't
+clear, this here means expectation over the x's
+of expectation over the x primes sum over i xi minus xi prime to
+the sixth to the 1 over sixth. But taking something and
+raising it to the sixth power is a convex function, so I can
+pull this expectation outside. This here can go outside,
+and it only gets bigger. That's the Jensen's inequality. So that's what I did here. So this randomness, this
+norm is over both x and x prime are both random. And now, these are independent
+symmetric random variables, so this is exactly
+the same distribution as putting in random signs. These are independent
+random signs. So I should have
+said this is Jensen. And now, I use the fact
+that the six norm is a norm. So this is at most 2 times
+the sum over i sigma i xi. OK, so what we've just shown is
+that the original sixth moment that we wanted to bound
+is bounded up to this two to the sixth power. Raise everything to
+the sixth and then you get the sixth moment. The sixth moment is at most 2
+to the 6 times the sixth moment of this random variable,
+which is a symmetrized version of the original one. So this is a mean zero
+random variable now. All these sigma i's,
+all these guys here, are symmetric random variables. And what's the point of that? So with the sixth power and
+things don't get really that-- well, sixth power is already
+kind of annoying, but-- especially if you go
+to really high powers, it gets really annoying. But symmetrization makes
+things slightly easier because let's look at this now. The expectation--
+remember, what is xi? Xi, I define to be
+this thing here. So in particular, xi is equal
+to 1 with probability 1/2. Not 1/2. What am I saying? The size of I over m, which
+is, let's say, k over 2n. What's the probability
+you land in an interval, you hash to an interval of
+length k in an array of size m? It's this. And equals 0 otherwise. So let me just
+call this number p. Yeah. AUDIENCE: Where are the
+accepted i's exactly? JELANI NELSON: So this
+really means this. This means I took this outside. So it's an expectation
+over both-- AUDIENCE: There's an
+expectation over both on the outside of
+the [INAUDIBLE]? JELANI NELSON: Yeah,
+so this thing here is the expectation
+over x and x prime of that thing to the
+sixth to the 1 over sixth. This is this. Does that answer your question? AUDIENCE: Oh, OK. JELANI NELSON: So
+now, if you want to bound the expectation of sum
+over i sigma i xi to the sixth, you'll expand this out, and
+you'll get a sum over i1, i2 up to i6 of the expectation
+of a bunch of sigma powers, sigma i1, sigma
+i2, sigma i6 times the expectation of xi1 xi6, OK? And the point here now is,
+what is the expectation of this thing here? What is this expectation? I claim the expectation as
+one of two possible values. 0, 1. And when is it 0, when is it 1? AUDIENCE: [INAUDIBLE] JELANI NELSON: That will
+certainly make it 1, but that's not the
+only time it will be 1. AUDIENCE: Every
+i is [INAUDIBLE]. JELANI NELSON: Yes. Every one of these indices
+i, so there's i1 up to i6, it should appear--
+some of these i's might equal each other, right? But if you look at the
+distinct i's that appear here, each one should appear an
+even number of times, OK? So the situations are
+all up here twice, or one appears six
+times, one appears four, and one appears two times. I think those are
+the only situations. OK? And let's say that
+they all-- let's say that they're all the
+same, one appears six times. Then this thing here is
+just xi to the sixth, which is the same as xi
+because xi is only 0 or 1. And so that gives you p, OK? Or if all of them appear-- if there's three guys
+appearing twice each, then you'll get
+p cubed here, OK? And then you also have to take
+into consideration the choices of all these i's. So how many ways are
+there to choose three guys to appear twice each? It's like n cubed
+times some coefficient. So the bottom line
+is the dominant term is the case where this
+is dominated by case of three distinct items. I'm not going to
+do the computation, but if you actually
+did it, that's what you would find, three
+distinct items appearing twice each. And that gives-- well, there are
+n cubed choices of those three items or n choose three choices. And then you have to take into
+consideration the permutations that all give the same thing. So there are n cubed choices,
+and then you get p cubed. That gives O of n cubed p cubed. And remember now, p
+has a division by n here, so this is O of k cubed,
+if you remember what p is. And if you go back here, you
+get to divide by k to the sixth. So k cubed over k to the
+sixth is 1 over k cubed times k is 1 over k squared,
+and that sum converges. OK? So you don't have to
+use this symmetrization. It's just a useful tool
+because it lets you reason a little combinatorially. The only monomials that matter
+are the ones with even powers, and then you can count how
+many there are, et cetera. Yeah. AUDIENCE: Why do you have to
+introduce the random signs? JELANI NELSON: Because
+I want to just say that if you have an odd power-- so you're going to choose
+some set of six indices. And I want to say that yeah,
+the only monomials that matter are the ones that have all
+even terms, all even power. Every index should
+appear an even number of times, which
+already tells you that the number of distinct
+indices can be at most three because each one has to
+appear at least twice. If you had to consider
+every single monomial, well, there are n to the
+sixth choices of i1 up to i6. So you get n to the-- naively,
+you would get n to the sixth here. You'd have to be more
+careful because you'd have to reason about things
+canceling in various places with the expectation that
+you're subtracting off. Whereas if you symmetrize,
+that does that for you, and the counting
+problem is easier. Does that make sense? Do you have another
+question about it maybe? AUDIENCE: I guess
+it makes sense. I just don't where it
+comes from or how-- JELANI NELSON: So in terms
+of where it comes from, I guess it's just a trick. But in terms of why it's
+a useful thing to know-- maybe as an exercise,
+don't symmetrize. Just look at this sum. Go home with this sum and
+raise it to the sixth power and try and reason about what
+all the monomials give you. Some will give you
+positive terms. Some will give you
+negative terms. You have to argue that there's
+some cancelation going on. Whereas with symmetrization,
+you don't have to worry about that at all. Everything you're adding
+up is non-negative, and it sort of automatically
+counts things the right way. Yeah, it's just a trick. It doesn't come from
+anywhere other than trickery. OK, where was I? I was up there, I think. OK, so I mean, that's basically
+it for why 7-wise independence works. So once we
+conditioned on where-- once we conditioned on
+the fact that i contains h of x, the other six random
+variables involved in a product are still independent. So one for x and the other
+six for the other six guys. So that's 7-wise. So good. So we need to-- I claim that 7-wise works. I proved that 7-wise works. I claim that 5-wise works. That's actually what was in that
+paper by Pagh, Pagh and Ruzic. So the main trick for them, the
+main trick for them to show that 5-wise works is to reason in
+a more careful way so that you don't suffer this k, OK? We needed this to
+be 1 over k cubed, so that even when that
+k canceled something, we had a convergent sum. So that's why we needed
+the sixth moment. Good. So we need to get rid of that k. And the point is, we can be a
+little more clever about union bounding over all these length
+k intervals that contain h of x. And let me just say that-- so I
+might have mentioned this last time, So Pagh, Pagh, and Ruzic,
+I think their original paper was '07, but they have a
+journal version later, says that 5-wise works. Oh, and just to make sure we're
+all on the same page here, what did I actually
+prove, right? I proved-- there should
+be an expectation here. I proved that the expected time
+it takes to insert the item is a constant, OK? Just so we're all
+on the same page. So by 5-wise works, I mean
+that even if h is only 5-wise independent, the expected
+time will be a constant. And Patrascu and Thorup, I think
+I mentioned this last time, 4-wise is not sufficient. You can come up with a
+4-wise-independent hash family, such that there's a pretty
+good chance, actually, that the number of probes
+you'll do is log n, as opposed to constant. OK, so what's the Pagh, Pagh
+argument, Pagh, Pagh, Ruzic? Let me give myself
+some space, actually. So the Pagh, Pagh Ruzic
+argument is as follows. So we have this right
+here of length m. Let's say that
+it's a power of 2. We build a perfect
+binary tree, OK? Over the locations in the array. Wow, that's not a power. What am I doing? 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+11, 12, 13, 14, 15, 16, 17. Oh, good. OK, yeah. I practiced this in my
+office, and I was really fast, but now, I'm getting slower. OK, so we build a perfect
+binary tree over this array. And we imagine that every
+node in this array corresponds to an interval of memory
+locations, namely everything in its subtree, OK? Remember, we're trying to
+eliminate that k there. Basically, we don't
+want a union bound over k intervals of length k. We want a union bound over a
+constant number of intervals of length k. That would eliminate
+that k for us and let us get away
+with a fourth moment. And the basic idea is this. So call a node dangerous
+if at least, let's say, 3/4 times 2 to the h. So this is a node at
+height h items hash there. So height of node is h. So this is height 0, height 1,
+height 2, height 3, height 4. So the number of locations
+there is 2 to the h, and we're saying that it's-- so yeah, the number of
+locations is 2 to the h, and we're saying that a
+large fraction are occupied. And what do we expect? How many people do we
+expect to hash there? Well, if m is equal to n over 2,
+we expect 1/2 2 to the h to map there. So we're a constant
+factor larger than the expectation,
+which you can show happens with pretty
+small probability. Let's say this 2 to
+the h is roughly k. You can show using a p-th moment
+that this would be 1 over k to the p or p over
+2 or something. OK, so now what's the point? The point is-- oh, I really
+shouldn't have erased that sum. So let me just write
+something up here. So at some point, we
+had this on the board. The expected number
+of probes to insert x is at most the sum over
+all k the probability that there exists-- so that's at most
+the expectation of the number of full
+intervals containing h of x. Wait a second. Have I confused myself again? I wanted to say that this is at
+most the probability that there exists a full interval of
+length k containing h of x. But that would only
+work out if these things were of different lengths. OK, so adjust the
+lemma yet again. So adjust the
+lemma to say that-- so lemma prime is
+k probes implies at least k full
+intervals containing h of x, each of different length. OK. So by a modification of
+lemma, you can prove this. And now, this thing,
+I want to argue that-- to argue whether or not there's
+a full interval of length k containing h of
+x, we only need to union bound over a
+constant number of intervals of length roughly k. OK? So given i of length
+k, look at least four and at most nine nodes in tree. So let's say spanning i
+at level h minus 2, where k is in the interval from 2 to
+the h up to 2 to the h plus 1. OK, so we have this
+interval of length k. And I'm saying k is
+roughly 2 to the h. Look at intervals that are
+roughly four to eight times smaller, four to eight times
+smaller in the tree, so two levels below. And look at the ones
+that span this thing. And I claim that there are
+certainly at least four because they're
+four times smaller, and they're at most nine because
+they contain at least an 1/8 of the interval, and there
+might be one left over, OK? Anyway, they are
+constant is the point. So if you want to see an
+example, look at, for example, this interval, 1,
+2, 3, 4, 5, 6, 7, 8. So that would be 2 cubed. Let me go bigger. OK, good, 2 cubed. So let's look at this interval. So we need to look at the nodes
+that are two levels lower that contain-- So 8 is in the range from
+2 cubed to 2 to the fourth. So h corresponds to 3 here. So we look two levels lower
+and look at which nodes fully contain this thing. So you only need to consider,
+basically, these nodes. There are five of them. So that's what I mean over here. So look at the first
+four of these nodes, OK? And what I want to say is these
+guys are completely occupied. And this guy here might
+not be completely occupied. OK? But I claim that every guy
+had to start their hashing from at least here. So every guy started his
+hashing from at least here. So what do I want to say? So let me call this point
+A. Everyone in first four, hashed to a or
+later, and first four contains at least 3 times 2
+to the h minus 2 plus 1 items. This is the number of items that
+hashed somewhere in the first four, which implies that one
+of these four has l of that interval bigger than 3/4 times
+2 to the h minus 2, namely, it's dangerous. OK. So now, the point is if we're
+looking at intervals of length k, there are k of them
+that contain h of x, but they themselves are
+contained in an interval of length 2k minus 2. All the intervals of length k
+containing h of x are contained in an interval of
+length 2k minus 2. And if you look at
+all of these intervals and look at the first four
+that you would consider for the first of the
+intervals, the first four that you consider for the
+next intervals in this kind of spanning argument,
+the total number of nodes at height h minus
+2 that you'll consider is a constant, right? Are people with me? So that the total number
+of height h minus 2 nodes used to span these
+intervals is some constant. OK? And we know that if
+one of them is full-- we know that if one of them is
+full, one of these constant guys has to be dangerous. So it suffices to
+just argue that there are no dangerous
+people in this range. We just need to
+show that none of-- if none of these constant
+number of people are dangerous, then it means that none of these
+intervals under consideration can be full. AUDIENCE: So what is a doing? JELANI NELSON: A? AUDIENCE: Everyone in
+the first four hash to a. JELANI NELSON: This a? AUDIENCE: OK. JELANI NELSON:
+Just the beginning. So if there exists a full
+interval of length k containing h of x, then one of these
+O of 1 nodes of length, theta k, let's say at least
+k over 8, must be dangerous. That implies that the
+probability that there exists a full interval of length
+k containing h of x is at most O of 1
+times the probability that some length k over
+8 interval is dangerous. AUDIENCE: Sorry, could you
+explain again where the 3/4 comes from for the
+dangerous definition? Why is it [INAUDIBLE]? JELANI NELSON: Oh,
+it's about to appear-- OK, so the reason we
+call this dangerous is the number of people
+you expect to land in this interval of length k-- so k is 2 to the h here. The number of people you
+expect to land there is half of the interval length
+because m is 2n, n being the number of
+cells in the array. So we expect 1/2 times 2
+to the h to land there. So kind of having much
+more than that land there, like a multiplicative
+factor more land there, is sort of an anomaly. AUDIENCE: Why not 3/5 or
+anything that's bigger than that? JELANI NELSON: Yeah, you can
+crank out an argument that uses any constant factor
+bigger than 1/2. You could do that. Yeah. So the probability that some
+length k over 8 guy interval is dangerous, let me
+call this length-- let me call this interval I prime. That's equal to
+the probability-- that's at most the probability
+that the length of I prime minus the expectation
+of the length of I prime is bigger than-- so we're basically 1/2
+larger than the expectation. We expect I prime
+over two people there, but we got 3 I prime over
+4, which deviates from the expectation by
+1/2 the expectation. So then you use-- this is at most-- this thing here is the
+size of I prime over 2, so this is at most 1 over
+the size of I prime over 2 to the fourth times
+the expectation of L I prime minus the expectation
+of L I prime to the fourth. And you argue about
+this the same way, you'll get something that
+looks like the length of I prime squared. And remember, this
+guy here is theta k. So here, you're going to
+get one over k squared. OK. I feel like there
+must be questions. Well, OK, feel free
+to ask me questions. We have Piazza now, so-- AUDIENCE: Sorry, why is the
+[INAUDIBLE] of h minus 2 nodes is constant. Isn't that 2 to the h minus 2? Why is that constant? JELANI NELSON: So we have
+this interval of length k, and we're covering it by
+intervals that have length roughly k over 4 to k over 8. So the number of these
+intervals we need is a constant. It's somewhere between
+4 and 9 of them. Yeah. And even if you look at all the
+length k intervals combined that cover h of x, that
+contain h of x, that's a length 2k
+minus 2 interval. So it's also spanned by a
+constant number of length k over 8 people. Yeah. AUDIENCE: Don't we still
+have the sum over k? JELANI NELSON: Yeah, we
+do have the sum over k. But we're summing over
+k of 1 over k squared. So this thing here, this
+thing here is going to be-- if you calculate it, it's
+going to be 1 over k squared. So this thing here, so this
+is 1 over k to the fourth. This is going to be about k
+squared if you work it out. OK. Yeah. AUDIENCE: Also, the reason
+why we're able to make that inequality is because
+of the 4-wise? JELANI NELSON:
+Yes, that's right. So even conditioning-- so
+we're conditioning on the fact that I contains h of x. So conditioned on that, that's
+like one evaluation of h on at some point that
+we're conditioning on. There's still four or
+more that we can afford, and they'll still
+all act independently because there are only
+five of them altogether. So yeah. So that's why the original
+statement by I think-- I have a class who told me
+the reason 5-wise works is because when you condition
+on one, it's 4-wise. That's a very vague,
+cryptic statement, before you actually
+see any arguments. All right. So let me say something
+about other types of hashing, namely approximate membership. Who has bloom
+filters, by the way? OK, a decent number of people. OK, so dictionaries-- so I'll
+quickly review bloom filters, and then we'll get
+to bloomier filters. But before we get
+to bloomier filters, I need to say something
+about cuckoo hashing. So this is a
+different problem now. This is the membership problem,
+or approximate membership. So we have a set
+S, which is from-- which is in u, OK? And we need to maintain S.
+So there could be update. These are the two
+operations we support. One is update. Update sets S to be S union x. And then there's query
+x, which says, is x in S? Yes or no? OK? So there are no keys in-- well,
+there are no values anymore in our hash table. There are only keys. We just want to know, is
+the key in our set or not? And I should say that
+with dictionaries-- so dictionaries
+are where we have values associated with keys. With dictionaries, we
+are allowing ourselves to use n words of space. With membership, we
+want to use less space. We want to use n bits of space. Remember, a word is
+like log of u bits. So now, we want to get
+away with-- instead of n times log u bits, we
+want to get away with n bits. OK, so the basic
+idea, so we'll have-- the basic idea is
+to allow some slack. So we will allow
+false positives. What I mean by that is if
+x is in S, the probability that query of x is 1, meaning
+the query will say yes, x is in your set,
+that should be 1. And if x is not in S, the
+probability that query of x is 1 should be at most 1/2. OK? So this is some
+randomized guarantee with a probability of failing. And the data structure
+that gives you this is extremely simple. So the solution is
+we make an array. Yeah. AUDIENCE: So the
+probability of this failing can depend on the data structure
+itself or can vary from-- can the answer change between
+querying one after the other? JELANI NELSON: Say that again. What do you mean? AUDIENCE: So if I wanted to
+boost this probability to 1 by 4, can I just query
+it twice, or would I have to make two
+different data structures? JELANI NELSON: No, if you
+make the same query twice, you'll get the same
+answer both times. AUDIENCE: OK. So in order to boost
+this, I'll have to make two copies
+of the data set. JELANI NELSON:
+Yes, that's right. Oh, yeah, you're
+answering a question. I was going to ask a
+question about that, so you already
+gave me the answer. But I'll get back
+to you very soon. So the idea is, look-- so pretend we know n. Of course, if we're updating, if
+we're inserting into this data structure, n keeps changing. I don't allow
+deletions, by the way. I'm just allowing insertions. Pretend we know n. Pretend it's just
+a static problem. We're given all
+the items up front. What I'm going to
+do is, look, I'm going to pick an h that maps
+my items into this array. And when x comes, I'll set
+h of x to be 1 for x in S. I just hash it and
+put a 1 in that bit. This is a bit array. It's not an array of words. It's an array of bits. So I have a question. So this, we're on the same page. I'm asking-- so if you
+understood what I said, then this should not be real-- well, OK, question, why is
+this true with this solution, the first bullet? AUDIENCE: It [INAUDIBLE]. JELANI NELSON: Yeah. What? Yeah, if x is in S, I set
+the bit to 1, and it's 1. So the query is
+just going to check. I didn't tell you
+what query does. Query just checks whether
+that bit is 1 or not. And if it is 1, it says,
+yes, it's in there. How about if x is not in S? Why is this the case? It could be set by someone else? So then why is the
+probability at most 1/2? So as you said, so
+the probability-- so let's say x is not in S.
+So then the probability that query of x equals 1 is the
+same thing as the probability that there exists some
+y in S, such that h of x is equal to h of y. Right? If there's someone who
+collides, you'll be fooled. So how do you bound this? If I want to be a
+little pedantic, what's the next
+thing I would do? Yeah, sum over all
+the possibilities. So I would use the union bound. The probability that
+there exists a bad y is the sum over all y's of
+the probability that y is bad. So this is at most
+the sum-- this is union bound, the
+sum over y in s, the probability that
+h of x equals h of y. OK? Yeah. AUDIENCE: Sorry,
+could the two bits be marked by two separate keys? JELANI NELSON:
+Yeah, if a bit is 1, then there's nothing-- do you
+mean if two items both map to the same place? AUDIENCE: No, I was saying
+do you need two bits to be set for that to be marked-- for the pair to be 1? JELANI NELSON: No, one bit. So the update algorithm--
+this is update. So update, you just evaluate
+h of x, and you set-- not set h of x. Let's say this array is A.
+You set A of h of x to 1. And the query is you
+just output A of h of x. So maybe I'll say
+what the query is. So the query is you
+output A of h of x. And the update is you
+set A of h of x to 1. Does that answer your question? AUDIENCE: Yeah, just to
+show other cool filters. I thought you said
+two bits, and then that's what gives it the
+magic of [INAUDIBLE]. JELANI NELSON: Oh. Yeah, there are many
+implementations of bloom filters that somehow, they're tradeoffs
+in constant factors and things. But yeah. I mean, I haven't gotten to
+the actual bloom filter yet. This is just a bit array for
+now with a hash function. But OK, so now, what's
+this probability? AUDIENCE: 1 by m. JELANI NELSON: 1 by m, yes. And there are n
+different choices of y, so this is n times 1
+over m, which is 1/2. OK, good. OK, so now, going back to
+the point that you raised, having a false positive
+probability of 1/2 is not really that great. Whoever is using this data
+structure will come to me and say, Jelani,
+I'm willing to have a 0.01% chance of false
+positives, but not a 50% chance. OK, so suppose they tell
+you we want that x not in S implies probability
+that query of x equals 1 is at most epsilon. So now, what would you do? What's a solution you would-- yeah, which, I guess,
+is what you said. AUDIENCE: Yeah. [? And ?] then
+[? it's ?] 1 by epsilon. JELANI NELSON: 1 by epsilon. OK, so that works,
+but you can be-- yeah, anyone. You were about to say something. AUDIENCE: I mean, you can
+make the bit array bigger. JELANI NELSON: Oh,
+make it longer? AUDIENCE: That's the same thing. JELANI NELSON: Yeah,
+you could do that. So yeah, so good. So yeah, you could
+make it longer. In particular, you want
+n over m to be epsilon. You make m be n over epsilon. OK, you could do that. What else could you do? AUDIENCE: Log 1
+over epsilon copies. JELANI NELSON: Yeah, That's
+another thing you could do. You could take log 1
+over epsilon copies. So what you do is you'll
+have a bit array of length m. M is, again, 2n. But you'll do it many times. OK? And the number of times you do
+it is log of 1 over epsilon. And here, you'll have
+your hash function 1, hash function 2,
+hash function k, where k is log 1 over epsilon. And when you have
+an update, you'll update in every single array. And when you have a query,
+what would you do for a query? Search them all? And then what would
+your answer be? It's in all of
+them, yes, exactly. So the query, you just say,
+are all of these set to 1. So to be fooled, you'd have to
+be fooled every single time, which happens with
+probability 1 over 2 to the k, which is epsilon. So the space here is n times
+log 1 over epsilon bits. So and the time is O
+of log 1 over epsilon. It is possible to get more
+sophisticated and, I think, improve this time to a constant,
+as well as support deletions, but I'm not going to
+cover that in class. But this is one thing that's
+called a bloom filter. And that was bloom filter,
+and it's due to bloom in 1970, I think. OK. So that's bloom filters
+for the membership problem. And I want to get
+to bloomier filters. And I mean, I'll tell you
+what bloomier filters solve. I'll tell you what
+problem they solve. So with bloom filters, we're
+solving the membership problem, where you could imagine for
+every element in our set, we want to be able to
+look up a bit associated with that element, and
+here, it's the bit 1. But what if we want
+to associate an orbit string with every
+element in the set, OK? And bloomier filters let you
+do that with n times r bits. So that's the retrieval problem. So note that this doesn't solve
+the dictionary problem, OK? We never actually store
+the keys anywhere. In bloom filters, we never
+stored the keys, right? If you actually ask
+me at some point, what are the elements that
+are actually in my set, I can't tell you. But if you give me an element,
+then I can tell you whether or it's in the set. Bloomier filters are
+going to be similar. If you give me an
+element, I'll be able to tell you the
+r-bit string associated with that element. But if you ask me, what are the
+keys in this data structure? I won't be able to
+report them to you because in particular, I'm
+not even using enough space to hold them all, right? You need n words of
+space to hold them, and I'm only using
+n times r bits. OK. Yeah. AUDIENCE: This
+means that I might get a bit string that's from
+a different element, right? JELANI NELSON: So if you
+give me an element that's-- actually, the way-- so I haven't
+shown you the construction of bloomier filters, but
+we'll get it to be such that-- first of all,
+we're going to look at static bloomier filters,
+the static problem, not the dynamic problem. And we'll get an algorithm
+that doesn't make errors. So if the element x you give
+me is actually in the set, I'll give you the
+correct r bit string. If the element you give
+me is not in the set, I might just give
+you total garbage. I mean, I won't know
+that I gave you garbage because I don't know
+what's in the set. Oh, maybe that's what you meant. AUDIENCE: Yeah. JELANI NELSON: Oh, I see. Yeah, yeah. Sorry, yeah, you'll
+get an arbitrary r bit string with no guarantee. OK, good. So yeah, that is right. OK. So before we do
+bloomier filters, I want to do cuckoo hashing. So maybe I will spend a
+little bit of time on Tuesday about power of two choices
+before we get completely out of hashing. But what do I want to
+say about cuckoo hashing? So cuckoo hashing. OK. Good. So this will be a solution
+to the dictionary problem, a dynamic dictionary problem. And this is due to Pagh and
+Rodl Journal of Algorithms, '04. And the idea is to use two
+hash functions instead of one. And the power of
+two choices is going to be just a second example
+of the power of using two hash functions instead
+of one hash function, but it's sort of
+a bit different. OK. And what's the basic idea? Again, we'll have an
+array A of length m being like c times n,
+some constant times n. I'll imagine 4n or something. Oh, by the way, so just to make
+sure we're all happy with bloom filters, remember,
+at some point, we talked about k-wise
+independent hash families. What amount of independence do I
+need to make bloom filters work? Each one of those hash
+functions over there, what independence--
+what kind of hash family should they come from? AUDIENCE: 2. JELANI NELSON: 2. Why 2? Yeah, because whenever
+I reason about how a set of hash
+evaluations behave, I really only care
+about two at a time. So 2-wise independence suffices
+to say that this is 1 over n. So we have this array
+of length c times n, and we pick two hash functions,
+g and h, mapping u to m. And let's just imagine that
+they're actually perfect totally random hash functions. And I don't remember exactly
+why it's called cuckoo hashing. It has something to do with-- I think there's a bird called
+a cuckoo bird or something, and a cuckoo bird steals another
+cuckoo bird's nest, something like that. AUDIENCE: It lays eggs. JELANI NELSON: It lays
+eggs in the other bird-- OK, good, so lays eggs
+in the other bird's nest. So the idea here is let's
+say we want to insert x. So nests here are going
+to be memory cells, OK? So put x in A of g of x. So just evaluate g, that tells
+you an entry, and put x there. But there might be
+someone else there. If some x prime is there-- so let me call this location
+j, then if g of x prime is j, put x prime in h of x prime,
+otherwise, if h of x prime was j, put x prime
+in g of x prime. OK, so we put x somewhere. And there might be an
+item already living there. If there is an
+item living there, it got there because of
+one of its hash functions. So we'll kick it out and send
+it to where its other hash function wants it to go. But it might then collide
+with someone else, and then that person
+will get kicked out and then move to
+where their other hash function tells them to go. And there will be this chain
+of moving things around, and potentially, it could go
+on forever, but hopefully, it doesn't. Hopefully, it ends very quickly. And that's cuckoo hashing, OK? Other questions about
+the insertion algorithm? Yeah. AUDIENCE: So when you say
+it could go on forever, are we going to prove it
+will never go on forever or just with high likelihood? JELANI NELSON: We'll
+prove that the problem-- OK, so we'll augment
+the insertion algorithm. So we'll also say if this goes
+on for more than 10 log n steps, then rebuild the
+entire data structure. OK? So we'll go kicking
+people out of their place and moving them around, and
+if this chain of moving things around went on for more than
+10 log n steps, we'll say, you know what? I'm not feeling very confident
+about what's happening here, and I'll just pick a totally
+new h and g at random, and then I'll make a
+totally new hash table and then try and reinsert
+everyone in there. And then that might loop,
+again, for more than 10 log n steps at some point. If so, I'll give up again,
+and I'll keep doing this until it works. AUDIENCE: And then do
+that a million times. JELANI NELSON: Yeah. No, no, no. Well, you could. But what you can show
+is that the expected-- what we're going
+to end up showing is that the expected
+insertion time is a constant. Even if you take
+into consideration that once in a while, we have
+to rebuild the entire data structure, even with
+that in consideration, the expected time will
+still be a constant. Yeah. AUDIENCE: Is j towards
+the [? g of x ?] and not [INAUDIBLE]? JELANI NELSON: Yeah, so-- oh, yeah, yeah, yeah. J is the location, that's right. So our goal is to show that the
+expected update time is O of 1. OK? Yeah. AUDIENCE: So does this die
+immediately if h of x prime equals g of x prime? JELANI NELSON: If h of x
+prime equals g of x prime? AUDIENCE: Oh, no,
+it'll kick x back out. JELANI NELSON: Yeah,
+it will kick back x back out, that's right. Yeah. OK. So this is what we plan to show. Yeah, that's a good point. Just because there's a cycle
+doesn't mean we're in trouble. Although there are two cycles,
+then that's worse for us. But what we're going
+to end up showing is that the probability
+of having two cycles-- we'll get there
+when we get there. So this is what we want to show. Before we show this
+goal, let me just knock out bloomier filters, OK? How are we going to
+use bloomier filters? So to get bloomier filters-- so actually, before I say that,
+the main tool in the analysis-- the analysis, the main tool-- I should have asked this a
+while ago, do we have a scribe? AUDIENCE: Yeah. JELANI NELSON: OK. [LAUGHTER] OK, so the main tool in the
+analysis is the cuckoo graph. OK, what's the cuckoo graph? There are m vertices. It's an undirected graph. There are m vertices
+and n edges. And for each x in S, draw edge
+between g of x and h of x. OK. And that's the cuckoo graph. AUDIENCE: [INAUDIBLE] JELANI NELSON: Sorry,
+say that again. AUDIENCE: Can you have
+two edges between two vertices if you have the same-- JELANI NELSON: Oh,
+like parallel edges? AUDIENCE: Yeah. JELANI NELSON: Yeah,
+is it a multigraph? So yeah, sure, make
+it a multigraph. I don't think it will-- yeah, make it a multigraph. And you could have a
+self-loop if h of x equals g of x, for example. OK, so the way we're
+going to show this goal is to reason about how
+the cuckoo graph behaves. It's a random graph because
+it depends on this hashing. But we want to say some things
+about this random graph. But before I get to
+showing this goal, I want to talk about how
+to get bloomier filters. You can use cuckoo hashing to
+construct bloomier filters. And bloomier filters are due to
+Chazelle, Kilian, and Rubinfeld and Tal. This is from 2004. And they solve the
+orbit retrieval problem. So I mentioned, with
+every element in the set, you want to associate
+an orbit string, and when I give you
+an element in the set, you should output
+that orbit string. If I give you something
+that's not in the set, you can output
+whatever you want. And we're going to look
+at the static version. So you know all
+the items up front, and you just need to
+create this data structure. And you know the
+strings as well. So to get bloomier filters,
+create a cuckoo hash table. OK? Show that probability there
+exists a cycle in cuckoo graph is at most 1/2. Any cycle, anywhere
+in the graph, so the probability that
+happens is at most 1/2. That's something I'm not
+going to show right now. And if it's the static problem,
+you know all the items up front. So you'll create the hash table. You'll check, are there any
+cycles in the cuckoo graph? And if not, you're happy. If so, you'll pick
+a new hash function and then keep doing
+this over and over again until there aren't any cycles. And the expected number of times
+you have to do this is two. The expected number of times
+you have to construct the cuckoo hash table is two. So you can do that
+in pre-processing, and you expect it to be fast. Suppose there are no cycles now. Then what does the
+cuckoo graph look like? There are no cycles,
+so it's a forest. So the graph looks
+like a forest. And each one of these edges-- what is that edge, right? It's an item, all right? So this is one hash function. This is like g of
+x or something. So this is some item x. This is like g of x and that's
+h of x, or the other way around. And what I'm going
+to do is I'm going to say, say x owns its
+deeper node, like root all these forests, so that
+now, they have depths, OK? And let's say that each
+item owns its deeper node, so x owns this. There are some y here. Y owns this. And here's what
+we're going to do. We're going to fill-- at
+each one of these nodes, we're going to store
+an r bit string. At the roots, store
+0 at the roots. OK? And then fill in these
+trees just from top down. And when you get
+to a node, someone owns that node, namely the
+person who's written right here. You know what his
+orbit value is. And the thing above
+you has already been filled in because we're
+filling in from top down. So fill in this to be
+whatever it needs to be, so that the XOR of these
+two is the right thing. OK? So let me write that down. AUDIENCE: The
+right thing being-- JELANI NELSON: Being the r-bit
+string associated with x. So let me write that down. Fill in r-bit strings
+in forest top down. Every node gets a string. If we query x, we'll output
+A of g of x XOR A of h of x. That's how we answer queries. And when filling in A, remember,
+every one of these nodes is a memory cell in A, OK? When filling in A top
+down, put whatever value in node v is necessary so that
+querying its owner is correct. Yeah. AUDIENCE: Why do we need XOR? Because there are [? other ?]
+ones, whatever number plus 1 nodes, so the number of nodes is
+more than the number of edges. So you should be sufficient just
+to store the r-bit string just on that one node, right? Why are we having extra? JELANI NELSON: So wait, so
+the actual memory cells are the vertices, not the edges. So given x, where would
+you store x's value? Would you store it here or
+would you store it here? AUDIENCE: It's on
+the deeper node. JELANI NELSON: On
+the deeper node. AUDIENCE: There are enough
+deeper nodes for each one. JELANI NELSON: Oh, wait that's-- [INTERPOSING VOICES] JELANI NELSON: Yeah, so I
+guess the point is I really want to use n times r-bits. And why can't I-- now, what you're saying sounds
+actually very reasonable. AUDIENCE: How do you know
+which one is deeper in query? JELANI NELSON: Well, I
+mean, if this is all static, I can write down for every-- oh, I see. AUDIENCE: So then you have
+a 1-bit retrieval problem. JELANI NELSON: Yeah, OK, I see. Right. So how do you know
+which one is deeper? So you don't actually
+store the elements. So you can't have a table
+that says this element is-- yeah, I see. Yeah, that's a good point. That is a reduction to a
+1-bit retrieval problem. AUDIENCE: There was a
+point somewhere over there. I just re-echoed it. JELANI NELSON: Oh, OK. Someone said that over there? Oh, OK. Well, thanks, whoever said that. AUDIENCE: So I don't
+want to take the credit. JELANI NELSON: Yeah, OK. So yes. So yes. Yeah, then you need to solve
+a 1-bit retrieval problem. That's a good point. Yeah. OK, so I guess next time,
+I'll probably just-- I'll say something
+about cuckoo hashing or maybe I'll give it
+as a homework exercise. I need to decide. I want to wrap up
+hashing because there are a lot of algorithms
+out there in the world. OK, so any questions? Yeah. AUDIENCE: So when you were
+first talking about k-wise, you showed those
+two families that are k-wise independent but
+not all the way independent. JELANI NELSON: Like degree
+k minus 1 polynomials. Yeah. AUDIENCE: So are those the
+ones that are generally used, or how do you come up with
+new families of k-wise? JELANI NELSON: So
+there are other-- actually, OK, so there
+are other families of k-wise independent
+hash functions. One way to get them is by using
+something called tabulation. So I'll just write a reference. It's a very recent paper. You can look up
+Thorup and Focs, 2013. He shows how to get k-wise-- he shows how to
+construct, very fast, k-wise independent
+families using tabulation. Another thing is if you
+choose primes carefully, then some of them, like the
+mod and division operations, can be bit shifts. And those, you can
+be very fast with. So one thing that I'll
+recommend looking at is-- I forgot all the authors, but
+Dietzfelbinger and others, and it's called the
+multiply shift hashing. So he gives some pairwise
+independent family of hash functions, where
+you never have to do a mod. Everything is just bit shifts. Well, multiplying
+in bit shifts, OK. Yeah, but I guess there aren't
+that many families out there. Actually, it's a very
+active area of research. In this upcoming-- the
+biggest theory conferences are FOCS and STOC. They each happen once a year. And FOCS, Foundations
+of Computer Science is happening in October. And one of the papers that's
+going to appear there this year is some-- so k-wise independent
+polynomials, to evaluate them takes k time, right? Because you have to evaluate
+this degree k polynomial. So they give k-wise
+independent families, where you can store
+them efficiently just like before using little
+space, but where evaluation takes constant time,
+independent of k, but with the caveat
+that you have to promise me that you're going
+to evaluate them in order. You're going to compute h of
+1, then h of 2, then h of 3, which is not true in
+a lot of applications, like some of the ones
+we've been seeing here. But yeah, I mean, getting
+better hash families is an open area of research. AUDIENCE: Why does
+the order matter? JELANI NELSON: I mean, because
+their running time bounds only hold when-- their algorithm to
+produce the hash values is only fast when
+it's sequential. AUDIENCE: So does it like
+memoize something every time you-- JELANI NELSON: I didn't
+actually read their paper. I just read the-- I mean, it hasn't even
+been presented yet, but it's on the
+archive, for example. Yeah.
