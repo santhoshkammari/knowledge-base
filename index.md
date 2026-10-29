@@ -31,4 +31,4 @@ All learning items. Newest first. One row per item.
 
 | Module | Contents | Source |
 |---|---|---|
-| [CS224 transcripts](modules/cs224-transcripts/README.md) | 33 tracked source files, status notes, and transcripts copied as files; no nested Git repository | [santhoshkammari/cs224-transcripts](https://github.com/santhoshkammari/cs224-transcripts) |
+| [CS224 transcripts](modules/cs224-transcripts/README.md) | 33 tracked source files, status notes, and transcripts; snapshot from source commit `a2836894dd492a7dc6485ba0675576238c6fa3e1`; no nested Git repository | source repo deleted 2026-10-29 |

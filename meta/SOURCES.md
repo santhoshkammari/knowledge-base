@@ -28,7 +28,7 @@ Skip the rest. Volume is not the goal.
 | source | detail | status |
 |---|---|---|
 | supabase/supabase | monorepo fork at santhoshkammari/supabase | studied 2026-10-22, see items/2026-10-22-supabase-monorepo.md |
-| Harvard CS224 | transcripts and ASR scripts at santhoshkammari/cs224-transcripts | copied as a source module in modules/cs224-transcripts/ (source commit a2836894dd492a7dc6485ba0675576238c6fa3e1) |
+| Harvard CS224 | transcripts and ASR scripts from santhoshkammari/cs224-transcripts | source repo deleted 2026-10-29 after full 33-file snapshot; preserved in modules/cs224-transcripts/ at commit a2836894dd492a7dc6485ba0675576238c6fa3e1 |
 | X feed | personal timeline | swept on demand |
 
 ## Adding a source

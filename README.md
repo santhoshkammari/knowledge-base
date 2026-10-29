@@ -48,4 +48,4 @@ Full rules: [AGENTS.md](AGENTS.md).
 
 ## Modules
 
-- [CS224 transcripts](modules/cs224-transcripts/README.md) — 33 tracked files from `santhoshkammari/cs224-transcripts` commit `a2836894dd492a7dc6485ba0675576238c6fa3e1`; copied as files, with no nested `.git` directory.
+- [CS224 transcripts](modules/cs224-transcripts/README.md) — 33 tracked files copied from commit `a2836894dd492a7dc6485ba0675576238c6fa3e1`; the standalone source repo was deleted after verifying the snapshot.
